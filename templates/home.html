@@ -187,8 +187,11 @@
             {% for exhibition in exhibitions %}
             <div class="exhibition-card">
                 {% if exhibition.image %}
-                <div class="exhibition-image">
+                <div class="exhibition-image" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
                     <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
+                    <div class="image-overlay">
+                        <i class="bi bi-zoom-in"></i>
+                    </div>
                 </div>
                 {% endif %}
                 <div class="exhibition-content">

@@ -3,6 +3,11 @@
 // 图片缓存对象 - 存储已加载的图片
 const imageCache = {};
 
+// Lightbox相关元素
+let lightbox = null;
+let lightboxImg = null;
+let lightboxCaption = null;
+
 // 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
     console.log('博客页面已加载');
@@ -15,19 +20,33 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 侧边栏导航功能
     initSidebarNav();
+    
+    // 初始化Lightbox
+    initLightbox();
 });
 
 // 预加载所有图片并缓存
 function preloadAllImages() {
+    let cachedCount = 0;
+    
     // 获取所有图片元素
     const images = document.querySelectorAll('img');
     
     images.forEach(img => {
         const src = img.src || img.getAttribute('data-src');
         if (src && !imageCache[src]) {
+            // 跳过空URL或无效URL
+            if (!src || src === '' || src.startsWith('data:')) {
+                return;
+            }
+            
             const cachedImg = new Image();
             cachedImg.onload = function() {
                 imageCache[src] = cachedImg;
+                cachedCount++;
+            };
+            cachedImg.onerror = function() {
+                console.warn(`图片加载失败: ${src}`);
             };
             cachedImg.src = src;
         }
@@ -39,15 +58,29 @@ function preloadAllImages() {
         const style = bg.style.backgroundImage;
         const match = style.match(/url\(["']?([^"')]+)["']?\)/);
         if (match && match[1] && !imageCache[match[1]]) {
+            const imageUrl = match[1];
+            
+            // 跳过空URL
+            if (!imageUrl || imageUrl === '') {
+                return;
+            }
+            
             const cachedImg = new Image();
             cachedImg.onload = function() {
-                imageCache[match[1]] = cachedImg;
+                imageCache[imageUrl] = cachedImg;
+                cachedCount++;
             };
-            cachedImg.src = match[1];
+            cachedImg.onerror = function() {
+                console.warn(`背景图片加载失败: ${imageUrl}`);
+            };
+            cachedImg.src = imageUrl;
         }
     });
     
-    console.log(`已缓存 ${Object.keys(imageCache).length} 张图片`);
+    // 延迟输出，等待图片加载
+    setTimeout(() => {
+        console.log(`已缓存 ${cachedCount} 张图片`);
+    }, 500);
 }
 
 // 侧边栏导航功能
@@ -281,3 +314,84 @@ function showLoading(message = '加载中...') {
     // 可以集成Bootstrap的toast或modal组件
     console.log(message);
 }
+
+// ===================================
+// Lightbox 图片放大功能
+// ===================================
+
+// 初始化Lightbox
+function initLightbox() {
+    // 创建lightbox DOM元素
+    createLightboxDOM();
+    
+    // 绑定ESC键关闭事件
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+}
+
+// 创建Lightbox DOM结构
+function createLightboxDOM() {
+    // 检查是否已存在
+    if (document.getElementById('imageLightbox')) {
+        lightbox = document.getElementById('imageLightbox');
+        lightboxImg = document.getElementById('lightboxImage');
+        lightboxCaption = document.getElementById('lightboxCaption');
+        return;
+    }
+    
+    // 创建lightbox容器
+    lightbox = document.createElement('div');
+    lightbox.id = 'imageLightbox';
+    lightbox.className = 'lightbox';
+    lightbox.onclick = closeLightbox;
+    
+    // 创建图片元素
+    lightboxImg = document.createElement('img');
+    lightboxImg.className = 'lightbox-content';
+    lightboxImg.id = 'lightboxImage';
+    lightboxImg.onclick = function(e) {
+        e.stopPropagation();
+    };
+    
+    // 创建标题元素
+    lightboxCaption = document.createElement('div');
+    lightboxCaption.className = 'lightbox-caption';
+    lightboxCaption.id = 'lightboxCaption';
+    lightboxCaption.onclick = function(e) {
+        e.stopPropagation();
+    };
+    
+    // 组装DOM（不包含关闭按钮）
+    lightbox.appendChild(lightboxImg);
+    lightbox.appendChild(lightboxCaption);
+    document.body.appendChild(lightbox);
+}
+
+// 打开Lightbox - 暴露到全局作用域
+window.openLightbox = function(imageUrl, title) {
+    if (!lightbox) {
+        initLightbox();
+    }
+    
+    lightbox.style.display = 'flex';
+    lightboxImg.src = imageUrl;
+    lightboxCaption.textContent = title || '';
+    
+    // 阻止背景滚动
+    document.body.style.overflow = 'hidden';
+};
+
+// 关闭Lightbox - 暴露到全局作用域
+window.closeLightbox = function() {
+    if (!lightbox) return;
+    
+    lightbox.style.display = 'none';
+    lightboxImg.src = '';
+    lightboxCaption.textContent = '';
+    
+    // 恢复背景滚动
+    document.body.style.overflow = 'auto';
+};
