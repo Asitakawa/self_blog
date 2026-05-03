@@ -1,0 +1,239 @@
+/* ===================================
+   侧边栏导航样式 - 球体悬浮设计
+   =================================== */
+
+/* 侧边栏容器 */
+.sidebar-float {
+    position: fixed;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 主按钮（球体） */
+.sidebar-main-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(161, 196, 253, 0.4);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1002;
+}
+
+.sidebar-main-btn:hover {
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 6px 20px rgba(161, 196, 253, 0.6);
+}
+
+.sidebar-main-btn.active {
+    transform: rotate(45deg);
+}
+
+/* GIF动图容器 - 现在位于菜单之间，不再是绝对定位 */
+.sidebar-gif-container {
+    width: 200px;
+    height: 200px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    background: white;
+    pointer-events: none; /* 让GIF不阻挡鼠标事件 */
+}
+
+.sidebar-gif-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 菜单项容器包装器 - 纵向排列 */
+.sidebar-menu-wrapper {
+    position: absolute;
+    left: 70px;
+    top: 50%;
+    transform: translateY(-50%) scale(0);
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column; /* 纵向排列：页面导航 -> GIF -> 模块导航 */
+    gap: 15px;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    z-index: 1020;
+}
+
+.sidebar-float:hover .sidebar-menu-wrapper,
+.sidebar-float.active .sidebar-menu-wrapper {
+    transform: translateY(-50%) scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 菜单项容器 */
+.sidebar-menu-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    z-index: 1025;
+}
+
+/* 模块导航横向排列 */
+.sidebar-menu-items.section-navigation {
+    flex-direction: row;
+}
+
+/* 单个菜单项 */
+.sidebar-item {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a5568;
+    text-decoration: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    font-size: 1.2rem;
+}
+
+.sidebar-item:hover {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    color: white;
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(161, 196, 253, 0.4);
+}
+
+.sidebar-item.active {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(161, 196, 253, 0.5);
+}
+
+/* 标签提示 */
+.label-tooltip {
+    position: fixed !important;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 99999;
+}
+
+.label-tooltip::after {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 6px 6px 6px 0;
+    border-style: solid;
+    border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
+}
+
+.sidebar-item:hover ~ .label-tooltip,
+.label-tooltip.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* 返回顶部按钮 */
+.sidebar-back-top {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: none;
+    color: #4a5568;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-back-top.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.sidebar-back-top:hover {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(161, 196, 253, 0.4);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .sidebar-float {
+        left: 15px;
+    }
+    
+    .sidebar-main-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+    
+    .sidebar-item {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+    
+    .sidebar-menu-wrapper {
+        left: 60px;
+    }
+    
+    .sidebar-gif-container {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .label-tooltip {
+        display: none !important;
+    }
+    
+    .sidebar-back-top {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+}
+
+/* 桌面端内容区域居中布局 */
+@media (min-width: 769px) {
+    .content-wrapper {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}

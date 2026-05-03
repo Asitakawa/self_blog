@@ -1,0 +1,17 @@
+{
+  "name": "self_blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy-bootstrap": "xcopy node_modules\\bootstrap\\dist\\css static\\css /E /Y && xcopy node_modules\\bootstrap\\dist\\js static\\js /E /Y",
+    "postinstall": "npm run copy-bootstrap"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  }
+}

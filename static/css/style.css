@@ -1,0 +1,98 @@
+/* 自定义样式 */
+
+/* 全局样式 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    position: relative;
+    min-height: 100vh;
+}
+
+/* 背景图片容器 */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -9999;
+    overflow: hidden;
+}
+
+/* 背景图片 */
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.background-image.active {
+    opacity: 1;
+}
+
+/* 确保内容在背景之上 */
+main {
+    position: relative;
+    z-index: 1;
+    padding-left: 100px; /* 防止内容被侧边栏遮挡 */
+}
+
+/* 桌面端内容区域左侧留白 */
+@media (min-width: 769px) {
+    main {
+        padding-left: 120px;
+    }
+}
+
+/* 卡片悬停效果 */
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 导航栏样式优化 */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* 页脚样式 */
+footer {
+    border-top: 1px solid #dee2e6;
+}
+
+/* 按钮动画 */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+/* 文章卡片图片占位符 */
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .display-5 {
+        font-size: 2rem;
+    }
+    
+    .p-5 {
+        padding: 2rem !important;
+    }
+}

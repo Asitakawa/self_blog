@@ -1,0 +1,548 @@
+/* ===================================
+   首页样式 - 现代化设计
+   =================================== */
+
+/* 首页包装器 */
+.home-wrapper {
+    position: relative;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50px;
+    padding: 50px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 0.8s ease-out;
+    width: 90%;
+    max-width: 1400px;
+    margin: 40px auto;
+}
+
+/* Hero区域 */
+.hero-section {
+    text-align: center;
+    padding: 80px 0;
+    margin-bottom: 60px;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(161, 196, 253, 0.3);
+}
+
+.avatar-container {
+    display: inline-block;
+    margin-bottom: 30px;
+}
+
+.hero-avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid white;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    animation: pulse 2s infinite;
+}
+
+.hero-avatar-placeholder {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: #a1c4fd;
+    border: 5px solid white;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.hero-name {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 15px;
+}
+
+.hero-title {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    color: #4a5568;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-hero-primary,
+.btn-hero-secondary {
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-hero-primary {
+    background: white;
+    color: #a1c4fd;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-hero-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-hero-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-hero-secondary:hover {
+    background: white;
+    color: #a1c4fd;
+    transform: translateY(-3px);
+}
+
+/* 通用区块标题 */
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2d3748;
+    text-align: center;
+    margin-bottom: 50px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
+    border-radius: 2px;
+}
+
+.section-title i {
+    margin-right: 15px;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 社交链接区域 */
+.social-section {
+    margin-bottom: 80px;
+}
+
+.social-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.social-card {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    color: #2d3748;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.social-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(161, 196, 253, 0.3);
+    border-color: #a1c4fd;
+}
+
+.social-card i {
+    font-size: 3rem;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.social-icon-image {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 15px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.social-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.social-stats {
+    font-size: 0.9rem;
+    color: #718096;
+}
+
+/* 项目区域 */
+.projects-section {
+    margin-bottom: 80px;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.project-card-home {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.project-card-home:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(161, 196, 253, 0.3);
+    border-color: #a1c4fd;
+}
+
+.project-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.project-icon-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-name {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 12px;
+}
+
+.project-desc {
+    color: #718096;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.project-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8ecef 100%);
+    color: #4a5568;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* 技能区域 */
+.skills-section {
+    margin-bottom: 80px;
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.skill-category-card {
+    background: white;
+    padding: 35px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.skill-category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(161, 196, 253, 0.2);
+}
+
+.skill-category-card h3 {
+    font-size: 1.3rem;
+    color: #2d3748;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.skill-category-card h3 i {
+    color: #a1c4fd;
+}
+
+.skill-icon-image {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.skill-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.skill-list li {
+    padding: 10px 0;
+    color: #4a5568;
+    border-bottom: 1px solid #f0f0f0;
+    position: relative;
+    padding-left: 25px;
+}
+
+.skill-list li:last-child {
+    border-bottom: none;
+}
+
+.skill-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #a1c4fd;
+    font-weight: bold;
+}
+
+/* 兴趣爱好区域 */
+.hobbies-section {
+    margin-bottom: 80px;
+}
+
+.hobbies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 25px;
+}
+
+.hobby-card-home {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.hobby-card-home:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(161, 196, 253, 0.2);
+}
+
+.hobby-image-home,
+.hobby-icon-home {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.hobby-image-home img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hobby-icon-home i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.hobby-card-home h4 {
+    font-size: 1.1rem;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.hobby-card-home p {
+    font-size: 0.9rem;
+    color: #718096;
+    line-height: 1.5;
+}
+
+/* 联系区域 */
+.contact-section {
+    margin-bottom: 60px;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.contact-card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(161, 196, 253, 0.2);
+}
+
+.contact-card i {
+    font-size: 3rem;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.contact-icon-image {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contact-card h3 {
+    font-size: 1.3rem;
+    color: #2d3748;
+    margin-bottom: 10px;
+}
+
+.contact-card p {
+    color: #718096;
+    font-size: 1rem;
+}
+
+/* 动画 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .home-wrapper {
+        padding: 30px 20px;
+        border-radius: 30px;
+    }
+    
+    .hero-section {
+        padding: 50px 20px;
+    }
+    
+    .hero-name {
+        font-size: 2.5rem;
+    }
+    
+    .hero-title {
+        font-size: 1.2rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+    }
+    
+    .hero-avatar,
+    .hero-avatar-placeholder {
+        width: 140px;
+        height: 140px;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+    
+    .social-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .projects-grid,
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hobbies-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

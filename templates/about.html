@@ -1,0 +1,605 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}关于我 - {{ profile.name|default:"个人博客" }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* 返回上一页按钮 */
+.back-to-home {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1001;
+}
+
+.btn-back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    color: #2d3748;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-back-home:hover {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(161, 196, 253, 0.4);
+    border-color: #a1c4fd;
+}
+
+.btn-back-home i {
+    font-size: 1.2rem;
+}
+
+.about-wrapper {
+    max-width: 900px;
+    margin: 80px auto 50px;
+    padding: 40px 30px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 50px;
+    padding-bottom: 30px;
+    border-bottom: 3px solid #667eea;
+}
+
+.about-welcome {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.about-intro {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.about-sections {
+    margin-bottom: 50px;
+}
+
+.about-card {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-left: 5px solid #667eea;
+}
+
+.about-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.about-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.about-card-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.about-card-icon i {
+    font-size: 24px;
+    color: white;
+}
+
+.about-card-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.about-card-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.about-card-content {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #555;
+}
+
+.about-card-content p {
+    margin-bottom: 15px;
+}
+
+.about-card-content ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.about-card-content li {
+    margin-bottom: 8px;
+}
+
+.about-project {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 40px;
+    border-radius: 15px;
+    margin-bottom: 40px;
+}
+
+.about-project h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.about-project p {
+    font-size: 16px;
+    line-height: 1.8;
+    opacity: 0.95;
+}
+
+.about-footer {
+    text-align: center;
+    padding-top: 30px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.about-blessing {
+    font-size: 20px;
+    color: #667eea;
+    font-weight: 600;
+    font-style: italic;
+}
+
+/* 评论区样式 */
+.comments-section {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 2px solid #e0e0e0;
+}
+
+.comments-header h2 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comments-header i {
+    color: #667eea;
+}
+
+.comment-form-wrapper {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 40px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.form-actions {
+    margin-top: 20px;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-submit i {
+    font-size: 18px;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.comment-item {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 15px;
+}
+
+.comment-avatar {
+    flex-shrink: 0;
+}
+
+.comment-avatar img,
+.default-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.default-avatar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.default-avatar i {
+    font-size: 24px;
+    color: white;
+}
+
+.comment-body {
+    flex: 1;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.comment-nickname {
+    font-weight: 600;
+    color: #667eea;
+    font-size: 16px;
+}
+
+.comment-date {
+    color: #999;
+    font-size: 13px;
+}
+
+.comment-content {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.comment-actions {
+    margin-top: 10px;
+}
+
+.btn-reply {
+    background: none;
+    border: none;
+    color: #667eea;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-reply:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.comment-replies {
+    margin-top: 15px;
+    padding-left: 20px;
+    border-left: 3px solid #e0e0e0;
+}
+
+.reply-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .about-wrapper {
+        margin: 20px 10px;
+        padding: 20px 15px;
+    }
+    
+    .about-welcome {
+        font-size: 24px;
+    }
+    
+    .about-card {
+        padding: 20px;
+    }
+    
+    .about-card-title {
+        font-size: 20px;
+    }
+    
+    .about-project {
+        padding: 25px 20px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .comment-item {
+        flex-direction: column;
+    }
+    
+    .comment-avatar {
+        align-self: flex-start;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- 返回上一页按钮 -->
+<div class="back-to-home">
+    <a href="javascript:void(0)" onclick="history.back()" class="btn-back-home">
+        <i class="bi bi-arrow-left"></i>
+        <span>返回上一页</span>
+    </a>
+</div>
+
+<div class="about-wrapper">
+    <!-- 页头 -->
+    <div class="about-header">
+        <h1 class="about-welcome">{{ about_info.welcome_text|default:"嘿 OωO 欢迎来到这里！" }}</h1>
+        {% if about_info.introduction %}
+        <p class="about-intro">{{ about_info.introduction|linebreaksbr }}</p>
+        {% endif %}
+    </div>
+    
+    <!-- 章节卡片 -->
+    {% if about_sections %}
+    <div class="about-sections">
+        {% for section in about_sections %}
+        <div class="about-card">
+            <div class="about-card-header">
+                <div class="about-card-icon">
+                    {% if section.icon_image %}
+                        <img src="{{ section.icon_image.url }}" alt="{{ section.title }}">
+                    {% elif 'bi-' in section.icon %}
+                        <i class="bi {{ section.icon }}"></i>
+                    {% else %}
+                        <i class="{{ section.icon }}"></i>
+                    {% endif %}
+                </div>
+                <h2 class="about-card-title">{{ section.title }}</h2>
+            </div>
+            <div class="about-card-content">
+                {{ section.content|safe }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- 关于项目/博客 -->
+    {% if about_info.about_project %}
+    <div class="about-project">
+        <h2>{{ about_info.project_title|default:"关于博客" }}</h2>
+        <p>{{ about_info.about_project|linebreaksbr }}</p>
+    </div>
+    {% endif %}
+    
+    <!-- 页脚祝福 -->
+    {% if about_info.footer_blessing %}
+    <div class="about-footer">
+        <p class="about-blessing">{{ about_info.footer_blessing }}</p>
+    </div>
+    {% endif %}
+    
+    <!-- 评论区 -->
+    <div class="comments-section">
+        <div class="comments-header">
+            <h2>
+                <i class="bi bi-chat-heart"></i>
+                {% if comment_count %}已有 {{ comment_count }} 条评论{% else %}评论{% endif %}
+            </h2>
+        </div>
+        
+        <!-- 评论表单 -->
+        <div class="comment-form-wrapper">
+            <form method="post" class="comment-form">
+                {% csrf_token %}
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.nickname }}
+                        {% if form.nickname.errors %}
+                        <div class="error-message">{{ form.nickname.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <div class="error-message">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        {{ form.website }}
+                        {% if form.website.errors %}
+                        <div class="error-message">{{ form.website.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    {{ form.content }}
+                    {% if form.content.errors %}
+                    <div class="error-message">{{ form.content.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                {{ form.parent }}
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-send"></i> 发表评论
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- 评论列表 -->
+        {% if comments %}
+        <div class="comments-list">
+            {% for comment in comments %}
+            <div class="comment-item">
+                <div class="comment-avatar">
+                    {% if comment.avatar %}
+                        <img src="{{ comment.avatar }}" alt="{{ comment.nickname }}">
+                    {% else %}
+                        <div class="default-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="comment-body">
+                    <div class="comment-header">
+                        <span class="comment-nickname">{{ comment.nickname }}</span>
+                        <span class="comment-date">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
+                    </div>
+                    
+                    <div class="comment-content">
+                        {{ comment.content|linebreaksbr }}
+                    </div>
+                    
+                    <div class="comment-actions">
+                        <button class="btn-reply" onclick="replyToComment({{ comment.id }}, '{{ comment.nickname }}')">
+                            <i class="bi bi-reply"></i> 回复
+                        </button>
+                    </div>
+                    
+                    <!-- 回复列表 -->
+                    {% if comment.replies.all %}
+                    <div class="comment-replies">
+                        {% for reply in comment.replies.all %}
+                        <div class="reply-item">
+                            <div class="comment-header">
+                                <span class="comment-nickname">{{ reply.nickname }}</span>
+                                <span class="comment-date">{{ reply.created_at|date:"Y-m-d H:i" }}</span>
+                            </div>
+                            <div class="comment-content">
+                                {{ reply.content|linebreaksbr }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function replyToComment(commentId, nickname) {
+    const parentInput = document.querySelector('input[name="parent"]');
+    const contentTextarea = document.querySelector('textarea[name="content"]');
+    
+    if (parentInput) {
+        parentInput.value = commentId;
+        contentTextarea.placeholder = `回复 @${nickname}：`;
+        contentTextarea.focus();
+        
+        // 滚动到表单
+        document.querySelector('.comment-form-wrapper').scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }
+}
+</script>
+{% endblock %}

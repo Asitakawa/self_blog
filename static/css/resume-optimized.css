@@ -1,0 +1,457 @@
+/* ===================================
+   个人简历页面样式 - 优化版
+   =================================== */
+
+/* 返回首页按钮 */
+.back-to-home {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1001;
+}
+
+.btn-back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 25px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    color: #2d3748;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-back-home:hover {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(161, 196, 253, 0.4);
+    border-color: #a1c4fd;
+}
+
+.btn-back-home i {
+    font-size: 1.2rem;
+}
+
+/* 全局动画 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* 内容包装器 - 半透明背景 */
+.content-wrapper {
+    position: relative;
+    z-index: 10;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 50px;
+    padding: 50px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    animation: fadeInUp 0.8s ease-out;
+    width: 90%;
+    max-width: 1400px;
+    margin: 20px auto;
+}
+
+/* 个人信息头部优化 */
+#profile .card {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(161, 196, 253, 0.3);
+    transition: transform 0.3s ease;
+}
+
+#profile .card:hover {
+    transform: translateY(-5px);
+}
+
+#profile .card-body {
+    color: #1a202c;
+    padding: 50px !important;
+}
+
+#profile h1 {
+    font-weight: 700;
+    color: #1a202c;
+    font-size: 3rem;
+}
+
+#profile .lead, #profile p {
+    color: #2d3748;
+}
+
+#profile .avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+#profile .avatar-container::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    animation: pulse 2s infinite;
+}
+
+/* 个人标签优化 */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* 区块标题优化 */
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2d3748;
+    position: relative;
+    padding-bottom: 15px;
+    margin-bottom: 35px;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
+    border-radius: 2px;
+}
+
+.section-title i {
+    margin-right: 12px;
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 卡片优化 */
+.card {
+    border: none;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.card-body {
+    padding: 30px;
+}
+
+.card-title {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1.25rem;
+}
+
+.card-subtitle {
+    color: #718096;
+    font-size: 0.95rem;
+}
+
+/* 徽章优化 */
+.badge.bg-primary {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%) !important;
+}
+
+.badge.bg-success {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%) !important;
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%) !important;
+}
+
+/* 实习经历卡片 */
+.experience-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.experience-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.experience-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.experience-card:hover .experience-image img {
+    transform: scale(1.05);
+}
+
+.experience-desc {
+    line-height: 1.8;
+}
+
+/* 项目卡片 */
+.project-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.project-image {
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-image img {
+    transform: scale(1.05);
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* 进度条优化 */
+.progress {
+    height: 10px;
+    border-radius: 10px;
+    background-color: #edf2f7;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
+    border-radius: 10px;
+    transition: width 1s ease-in-out;
+}
+
+/* 技能卡片 */
+.skill-category-title {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.skill-item {
+    margin-bottom: 20px;
+}
+
+.skill-item:last-child {
+    margin-bottom: 0;
+}
+
+.skill-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.skill-name {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.skill-level {
+    color: #718096;
+    font-size: 0.9rem;
+}
+
+.skill-desc {
+    display: block;
+    margin-top: 4px;
+}
+
+/* 教育经历图片容器 */
+.education-image-container,
+.activity-image {
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px 0 0 12px;
+}
+
+.education-image-container img,
+.activity-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .education-image-container img,
+.card:hover .activity-image img {
+    transform: scale(1.05);
+}
+
+/* 兴趣爱好卡片 */
+.hobby-card {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.hobby-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.hobby-image,
+.hobby-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.hobby-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hobby-icon i {
+    font-size: 2.5rem;
+    color: #dc3545;
+}
+
+.hobby-name {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.hobby-desc {
+    font-size: 0.85rem;
+}
+
+/* 成就框 */
+.achievement-box {
+    background: linear-gradient(135deg, #fff9e6 0%, #fff3cc 100%);
+    padding: 12px 15px;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+    margin-top: 15px;
+}
+
+.achievement-box i {
+    margin-right: 8px;
+}
+
+/* 动画延迟 */
+section:nth-child(1) { animation-delay: 0.1s; }
+section:nth-child(2) { animation-delay: 0.2s; }
+section:nth-child(3) { animation-delay: 0.3s; }
+section:nth-child(4) { animation-delay: 0.4s; }
+section:nth-child(5) { animation-delay: 0.5s; }
+section:nth-child(6) { animation-delay: 0.6s; }
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .content-wrapper {
+        padding: 25px;
+    }
+    
+    #profile .card-body {
+        padding: 25px !important;
+    }
+    
+    #profile h1 {
+        font-size: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+    }
+}

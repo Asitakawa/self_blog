@@ -1,0 +1,134 @@
+{% load static %}
+<!-- 侧边栏导航 - 圆形悬浮球设计 -->
+<div class="sidebar-float" id="sidebarFloat">
+    <!-- 主按钮（球体） -->
+    <button class="sidebar-main-btn" id="sidebarMainBtn">
+        <i class="bi bi-grid-fill"></i>
+    </button>
+    
+    <!-- 展开的菜单项 -->
+    <div class="sidebar-menu-wrapper">
+        <!-- 页面跳转菜单 -->
+        <div class="sidebar-menu-items page-navigation">
+            <!-- 首页按钮 -->
+            <a href="/" class="sidebar-item {% if request.path == '/' %}active{% endif %}" data-section="home" title="首页">
+                <i class="bi bi-house-door"></i>
+                <span class="item-label">首页</span>
+            </a>
+            
+            <!-- 关于我按钮 -->
+            <a href="/about/" class="sidebar-item {% if '/about/' in request.path %}active{% endif %}" title="关于我">
+                <i class="bi bi-person-heart"></i>
+                <span class="item-label">关于我</span>
+            </a>
+            
+            <!-- 查看简历按钮 -->
+            <a href="/resume/" class="sidebar-item {% if '/resume/' in request.path %}active{% endif %}" title="查看完整简历">
+                <i class="bi bi-file-earmark-text"></i>
+                <span class="item-label">完整简历</span>
+            </a>
+        </div>
+        
+        <!-- GIF动图容器 - 移到菜单下方 -->
+        <div class="sidebar-gif-container">
+            <img src="{% static 'images/Doctor_dance.gif' %}" alt="Dancing Doctor">
+        </div>
+        
+        <!-- 页面内模块跳转菜单 -->
+        <div class="sidebar-menu-items section-navigation">
+            {% if request.path == '/' %}
+                <!-- 首页模式：显示首页的模块 -->
+                {% if social_links %}
+                <a href="#social" class="sidebar-item" data-section="social" title="社交链接">
+                    <i class="bi bi-share"></i>
+                    <span class="item-label">社交链接</span>
+                </a>
+                {% endif %}
+                
+                {% if projects %}
+                <a href="#projects" class="sidebar-item" data-section="projects" title="个人项目">
+                    <i class="bi bi-folder"></i>
+                    <span class="item-label">个人项目</span>
+                </a>
+                {% endif %}
+                
+                {% if skills %}
+                <a href="#skills" class="sidebar-item" data-section="skills" title="专业技能">
+                    <i class="bi bi-tools"></i>
+                    <span class="item-label">专业技能</span>
+                </a>
+                {% endif %}
+                
+                {% if hobbies %}
+                <a href="#hobbies" class="sidebar-item" data-section="hobbies" title="兴趣爱好">
+                    <i class="bi bi-heart"></i>
+                    <span class="item-label">兴趣爱好</span>
+                </a>
+                {% endif %}
+                
+                {% if contact_info %}
+                <a href="#contact" class="sidebar-item" data-section="contact" title="联系我">
+                    <i class="bi bi-chat-dots"></i>
+                    <span class="item-label">联系我</span>
+                </a>
+                {% endif %}
+                
+            {% elif '/resume/' in request.path %}
+                <!-- 简历模式：显示简历的模块 -->
+                {% if profile %}
+                <a href="#profile" class="sidebar-item" data-section="profile" title="个人信息">
+                    <i class="bi bi-person-circle"></i>
+                    <span class="item-label">个人信息</span>
+                </a>
+                {% endif %}
+                
+                {% if educations %}
+                <a href="#educations" class="sidebar-item" data-section="educations" title="教育经历">
+                    <i class="bi bi-mortarboard"></i>
+                    <span class="item-label">教育经历</span>
+                </a>
+                {% endif %}
+                
+                {% if internships %}
+                <a href="#internships" class="sidebar-item" data-section="internships" title="工作经历">
+                    <i class="bi bi-briefcase"></i>
+                    <span class="item-label">工作经历</span>
+                </a>
+                {% endif %}
+                
+                {% if projects %}
+                <a href="#projects" class="sidebar-item" data-section="projects" title="项目经历">
+                    <i class="bi bi-folder"></i>
+                    <span class="item-label">项目经历</span>
+                </a>
+                {% endif %}
+                
+                {% if skills %}
+                <a href="#skills" class="sidebar-item" data-section="skills" title="专业技能">
+                    <i class="bi bi-tools"></i>
+                    <span class="item-label">专业技能</span>
+                </a>
+                {% endif %}
+                
+                {% if campus_activities %}
+                <a href="#activities" class="sidebar-item" data-section="activities" title="校园实践">
+                    <i class="bi bi-trophy"></i>
+                    <span class="item-label">校园实践</span>
+                </a>
+                {% endif %}
+                
+                {% if hobbies %}
+                <a href="#hobbies" class="sidebar-item" data-section="hobbies" title="兴趣爱好">
+                    <i class="bi bi-heart"></i>
+                    <span class="item-label">兴趣爱好</span>
+                </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- 返回顶部按钮 -->
+    <button class="sidebar-back-top" id="backToTop" title="返回顶部">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+</div>
