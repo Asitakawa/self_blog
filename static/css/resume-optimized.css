@@ -70,9 +70,8 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     animation: fadeInUp 0.8s ease-out;
-    width: 80%;
+    width: 90%;
     max-width: 950px;
-    min-width: 700px;
     margin: 25px auto;
 }
 
@@ -493,28 +492,68 @@ section:nth-child(6) { animation-delay: 0.6s; }
 /* 响应式调整 */
 @media (max-width: 768px) {
     .content-wrapper {
-        padding: 20px;
+        padding: 20px 15px;
         width: 95%;
+        border-radius: 30px;
+        margin: 15px auto;
     }
     
     #profile .card-body {
-        padding: 20px !important;
+        padding: 20px 15px !important;
+    }
+    
+    #profile .profile-avatar {
+        width: 100px !important;
+        height: 100px !important;
     }
     
     #profile h1 {
-        font-size: 2rem !important;
+        font-size: 1.8rem !important;
     }
     
     #profile .lead, #profile p {
-        font-size: 0.85rem !important;
+        font-size: 0.9rem !important;
     }
     
     .section-title {
         font-size: 1.4rem !important;
+        margin-bottom: 20px !important;
     }
     
     .card-title {
-        font-size: 1rem !important;
+        font-size: 1.1rem !important;
+    }
+    
+    .card-subtitle {
+        font-size: 0.9rem !important;
+    }
+    
+    .card-body {
+        padding: 20px 15px !important;
+    }
+    
+    .experience-image,
+    .project-image {
+        height: 140px;
+    }
+    
+    .education-image-container,
+    .activity-image {
+        min-height: 120px;
+        max-height: 180px;
+    }
+    
+    .tech-tags .badge {
+        font-size: 0.75rem;
+        padding: 0.35em 0.6em;
+    }
+    
+    .skill-category-title {
+        font-size: 0.95rem;
+    }
+    
+    .skill-name {
+        font-size: 0.9rem;
     }
     
     .back-to-home {
@@ -524,7 +563,62 @@ section:nth-child(6) { animation-delay: 0.6s; }
     
     .btn-back-home {
         padding: 8px 16px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+    }
+    
+    .hobby-card {
+        padding: 12px;
+    }
+    
+    .hobby-image,
+    .hobby-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .hobby-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .achievement-box {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+    .content-wrapper {
+        padding: 15px 10px;
+        width: 98%;
+        border-radius: 20px;
+    }
+    
+    #profile h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    .section-title {
+        font-size: 1.2rem !important;
+    }
+    
+    .card-title {
+        font-size: 1rem !important;
+    }
+    
+    .experience-image,
+    .project-image {
+        height: 120px;
+    }
+    
+    .row {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    
+    .row > [class*="col-"] {
+        padding-left: 10px;
+        padding-right: 10px;
     }
 }
 

@@ -12,9 +12,8 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     animation: fadeInUp 0.8s ease-out;
-    width: 80%;
+    width: 90%;
     max-width: 950px;
-    min-width: 700px;
     margin: 25px auto;
 }
 
@@ -504,42 +503,173 @@
 /* 响应式设计 */
 @media (max-width: 768px) {
     .home-wrapper {
-        padding: 30px 20px;
-        border-radius: 30px;
+        padding: 20px 15px;
+        border-radius: 25px;
+        width: 95%;
+        margin: 15px auto;
     }
     
     .hero-section {
-        padding: 50px 20px;
-    }
-    
-    .hero-name {
-        font-size: 2.5rem;
-    }
-    
-    .hero-title {
-        font-size: 1.2rem;
-    }
-    
-    .hero-description {
-        font-size: 1rem;
+        padding: 30px 15px;
+        border-radius: 20px;
     }
     
     .hero-avatar,
     .hero-avatar-placeholder {
-        width: 140px;
-        height: 140px;
+        width: 90px;
+        height: 90px;
+        font-size: 2.5rem;
+    }
+    
+    .hero-name {
+        font-size: 1.8rem;
+    }
+    
+    .hero-title {
+        font-size: 1rem;
+    }
+    
+    .hero-description {
+        font-size: 0.9rem;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .btn-hero-primary,
+    .btn-hero-secondary {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
     }
     
     .section-title {
-        font-size: 2rem;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
     }
     
     .social-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .social-card {
+        padding: 20px 15px;
+    }
+    
+    .social-card i {
+        font-size: 2rem;
+    }
+    
+    .social-icon-image {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .social-name {
+        font-size: 1rem;
+    }
+    
+    .social-stats {
+        font-size: 0.8rem;
     }
     
     .projects-grid,
     .skills-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .project-card-home {
+        padding: 25px 20px;
+    }
+    
+    .project-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+    
+    .project-name {
+        font-size: 1.2rem;
+    }
+    
+    .skill-category-card {
+        padding: 25px 20px;
+    }
+    
+    .hobbies-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+    
+    .hobby-card-home {
+        padding: 20px 15px;
+    }
+    
+    .hobby-image-home,
+    .hobby-icon-home {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .hobby-icon-home i {
+        font-size: 2rem;
+    }
+    
+    .hobby-card-home h4 {
+        font-size: 1rem;
+    }
+    
+    .hobby-card-home p {
+        font-size: 0.85rem;
+    }
+    
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .contact-card {
+        padding: 30px 20px;
+    }
+    
+    .contact-card i {
+        font-size: 2.5rem;
+    }
+    
+    .contact-icon-image {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 480px) {
+    .home-wrapper {
+        padding: 15px 10px;
+        border-radius: 20px;
+        width: 98%;
+    }
+    
+    .hero-section {
+        padding: 25px 10px;
+    }
+    
+    .hero-avatar,
+    .hero-avatar-placeholder {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .hero-name {
+        font-size: 1.6rem;
+    }
+    
+    .social-grid {
         grid-template-columns: 1fr;
     }
     
