@@ -2,8 +2,8 @@
 
 /* 全局样式 */
 html {
-    font-size: 16px; /* 锁定基准字号 */
-    -webkit-text-size-adjust: 100%; /* 禁止移动端自动调整 */
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -46,51 +46,4 @@ body {
 main {
     position: relative;
     z-index: 1;
-}
-
-/* 卡片悬停效果 */
-.card {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
-}
-
-/* 导航栏样式优化 */
-.navbar-brand {
-    font-weight: bold;
-    font-size: 1.5rem;
-}
-
-/* 页脚样式 */
-footer {
-    border-top: 1px solid #dee2e6;
-}
-
-/* 按钮动画 */
-.btn {
-    transition: all 0.3s ease;
-}
-
-.btn:hover {
-    transform: scale(1.05);
-}
-
-/* 文章卡片图片占位符 */
-.card-img-top {
-    height: 200px;
-    object-fit: cover;
-}
-
-/* 响应式调整 */
-@media (max-width: 768px) {
-    .display-5 {
-        font-size: 2rem;
-    }
-    
-    .p-5 {
-        padding: 2rem !important;
-    }
 }
