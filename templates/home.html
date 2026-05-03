@@ -51,7 +51,7 @@
                     <i class="bi bi-person-circle"></i> {% if home_profile %}{{ home_profile.resume_button_text }}{% else %}查看简历{% endif %}
                 </a>
                 <a href="/about/" class="btn-hero-secondary">
-                    <i class="bi bi-person-heart"></i> 关于我
+                    <i class="bi bi-person-heart"></i> 关于我：
                 </a>
                 <a href="{% if home_profile %}{{ home_profile.contact_link }}{% else %}#contact{% endif %}" class="btn-hero-secondary">
                     <i class="bi bi-envelope"></i> {% if home_profile %}{{ home_profile.contact_button_text }}{% else %}联系我{% endif %}
