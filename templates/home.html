@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}仇浩云 - 个人主页{% endblock %}
+{% block title %}个人主页{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
@@ -27,7 +27,7 @@
             <h1 class="hero-name">
                 {% if home_profile %}{{ home_profile.name }}
                 {% elif profile %}{{ profile.name }}
-                {% else %}仇浩云{% endif %}
+                {% else %}A{% endif %}
             </h1>
             
             {% if home_profile and home_profile.title %}
