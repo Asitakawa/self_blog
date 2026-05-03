@@ -70,11 +70,14 @@
             {% for social in social_links %}
             <a href="{{ social.url }}" target="_blank" class="social-card">
                 {% if social.icon_image %}
-                    <img src="{{ social.icon_image.url }}" alt="{{ social.name }}" class="social-icon-image">
+                    <img src="{{ social.icon_image.url }}" alt="{{ social.name }}" class="social-icon-image" onerror="this.style.display='none'; this.parentElement.querySelector('.social-icon-fallback').style.display='block';">
+                    <i class="social-icon-fallback" style="display:none;"></i>
                 {% elif 'bi-' in social.icon %}
                     <i class="bi {{ social.icon }}"></i>
-                {% else %}
+                {% elif social.icon %}
                     <i class="{{ social.icon }}"></i>
+                {% else %}
+                    <i class="bi bi-link-45deg"></i>
                 {% endif %}
                 <span class="social-name">{{ social.name }}</span>
                 {% if social.description %}
