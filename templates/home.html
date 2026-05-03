@@ -51,7 +51,7 @@
                     <i class="bi bi-person-circle"></i> {% if home_profile %}{{ home_profile.resume_button_text }}{% else %}查看简历{% endif %}
                 </a>
                 <a href="/about/" class="btn-hero-secondary">
-                    <i class="bi bi-person-heart"></i> 关于我：
+                    <i class="bi bi-person-heart"></i> 关于我
                 </a>
                 <a href="{% if home_profile %}{{ home_profile.contact_link }}{% else %}#contact{% endif %}" class="btn-hero-secondary">
                     <i class="bi bi-envelope"></i> {% if home_profile %}{{ home_profile.contact_button_text }}{% else %}联系我{% endif %}
@@ -171,6 +171,34 @@
                 {% if hobby.description %}
                 <p>{{ hobby.description }}</p>
                 {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- 日常分享区域 -->
+    {% if exhibitions %}
+    <section class="exhibitions-section">
+        <h2 class="section-title">
+            <i class="bi bi-camera"></i> {{ home_config.section_title_exhibitions|default:"日常分享" }}
+        </h2>
+        <div class="exhibitions-grid">
+            {% for exhibition in exhibitions %}
+            <div class="exhibition-card">
+                {% if exhibition.image %}
+                <div class="exhibition-image">
+                    <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
+                </div>
+                {% endif %}
+                <div class="exhibition-content">
+                    <h3 class="exhibition-title">{{ exhibition.title }}</h3>
+                    {% if exhibition.url %}
+                    <a href="{{ exhibition.url }}" target="_blank" class="exhibition-link">
+                        <i class="bi bi-box-arrow-up-right"></i> 查看详情
+                    </a>
+                    {% endif %}
+                </div>
             </div>
             {% endfor %}
         </div>

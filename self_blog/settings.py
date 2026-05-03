@@ -25,7 +25,20 @@ SECRET_KEY = 'django-insecure-fc60*i1pb!=!(+5qdwi3a=s$6usiv1a^)_xm25q#mb#v#*65l+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'www.asitakawa.top',
+    'asitakawa.top',
+    'localhost',
+    '127.0.0.1',
+]
+
+# CSRF信任源 - 解决CSRF验证失败问题
+CSRF_TRUSTED_ORIGINS = [
+    'http://www.asitakawa.top',
+    'https://www.asitakawa.top',
+    'http://asitakawa.top',
+    'https://asitakawa.top',
+]
 
 
 # Application definition
@@ -129,3 +142,24 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Media files (uploaded files)
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Cache Configuration - 全局缓存设置
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 86400,  # 缓存24小时
+    }
+}
+
+# 静态文件缓存控制 - 让浏览器缓存静态资源
+if not DEBUG:
+    # 生产环境：静态文件永久缓存
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+    
+    # 添加缓存头部
+    MIDDLEWARE.insert(0, 'django.middleware.cache.UpdateCacheMiddleware')
+    MIDDLEWARE.append('django.middleware.cache.FetchFromCacheMiddleware')
+    CACHE_MIDDLEWARE_ALIAS = 'default'
+    CACHE_MIDDLEWARE_SECONDS = 86400  # 24小时
+    CACHE_MIDDLEWARE_KEY_PREFIX = 'self_blog'

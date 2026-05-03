@@ -6,6 +6,13 @@ from .models import (
     AboutPageInfo, AboutSection, Comment
 )
 
+# 自定义后台管理标题
+admin.site.site_header = '个人简历管理系统'
+admin.site.site_title = '简历后台管理'
+admin.site.index_title = '欢迎使用简历管理系统'
+
+
+# ==================== 简历内容管理 ====================
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
@@ -70,6 +77,47 @@ class TagAdmin(admin.ModelAdmin):
 
 # ==================== 首页内容管理 ====================
 
+@admin.register(HomePageProfile)
+class HomePageProfileAdmin(admin.ModelAdmin):
+    list_display = ['name', 'title', 'is_active', 'updated_at']
+    list_filter = ['is_active']
+    search_fields = ['name', 'title']
+    readonly_fields = ['updated_at']
+    
+    fieldsets = (
+        ('基本信息', {
+            'fields': ('name', 'title', 'description', 'avatar')
+        }),
+        ('按钮配置', {
+            'fields': ('resume_link', 'contact_link', 'resume_button_text', 'contact_button_text')
+        }),
+        ('状态', {
+            'fields': ('is_active', 'updated_at')
+        }),
+    )
+
+    def has_add_permission(self, request):
+        if HomePageProfile.objects.exists():
+            return False
+        return True
+
+
+@admin.register(HomeConfig)
+class HomeConfigAdmin(admin.ModelAdmin):
+    fields = [
+        'hero_title', 'hero_description',
+        'section_title_projects', 'section_title_skills',
+        'section_title_music', 'section_title_exhibitions',
+        'updated_at'
+    ]
+    readonly_fields = ['updated_at']
+
+    def has_add_permission(self, request):
+        if HomeConfig.objects.exists():
+            return False
+        return True
+
+
 @admin.register(SocialLink)
 class SocialLinkAdmin(admin.ModelAdmin):
     list_display = ['name', 'url', 'order', 'is_active', 'created_at']
@@ -94,22 +142,6 @@ class HomePageSkillAdmin(admin.ModelAdmin):
     list_editable = ['order', 'is_active']
 
 
-@admin.register(MusicCreation)
-class MusicCreationAdmin(admin.ModelAdmin):
-    list_display = ['title', 'original_author', 'views', 'order', 'is_active', 'created_at']
-    list_filter = ['is_active']
-    search_fields = ['title', 'original_author']
-    list_editable = ['order', 'is_active']
-
-
-@admin.register(ExhibitionDiary)
-class ExhibitionDiaryAdmin(admin.ModelAdmin):
-    list_display = ['title', 'url', 'order', 'is_active', 'created_at']
-    list_filter = ['is_active']
-    search_fields = ['title']
-    list_editable = ['order', 'is_active']
-
-
 @admin.register(ContactInfo)
 class ContactInfoAdmin(admin.ModelAdmin):
     list_display = ['contact_type', 'value', 'url', 'order', 'is_active', 'created_at']
@@ -118,48 +150,7 @@ class ContactInfoAdmin(admin.ModelAdmin):
     list_editable = ['order', 'is_active']
 
 
-@admin.register(HomeConfig)
-class HomeConfigAdmin(admin.ModelAdmin):
-    fields = [
-        'hero_title', 'hero_description',
-        'section_title_projects', 'section_title_skills',
-        'section_title_music', 'section_title_exhibitions',
-        'updated_at'
-    ]
-    readonly_fields = ['updated_at']
-
-    def has_add_permission(self, request):
-        # 只允许有一条配置记录
-        if HomeConfig.objects.exists():
-            return False
-        return True
-
-
-@admin.register(HomePageProfile)
-class HomePageProfileAdmin(admin.ModelAdmin):
-    list_display = ['name', 'title', 'is_active', 'updated_at']
-    list_filter = ['is_active']
-    search_fields = ['name', 'title']
-    readonly_fields = ['updated_at']
-    
-    fieldsets = (
-        ('基本信息', {
-            'fields': ('name', 'title', 'description', 'avatar')
-        }),
-        ('按钮配置', {
-            'fields': ('resume_link', 'contact_link', 'resume_button_text', 'contact_button_text')
-        }),
-        ('状态', {
-            'fields': ('is_active', 'updated_at')
-        }),
-    )
-
-    def has_add_permission(self, request):
-        # 只允许有一条首页个人介绍记录
-        if HomePageProfile.objects.exists():
-            return False
-        return True
-
+# ==================== 关于页面管理 ====================
 
 @admin.register(AboutPageInfo)
 class AboutPageInfoAdmin(admin.ModelAdmin):
@@ -180,7 +171,6 @@ class AboutPageInfoAdmin(admin.ModelAdmin):
     readonly_fields = ['updated_at']
 
     def has_add_permission(self, request):
-        # 只允许有一条关于页面信息记录
         if AboutPageInfo.objects.exists():
             return False
         return True
@@ -202,6 +192,26 @@ class AboutSectionAdmin(admin.ModelAdmin):
         }),
     )
 
+
+# ==================== 创意作品管理 ====================
+
+@admin.register(MusicCreation)
+class MusicCreationAdmin(admin.ModelAdmin):
+    list_display = ['title', 'original_author', 'views', 'order', 'is_active', 'created_at']
+    list_filter = ['is_active']
+    search_fields = ['title', 'original_author']
+    list_editable = ['order', 'is_active']
+
+
+@admin.register(ExhibitionDiary)
+class ExhibitionDiaryAdmin(admin.ModelAdmin):
+    list_display = ['title', 'url', 'order', 'is_active', 'created_at']
+    list_filter = ['is_active']
+    search_fields = ['title']
+    list_editable = ['order', 'is_active']
+
+
+# ==================== 用户互动管理 ====================
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
@@ -243,3 +253,38 @@ class CommentAdmin(admin.ModelAdmin):
     def show_comments(self, request, queryset):
         queryset.update(is_hidden=False)
     show_comments.short_description = '显示选中的评论'
+
+
+# ==================== 后台分类配置 ====================
+# 通过自定义 verbose_name 来实现分组显示
+
+# 简历内容管理
+Profile._meta.verbose_name_plural = '简历内容管理 / 个人基本信息'
+Education._meta.verbose_name_plural = '简历内容管理 / 教育经历'
+Internship._meta.verbose_name_plural = '简历内容管理 / 实习/工作经历'
+Project._meta.verbose_name_plural = '简历内容管理 / 项目经历'
+Skill._meta.verbose_name_plural = '简历内容管理 / 专业技能'
+CampusActivity._meta.verbose_name_plural = '简历内容管理 / 校园实践'
+Hobby._meta.verbose_name_plural = '简历内容管理 / 兴趣爱好'
+Tag._meta.verbose_name_plural = '简历内容管理 / 个人标签'
+
+# 首页内容管理
+HomePageProfile._meta.verbose_name_plural = '首页内容管理 / 首页个人介绍'
+HomeConfig._meta.verbose_name_plural = '首页内容管理 / 首页配置'
+SocialLink._meta.verbose_name_plural = '首页内容管理 / 社交链接'
+HomePageProject._meta.verbose_name_plural = '首页内容管理 / 首页项目'
+HomePageSkill._meta.verbose_name_plural = '首页内容管理 / 首页技能分类'
+ContactInfo._meta.verbose_name_plural = '首页内容管理 / 联系信息'
+
+# 关于页面管理
+AboutPageInfo._meta.verbose_name_plural = '关于页面管理 / 关于页面信息'
+AboutSection._meta.verbose_name_plural = '关于页面管理 / 关于页面章节'
+
+# 校园生活
+MusicCreation._meta.verbose_name_plural = '校园生活'
+
+# 日常分享
+ExhibitionDiary._meta.verbose_name_plural = '日常分享'
+
+# 用户互动管理
+Comment._meta.verbose_name_plural = '用户互动管理 / 评论'

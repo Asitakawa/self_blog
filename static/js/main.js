@@ -1,8 +1,14 @@
 // 主要的JavaScript文件
 
+// 图片缓存对象 - 存储已加载的图片
+const imageCache = {};
+
 // 页面加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
     console.log('博客页面已加载');
+    
+    // 预加载所有图片
+    preloadAllImages();
     
     // 背景图片滚动切换功能
     initBackgroundSwitch();
@@ -10,6 +16,39 @@ document.addEventListener('DOMContentLoaded', function() {
     // 侧边栏导航功能
     initSidebarNav();
 });
+
+// 预加载所有图片并缓存
+function preloadAllImages() {
+    // 获取所有图片元素
+    const images = document.querySelectorAll('img');
+    
+    images.forEach(img => {
+        const src = img.src || img.getAttribute('data-src');
+        if (src && !imageCache[src]) {
+            const cachedImg = new Image();
+            cachedImg.onload = function() {
+                imageCache[src] = cachedImg;
+            };
+            cachedImg.src = src;
+        }
+    });
+    
+    // 获取所有背景图片
+    const backgrounds = document.querySelectorAll('[style*="background-image"]');
+    backgrounds.forEach(bg => {
+        const style = bg.style.backgroundImage;
+        const match = style.match(/url\(["']?([^"')]+)["']?\)/);
+        if (match && match[1] && !imageCache[match[1]]) {
+            const cachedImg = new Image();
+            cachedImg.onload = function() {
+                imageCache[match[1]] = cachedImg;
+            };
+            cachedImg.src = match[1];
+        }
+    });
+    
+    console.log(`已缓存 ${Object.keys(imageCache).length} 张图片`);
+}
 
 // 侧边栏导航功能
 function initSidebarNav() {

@@ -254,19 +254,19 @@ class HomePageSkill(models.Model):
 
 
 class MusicCreation(models.Model):
-    """音乐创作"""
+    """校园生活"""
     title = models.CharField(max_length=200, verbose_name='作品名称')
     original_author = models.CharField(max_length=100, blank=True, verbose_name='原作者')
     version = models.CharField(max_length=100, blank=True, verbose_name='版本')
-    url = models.URLField(verbose_name='作品链接')
+    url = models.URLField(blank=True, verbose_name='作品链接')
     views = models.IntegerField(default=0, verbose_name='播放量')
     order = models.IntegerField(default=0, verbose_name='排序')
     is_active = models.BooleanField(default=True, verbose_name='是否启用')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
 
     class Meta:
-        verbose_name = '音乐创作'
-        verbose_name_plural = '音乐创作'
+        verbose_name = '校园生活'
+        verbose_name_plural = '校园生活'
         ordering = ['order']
 
     def __str__(self):
@@ -274,17 +274,17 @@ class MusicCreation(models.Model):
 
 
 class ExhibitionDiary(models.Model):
-    """逛展日记"""
+    """日常分享"""
     title = models.CharField(max_length=200, verbose_name='展览名称')
-    url = models.URLField(verbose_name='链接地址')
+    url = models.URLField(blank=True, verbose_name='链接地址')
     image = models.ImageField(upload_to='exhibitions/', blank=True, null=True, verbose_name='配图')
     order = models.IntegerField(default=0, verbose_name='排序')
     is_active = models.BooleanField(default=True, verbose_name='是否启用')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
 
     class Meta:
-        verbose_name = '逛展日记'
-        verbose_name_plural = '逛展日记'
+        verbose_name = '日常分享'
+        verbose_name_plural = '日常分享'
         ordering = ['order']
 
     def __str__(self):
@@ -334,8 +334,8 @@ class HomeConfig(models.Model):
     hero_description = models.TextField(blank=True, verbose_name='Hero描述')
     section_title_projects = models.CharField(max_length=100, default='个人项目', verbose_name='项目区块标题')
     section_title_skills = models.CharField(max_length=100, default='专业技能', verbose_name='技能区块标题')
-    section_title_music = models.CharField(max_length=100, default='音乐创作', verbose_name='音乐区块标题')
-    section_title_exhibitions = models.CharField(max_length=100, default='逛展日记', verbose_name='逛展区块标题')
+    section_title_music = models.CharField(max_length=100, default='校园生活', verbose_name='音乐区块标题')
+    section_title_exhibitions = models.CharField(max_length=100, default='日常分享', verbose_name='逛展区块标题')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:

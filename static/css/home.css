@@ -421,6 +421,75 @@
     line-height: 1.5;
 }
 
+/* 日常分享区域 */
+.exhibitions-section {
+    margin-bottom: 50px;
+}
+
+.exhibitions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.exhibition-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.exhibition-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(161, 196, 253, 0.3);
+}
+
+.exhibition-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.exhibition-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.exhibition-card:hover .exhibition-image img {
+    transform: scale(1.1);
+}
+
+.exhibition-content {
+    padding: 25px;
+}
+
+.exhibition-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+.exhibition-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #a1c4fd;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.exhibition-link:hover {
+    color: #7ba7e0;
+    gap: 12px;
+}
+
 /* 联系区域 */
 .contact-section {
     margin-bottom: 35px;
@@ -626,6 +695,23 @@
     
     .hobby-card-home p {
         font-size: 0.85rem;
+    }
+    
+    .exhibitions-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .exhibition-image {
+        height: 180px;
+    }
+    
+    .exhibition-content {
+        padding: 20px;
+    }
+    
+    .exhibition-title {
+        font-size: 1.1rem;
     }
     
     .contact-grid {
