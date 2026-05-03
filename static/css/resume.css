@@ -27,12 +27,16 @@
 .content-wrapper {
     position: relative;
     z-index: 10;
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 30px;
-    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 40px;
+    padding: 30px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     animation: fadeInUp 0.8s ease-out;
+    width: 80%;
+    max-width: 950px;
+    min-width: 700px;
+    margin: 25px auto;
 }
 
 /* 个人信息头部优化 */
@@ -51,7 +55,7 @@
 
 #profile .card-body {
     color: #1a202c;
-    padding: 40px !important;
+    padding: 30px !important;
 }
 
 #profile h1 {
@@ -95,12 +99,13 @@
 
 /* 区块标题优化 */
 section h2 {
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     color: #2d3748;
     position: relative;
-    padding-bottom: 15px;
+    padding-bottom: 12px;
     margin-bottom: 30px;
+    text-align: center;
     animation: fadeInUp 0.6s ease-out;
 }
 
@@ -108,8 +113,9 @@ section h2::after {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 0;
-    width: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
     height: 4px;
     background: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
     border-radius: 2px;
@@ -139,19 +145,19 @@ section h2 i {
 }
 
 .card-body {
-    padding: 24px;
+    padding: 20px;
 }
 
 /* 卡片标题 */
 .card-title {
     font-weight: 600;
     color: #2d3748;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
 }
 
 .card-subtitle {
     color: #718096;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 /* 徽章优化 */

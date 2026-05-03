@@ -5,27 +5,27 @@
 /* 侧边栏容器 */
 .sidebar-float {
     position: fixed;
-    left: 30px;
+    left: 22px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1000;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 11px;
 }
 
 /* 主按钮（球体） */
 .sidebar-main-btn {
-    width: 60px;
-    height: 60px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
     border: none;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(161, 196, 253, 0.4);
+    box-shadow: 0 3px 11px rgba(161, 196, 253, 0.4);
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     display: flex;
     align-items: center;
@@ -45,11 +45,11 @@
 
 /* GIF动图容器 - 现在位于菜单之间，不再是绝对定位 */
 .sidebar-gif-container {
-    width: 200px;
-    height: 200px;
-    border-radius: 16px;
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 19px rgba(0, 0, 0, 0.2);
     background: white;
     pointer-events: none; /* 让GIF不阻挡鼠标事件 */
 }
@@ -63,14 +63,14 @@
 /* 菜单项容器包装器 - 纵向排列 */
 .sidebar-menu-wrapper {
     position: absolute;
-    left: 70px;
+    left: 52px;
     top: 50%;
     transform: translateY(-50%) scale(0);
     opacity: 0;
     visibility: hidden;
     display: flex;
     flex-direction: column; /* 纵向排列：页面导航 -> GIF -> 模块导航 */
-    gap: 15px;
+    gap: 11px;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     z-index: 1020;
 }
@@ -86,7 +86,7 @@
 .sidebar-menu-items {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     position: relative;
     z-index: 1025;
 }
@@ -98,8 +98,8 @@
 
 /* 单个菜单项 */
 .sidebar-item {
-    width: 50px;
-    height: 50px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -108,10 +108,10 @@
     justify-content: center;
     color: #4a5568;
     text-decoration: none;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
     position: relative;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
 }
 
 .sidebar-item:hover {
@@ -132,9 +132,9 @@
     position: fixed !important;
     background: rgba(0, 0, 0, 0.8);
     color: white;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 0.64rem;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
@@ -146,10 +146,10 @@
 .label-tooltip::after {
     content: '';
     position: absolute;
-    left: -6px;
+    left: -5px;
     top: 50%;
     transform: translateY(-50%);
-    border-width: 6px 6px 6px 0;
+    border-width: 5px 5px 5px 0;
     border-style: solid;
     border-color: transparent rgba(0, 0, 0, 0.8) transparent transparent;
 }
@@ -162,16 +162,16 @@
 
 /* 返回顶部按钮 */
 .sidebar-back-top {
-    width: 45px;
-    height: 45px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border: none;
     color: #4a5568;
-    font-size: 1.2rem;
+    font-size: 0.9rem;
     cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
     opacity: 0;
     visibility: hidden;

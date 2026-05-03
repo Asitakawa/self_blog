@@ -28,10 +28,10 @@
                         {% if profile.avatar %}
                             <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" 
                                  class="rounded-circle img-fluid shadow" 
-                                 style="width: 180px; height: 180px; object-fit: cover;">
+                                 style="width: 150px; height: 150px; object-fit: cover;">
                         {% else %}
                             <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" 
-                                 style="width: 180px; height: 180px; font-size: 5rem;">
+                                 style="width: 150px; height: 150px; font-size: 4rem;">
                                 {{ profile.name|first }}
                             </div>
                         {% endif %}

@@ -150,23 +150,40 @@ function initBackgroundSwitch() {
     
     if (backgrounds.length === 0) return;
     
+    // 预加载所有背景图片，避免切换时闪烁
+    backgrounds.forEach(bg => {
+        const imageUrl = bg.style.backgroundImage.replace(/url\(["']?([^"')]+)["']?\)/, '$1');
+        if (imageUrl && imageUrl !== 'none') {
+            const img = new Image();
+            img.src = imageUrl;
+        }
+    });
+    
     window.addEventListener('scroll', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const scrollDiff = Math.abs(scrollTop - lastScrollTop);
         
-        // 只处理向下滚动
-        if (scrollTop > lastScrollTop && !isAnimating) {
-            // 检查是否达到切换阈值
-            if (scrollDiff >= switchThreshold) {
-                switchBackground();
-                lastScrollTop = scrollTop;
+        // 防止动画期间重复切换
+        if (isAnimating) {
+            lastScrollTop = scrollTop;
+            return;
+        }
+        
+        // 检查是否达到切换阈值
+        if (scrollDiff >= switchThreshold) {
+            // 判断滚动方向
+            if (scrollTop > lastScrollTop) {
+                // 向下滚动：切换到下一张
+                switchBackground(1);
+            } else if (scrollTop < lastScrollTop) {
+                // 向上滚动：切换到上一张
+                switchBackground(-1);
             }
-        } else {
             lastScrollTop = scrollTop;
         }
     });
     
-    function switchBackground() {
+    function switchBackground(direction) {
         if (isAnimating) return;
         
         isAnimating = true;
@@ -174,8 +191,14 @@ function initBackgroundSwitch() {
         // 移除当前背景的active类
         backgrounds[currentBg].classList.remove('active');
         
-        // 切换到下一个背景
-        currentBg = (currentBg + 1) % backgrounds.length;
+        // 根据方向切换背景
+        if (direction === 1) {
+            // 向下：前进
+            currentBg = (currentBg + 1) % backgrounds.length;
+        } else {
+            // 向上：后退
+            currentBg = (currentBg - 1 + backgrounds.length) % backgrounds.length;
+        }
         
         // 添加新的active类
         backgrounds[currentBg].classList.add('active');
