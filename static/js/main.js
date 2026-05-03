@@ -61,7 +61,13 @@ function initSidebarNav() {
             
             // 如果是外部链接（包含/但不是#开头），允许正常跳转
             if (href.includes('/') && !href.startsWith('#')) {
-                // 允许默认行为，跳转到其他页面
+                // 移动端：点击后关闭侧边栏
+                if (window.innerWidth <= 768 && sidebarFloat) {
+                    sidebarFloat.classList.remove('active');
+                    if (sidebarMainBtn) {
+                        sidebarMainBtn.classList.remove('active');
+                    }
+                }
                 return;
             }
             
@@ -77,8 +83,8 @@ function initSidebarNav() {
                     block: 'start'
                 });
                 
-                // 移动端关闭侧边栏（如果需要）
-                if (window.innerWidth <= 768) {
+                // 移动端：点击后关闭侧边栏
+                if (window.innerWidth <= 768 && sidebarFloat) {
                     sidebarFloat.classList.remove('active');
                     if (sidebarMainBtn) {
                         sidebarMainBtn.classList.remove('active');
@@ -90,9 +96,22 @@ function initSidebarNav() {
     
     // 主按钮点击切换（移动端使用）
     if (sidebarMainBtn && sidebarFloat) {
-        sidebarMainBtn.addEventListener('click', function() {
+        sidebarMainBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
             sidebarFloat.classList.toggle('active');
             this.classList.toggle('active');
+        });
+        
+        // 点击侧边栏外部关闭（移动端）
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768 && 
+                sidebarFloat.classList.contains('active') &&
+                !sidebarFloat.contains(e.target)) {
+                sidebarFloat.classList.remove('active');
+                if (sidebarMainBtn) {
+                    sidebarMainBtn.classList.remove('active');
+                }
+            }
         });
     }
     
