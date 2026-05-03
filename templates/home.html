@@ -47,7 +47,7 @@
             {% endif %}
             
             <div class="hero-actions">
-                <a href="{% if home_profile %}{{ home_profile.resume_link }}{% else %}/resume/{% endif %}" class="btn-hero-primary">
+                <a href="/resume/" class="btn-hero-primary">
                     <i class="bi bi-person-circle"></i> {% if home_profile %}{{ home_profile.resume_button_text }}{% else %}查看简历{% endif %}
                 </a>
                 <a href="/about/" class="btn-hero-secondary">

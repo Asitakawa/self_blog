@@ -123,6 +123,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+# 生产环境静态文件收集目录
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 # Media files (uploaded files)
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
