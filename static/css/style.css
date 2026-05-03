@@ -46,14 +46,6 @@ body {
 main {
     position: relative;
     z-index: 1;
-    padding-left: 100px; /* 防止内容被侧边栏遮挡 */
-}
-
-/* 桌面端内容区域左侧留白 */
-@media (min-width: 769px) {
-    main {
-        padding-left: 120px;
-    }
 }
 
 /* 卡片悬停效果 */
