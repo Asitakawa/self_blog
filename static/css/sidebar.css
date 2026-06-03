@@ -228,6 +228,12 @@
         height: 40px;
         font-size: 1.1rem;
     }
+    
+    /* 触摸反馈优化 */
+    .sidebar-item:active,
+    .sidebar-main-btn:active {
+        transform: scale(0.9);
+    }
 }
 
 /* 桌面端内容区域居中布局 */

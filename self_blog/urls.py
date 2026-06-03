@@ -15,16 +15,29 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+from django.urls import path, include
 from . import views
+from .sitemaps import StaticViewSitemap, ExhibitionDiarySitemap, BlogPostSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'exhibitions': ExhibitionDiarySitemap,
+    'blog': BlogPostSitemap,
+}
 
 urlpatterns = [
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),  # 首页
     path('about/', views.about_view, name='about'),  # 关于我页面
     path('resume/', include('resume.urls')),  # 简历页面
+    path('exhibitions/', views.exhibition_list, name='exhibitions'),
+    path('blog/', views.blog_list, name='blog_list'),
+    path('blog/<slug:slug>/', views.blog_detail, name='blog_detail'),
 ]
 
 # 在开发环境中提供静态文件和媒体文件

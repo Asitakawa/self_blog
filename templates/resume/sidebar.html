@@ -16,6 +16,16 @@
                 <span class="item-label">首页</span>
             </a>
             
+            <!-- 博客按钮 -->
+            <a href="{% url 'blog_list' %}" class="sidebar-item {% if request.resolver_match.url_name == 'blog_list' or request.resolver_match.url_name == 'blog_detail' %}active{% endif %}" title="博客文章">
+                <i class="bi bi-book"></i>
+                <span class="item-label">博客文章</span>
+            </a>
+            <!-- 日常分享按钮 -->
+            <a href="{% url 'exhibitions' %}" class="sidebar-item {% if request.resolver_match.url_name == 'exhibitions' %}active{% endif %}" title="日常分享">
+                <i class="bi bi-camera"></i>
+                <span class="item-label">日常分享</span>
+            </a>
             <!-- 关于我按钮 -->
             <a href="/about/" class="sidebar-item {% if '/about/' in request.path %}active{% endif %}" title="关于我">
                 <i class="bi bi-person-heart"></i>
@@ -31,7 +41,7 @@
         
         <!-- GIF动图容器 - 移到菜单下方 -->
         <div class="sidebar-gif-container">
-            <img src="{% static 'images/Doctor_dance.gif' %}" alt="Dancing Doctor">
+            <img src="{% static 'images/Doctor_dance.gif' %}" alt="扭沟子的博士">
         </div>
         
         <!-- 页面内模块跳转菜单 -->

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}日常分享 - 全部展览{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/exhibitions.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- 返回上一页按钮 -->
+<div class="back-to-home">
+    <a href="javascript:void(0)" onclick="history.back()" class="btn-back-home">
+        <i class="bi bi-arrow-left"></i>
+        <span>返回上一页</span>
+    </a>
+</div>
+
+<div class="exhibitions-page-wrapper">
+    <div class="exhibitions-page-header">
+        <h1 class="exhibitions-page-title">
+            <i class="bi bi-camera"></i> 日常分享
+        </h1>
+        <p class="exhibitions-page-subtitle">记录生活中的每一个美好瞬间</p>
+    </div>
+
+    {% if page_obj %}
+        <div class="exhibitions-page-grid">
+            {% for exhibition in page_obj %}
+            <div class="exhibition-page-card">
+                {% if exhibition.image %}
+                <div class="exhibition-page-image" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
+                    <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
+                    <div class="image-overlay">
+                        <i class="bi bi-zoom-in"></i>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="exhibition-page-content">
+                    <h3 class="exhibition-page-title-text">{{ exhibition.title }}</h3>
+                    {% if exhibition.url %}
+                    <a href="{{ exhibition.url }}" target="_blank" class="exhibition-page-link">
+                        <i class="bi bi-box-arrow-up-right"></i> 查看详情
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination">
+            {% if page_obj.paginator.num_pages > 1 %}
+            <div class="pagination-row">
+                <div class="pagination-links">
+                    {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn nav-btn" title="上一页">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    {% endif %}
+
+                    {% for p in display_pages %}
+                        {% if p == '…' %}
+                        <span class="pagination-ellipsis">…</span>
+                        {% elif p == page_obj.number %}
+                        <span class="pagination-btn current">{{ p }}</span>
+                        {% else %}
+                        <a href="?page={{ p }}" class="pagination-btn">{{ p }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn nav-btn" title="下一页">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+
+                <div class="pagination-jump">
+                    <span>跳转至</span>
+                    <form method="get" action="" class="jump-form">
+                        <input type="number" name="page" min="1" max="{{ page_obj.paginator.num_pages }}"
+                               value="{{ page_obj.number }}" class="jump-input"
+                               onkeydown="if(event.key==='Enter'){event.target.closest('form').submit();}">
+                        <button type="submit" class="jump-btn">页</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="exhibitions-empty">
+            <i class="bi bi-images"></i>
+            <p>还没有分享内容，敬请期待~</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

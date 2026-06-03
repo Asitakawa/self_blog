@@ -23,7 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-fc60*i1pb!=!(+5qdwi3a=s$6usiv1a^)_xm25q#mb#v#*65l+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+import os
+DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = [
     'www.asitakawa.top',
@@ -50,7 +51,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sitemaps',
+    'ckeditor',
+    'ckeditor_uploader',
     'resume',
+    'content_mgmt',
+    'homepage_mgmt',
+    'about_mgmt',
+    'interaction',
 ]
 
 MIDDLEWARE = [
@@ -142,6 +150,30 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Media files (uploaded files)
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# CKEditor Configuration
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = 'pillow'
+CKEDITOR_IMAGE_MAX_WIDTH = 600
+CKEDITOR_IMAGE_MAX_HEIGHT = 600
+CKEDITOR_THUMBNAIL_SIZE = (300, 300)
+CKEDITOR_IMAGE_QUALITY = 85
+CKEDITOR_BROWSE_SHOW_DIRS = True
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 500,
+        'width': '100%',
+        'extraPlugins': ','.join([
+            'uploadimage', 'image2', 'codesnippet',
+            'tableresize', 'tabletools', 'divarea',
+        ]),
+        'removePlugins': 'exportpdf',
+        'filebrowserUploadUrl': '/ckeditor/upload/',
+        'filebrowserBrowseUrl': '/ckeditor/browse/',
+    },
+}
 
 # Cache Configuration - 全局缓存设置
 CACHES = {

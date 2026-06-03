@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}博客文章 - Asitakawa的网络小树洞{% endblock %}
+{% block meta_description %}{{ home_config.blog_subtitle|default:'用文字记录热爱与思考' }} - Asitakawa的网络小树洞{% endblock %}
+{% block meta_keywords %}博客,技术,生活,分享,ACG{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- 返回上一页按钮 -->
+<div class="back-to-home">
+    <a href="javascript:void(0)" onclick="history.back()" class="btn-back-home">
+        <i class="bi bi-arrow-left"></i>
+        <span>返回上一页</span>
+    </a>
+</div>
+
+<div class="blog-wrapper">
+    <!-- 页面标题 -->
+    <div class="blog-header">
+        <h1 class="blog-header-title">
+            <i class="bi bi-book"></i> 博客文章
+        </h1>
+        <p class="blog-header-desc">{{ home_config.blog_subtitle|default:'用文字记录热爱与思考' }}</p>
+    </div>
+
+    <!-- 搜索框 -->
+    <div class="blog-search">
+        <form method="get" action="{% url 'blog_list' %}" class="blog-search-form">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" name="q" class="blog-search-input" placeholder="搜索文章标题、内容或标签..." value="{{ query }}">
+            {% if current_category %}
+            <input type="hidden" name="category" value="{{ current_category }}">
+            {% endif %}
+            <button type="submit" class="blog-search-btn">搜索</button>
+        </form>
+    </div>
+
+    <!-- 分类筛选 -->
+    <div class="blog-categories">
+        <a href="{% url 'blog_list' %}" class="category-badge {% if not current_category %}active{% endif %}">
+            全部
+        </a>
+        {% for cat in categories %}
+        <a href="{% url 'blog_list' %}?category={{ cat.slug }}"
+           class="category-badge {% if current_category == cat.slug %}active{% endif %}">
+            {{ cat.name }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- 文章列表 -->
+    <div class="blog-posts">
+        {% if page_obj %}
+            {% for post in page_obj %}
+            <article class="blog-card">
+                {% if post.cover_image %}
+                <div class="blog-card-image">
+                    <a href="{% url 'blog_detail' slug=post.slug %}">
+                        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+                        <div class="image-overlay">
+                            <i class="bi bi-eye"></i>
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                <div class="blog-card-body {% if not post.cover_image %}no-image{% endif %}">
+                    <div class="blog-card-meta">
+                        <span class="blog-category-tag" style="background:{{ post.category.color }}">
+                            {{ post.category.name }}
+                        </span>
+                        <span class="blog-date">
+                            <i class="bi bi-calendar3"></i> {{ post.created_at|date:"Y年m月d日" }}
+                        </span>
+                        <span class="blog-views">
+                            <i class="bi bi-eye"></i> {{ post.views_count }}
+                        </span>
+                    </div>
+                    <h2 class="blog-card-title">
+                        <a href="{% url 'blog_detail' slug=post.slug %}">{{ post.title }}</a>
+                    </h2>
+                    <p class="blog-card-excerpt">{{ post.excerpt }}</p>
+                    {% if post.tags %}
+                    <div class="blog-card-tags">
+                        {% for tag in post.tags|split %}
+                        <span class="blog-tag">#{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <a href="{% url 'blog_detail' slug=post.slug %}" class="blog-read-more">
+                        阅读全文 <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        {% else %}
+            <div class="blog-empty">
+                <i class="bi bi-journal-text"></i>
+                <p>还没有文章，敬请期待～</p>
+                <p class="blog-empty-sub">正在构思中，很快就会和大家见面！</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- 分页 -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination">
+        <div class="pagination-row">
+            <div class="pagination-links">
+                {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}"
+                   class="pagination-btn nav-btn">
+                    <i class="bi bi-chevron-left"></i>
+                </a>
+                {% endif %}
+
+                {% for p in page_obj.paginator.page_range %}
+                    {% if p == page_obj.number %}
+                    <span class="pagination-btn current">{{ p }}</span>
+                    {% elif p >= page_obj.number|add:'-2' and p <= page_obj.number|add:'2' or p == 1 or p == page_obj.paginator.num_pages %}
+                    <a href="?page={{ p }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}"
+                       class="pagination-btn">{{ p }}</a>
+                    {% elif p == page_obj.number|add:'-3' or p == page_obj.number|add:'3' %}
+                    <span class="pagination-ellipsis">…</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}"
+                   class="pagination-btn nav-btn">
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

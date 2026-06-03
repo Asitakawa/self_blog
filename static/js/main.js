@@ -27,28 +27,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 预加载所有图片并缓存
 function preloadAllImages() {
-    let cachedCount = 0;
-    
-    // 获取所有图片元素
     const images = document.querySelectorAll('img');
+    const totalImages = images.length;
+    let loadedCount = 0;
+    
+    if (totalImages === 0) {
+        console.log('没有需要缓存的图片');
+        return;
+    }
     
     images.forEach(img => {
         const src = img.src || img.getAttribute('data-src');
         if (src && !imageCache[src]) {
             // 跳过空URL或无效URL
             if (!src || src === '' || src.startsWith('data:')) {
+                loadedCount++;
+                checkAllLoaded();
                 return;
             }
             
             const cachedImg = new Image();
             cachedImg.onload = function() {
                 imageCache[src] = cachedImg;
-                cachedCount++;
+                loadedCount++;
+                checkAllLoaded();
             };
             cachedImg.onerror = function() {
                 console.warn(`图片加载失败: ${src}`);
+                loadedCount++;
+                checkAllLoaded();
             };
             cachedImg.src = src;
+        } else {
+            loadedCount++;
+            checkAllLoaded();
         }
     });
     
@@ -59,16 +71,11 @@ function preloadAllImages() {
         const match = style.match(/url\(["']?([^"')]+)["']?\)/);
         if (match && match[1] && !imageCache[match[1]]) {
             const imageUrl = match[1];
-            
-            // 跳过空URL
-            if (!imageUrl || imageUrl === '') {
-                return;
-            }
+            if (!imageUrl || imageUrl === '') return;
             
             const cachedImg = new Image();
             cachedImg.onload = function() {
                 imageCache[imageUrl] = cachedImg;
-                cachedCount++;
             };
             cachedImg.onerror = function() {
                 console.warn(`背景图片加载失败: ${imageUrl}`);
@@ -77,10 +84,11 @@ function preloadAllImages() {
         }
     });
     
-    // 延迟输出，等待图片加载
-    setTimeout(() => {
-        console.log(`已缓存 ${cachedCount} 张图片`);
-    }, 500);
+    function checkAllLoaded() {
+        if (loadedCount >= totalImages) {
+            console.log(`全部 ${totalImages} 张图片已缓存`);
+        }
+    }
 }
 
 // 侧边栏导航功能
@@ -348,6 +356,13 @@ function createLightboxDOM() {
     lightbox.className = 'lightbox';
     lightbox.onclick = closeLightbox;
     
+    // 创建关闭按钮
+    const closeBtn = document.createElement('span');
+    closeBtn.className = 'lightbox-close';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.onclick = closeLightbox;
+    lightbox.appendChild(closeBtn);
+    
     // 创建图片元素
     lightboxImg = document.createElement('img');
     lightboxImg.className = 'lightbox-content';
@@ -364,7 +379,7 @@ function createLightboxDOM() {
         e.stopPropagation();
     };
     
-    // 组装DOM（不包含关闭按钮）
+    // 组装DOM
     lightbox.appendChild(lightboxImg);
     lightbox.appendChild(lightboxCaption);
     document.body.appendChild(lightbox);

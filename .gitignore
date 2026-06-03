@@ -17,6 +17,15 @@ local_settings.py
 /staticfiles/
 /media/
 
+# Test output
+dogfood-output/
+
+# Fixtures / data dumps
+*fixtures.json
+
+# Deployment scripts
+upload_to_server.ps1
+
 # Node
 node_modules/
 npm-debug.log*

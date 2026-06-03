@@ -610,6 +610,20 @@ section:nth-child(6) { animation-delay: 0.6s; }
         padding-left: 10px;
         padding-right: 10px;
     }
+    
+    /* 移动端技能卡片优化 */
+    .skill-category-card {
+        padding: 20px 15px;
+    }
+    
+    .tech-tags {
+        gap: 6px;
+    }
+    
+    .tech-tags .badge {
+        font-size: 0.7rem;
+        padding: 0.3em 0.5em;
+    }
 }
 
 #profile .badge {
