@@ -47,26 +47,23 @@
 
     <!-- Footer -->
     <footer class="ft">
-        <div class="fi">
-            <div class="col">
-                <h4>✦ Asitakawa</h4>
-                <p>用代码构建数字世界<br>用文字记录热爱与思考</p>
-            </div>
-            <div class="col">
-                <h4>链接</h4>
-                <a href="/">首页</a>
-                <a href="{% url 'blog_list' %}">博客</a>
-                <a href="/about/">关于</a>
-                <a href="/resume/">简历</a>
-            </div>
-            <div class="col">
-                <h4>社交</h4>
-                <a href="#">GitHub</a>
-                <a href="#">Bilibili</a>
-                <a href="#">Twitter</a>
+        <div class="ft-inner">
+            <div class="ft-brand">
+                <div class="ft-logo">✦ ASITAKAWA</div>
+                <p class="ft-desc">用代码构建数字世界，用文字记录热爱与思考。<br>这里是属于我的网络小树洞。</p>
+                <div class="ft-social">
+                    <a href="#" class="ft-social-link" title="GitHub"><i class="bi bi-github"></i></a>
+                    <a href="#" class="ft-social-link" title="Bilibili"><i class="bi bi-camera-reels"></i></a>
+                    <a href="#" class="ft-social-link" title="Twitter"><i class="bi bi-twitter-x"></i></a>
+                    <a href="#" class="ft-social-link" title="Email"><i class="bi bi-envelope"></i></a>
+                </div>
             </div>
         </div>
-        <div class="fb">Made with ♥ by Asitakawa</div>
+        <div class="ft-divider"></div>
+        <div class="ft-bottom">
+            <span>&copy; {% now "Y" %} Asitakawa. Made with <i class="bi bi-heart-fill" style="color:var(--b-dark)"></i></span>
+            <span class="ft-powered">Powered by Django &amp; Bootstrap</span>
+        </div>
     </footer>
 
     <script src="{% static 'js/main.js' %}"></script>

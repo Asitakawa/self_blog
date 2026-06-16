@@ -362,12 +362,16 @@ form .btn-submit{
 }
 form .btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,0.3)}
 
-.ft{padding:48px 0 24px;margin-top:20px;background:var(--surface);border-top:3px solid var(--b2);border-radius:20px 20px 0 0;position:relative;z-index:1}
-.ft .fi{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px;max-width:900px;margin:0 auto;padding:0 28px}
-.ft .fi .col h4{font-size:.8rem;font-weight:700;color:var(--ink);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
-.ft .fi .col p,.ft .fi .col a{color:var(--ink-muted);font-size:.75rem;line-height:1.8;text-decoration:none;display:block;transition:color .2s}
-.ft .fi .col a:hover{color:var(--b-deep)}
-.ft .fb{text-align:center;padding:20px 28px 0;margin-top:20px;border-top:2px solid #f1f5f9;color:var(--ink-muted);font-size:.68rem}
+.ft{padding:56px 28px 0;margin-top:40px;background:linear-gradient(180deg,var(--surface),var(--bg));border-top:3px solid var(--b2);border-radius:24px 24px 0 0;position:relative;z-index:1}
+.ft-inner{max-width:960px;margin:0 auto;padding-bottom:36px;text-align:center}
+.ft-brand .ft-logo{font-size:.85rem;font-weight:800;letter-spacing:2px;color:var(--b-deep);margin-bottom:10px}
+.ft-brand .ft-desc{font-size:.78rem;color:var(--ink-muted);line-height:1.7;margin-bottom:18px;max-width:400px;margin-left:auto;margin-right:auto}
+.ft-social{display:flex;gap:12px;justify-content:center}
+.ft-social-link{width:38px;height:38px;border-radius:50%;background:var(--b4);color:var(--b-dark);display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:all .3s ease;text-decoration:none}
+.ft-social-link:hover{background:var(--b-deep);color:#fff;transform:translateY(-3px);box-shadow:0 4px 12px rgba(30,64,175,0.3)}
+.ft-divider{height:1px;background:linear-gradient(90deg,transparent,var(--b2),transparent);max-width:960px;margin:0 auto}
+.ft-bottom{display:flex;align-items:center;justify-content:space-between;max-width:960px;margin:0 auto;padding:18px 0 24px;font-size:.68rem;color:var(--ink-muted)}
+.ft-bottom .ft-powered{font-size:.65rem;color:var(--ink-muted)}
 
 @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -388,7 +392,8 @@ form .btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,
     .pg{grid-template-columns:repeat(2,1fr)}
     .skillg{grid-template-columns:repeat(2,1fr)}
     .gg{grid-template-columns:repeat(2,1fr)}
-    .ft .fi{grid-template-columns:1fr;gap:24px}
+    .ft-inner{padding-bottom:28px}
+    .ft-bottom{flex-direction:column;gap:6px;text-align:center}
     .blog-detail-header{padding:24px 20px 0}
     .blog-detail-content{padding:16px 20px 28px}
     .blog-detail-tags{padding:0 20px 24px}
