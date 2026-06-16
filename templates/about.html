@@ -1,172 +1,114 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}关于我 - {{ profile.name|default:"Asitakawa的网络小树洞" }}{% endblock %}
+{% block title %}关于我 - Asitakawa的网络小树洞{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/about.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- 返回上一页按钮 -->
-<div class="back-to-home">
-    <a href="javascript:void(0)" onclick="history.back()" class="btn-back-home">
-        <i class="bi bi-arrow-left"></i>
-        <span>返回上一页</span>
-    </a>
-</div>
+<div class="wrap">
 
-<div class="about-wrapper">
-    <!-- 页头 -->
-    <div class="about-header">
-        <h1 class="about-welcome">{{ about_info.welcome_text|default:"嘿 OωO 欢迎来到这里！" }}</h1>
-        {% if about_info.introduction %}
-        <p class="about-intro">{{ about_info.introduction|linebreaksbr }}</p>
-        {% endif %}
-    </div>
-    
-    <!-- 章节卡片 -->
-    {% if about_sections %}
-    <div class="about-sections">
-        {% for section in about_sections %}
-        <div class="about-card">
-            <div class="about-card-header">
-                <div class="about-card-icon">
-                    {% if section.icon_image %}
-                        <img src="{{ section.icon_image.url }}" alt="{{ section.title }}">
-                    {% elif 'bi-' in section.icon %}
+    <a href="javascript:void(0)" onclick="history.back()" class="back-btn"><i class="bi bi-arrow-left"></i> 返回</a>
+
+    <div class="about-wrapper">
+        <!-- Header -->
+        <div class="about-header">
+            {% if profile and profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="avatar" class="av">
+            {% endif %}
+            <h1>{{ about_info.welcome_text|default:"嘿 OωO 欢迎来到这里！" }}</h1>
+            {% if about_info.introduction %}
+            <p>{{ about_info.introduction|linebreaksbr }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Sections -->
+        {% if about_sections %}
+            {% for section in about_sections %}
+            <div class="about-card">
+                <div class="hd">
+                    <div class="ic">
+                        {% if section.icon_image %}
+                        <img src="{{ section.icon_image.url }}" alt="{{ section.title }}" style="width:100%;height:100%;object-fit:cover;border-radius:10px">
+                        {% elif 'bi-' in section.icon %}
                         <i class="bi {{ section.icon }}"></i>
-                    {% else %}
+                        {% else %}
                         <i class="{{ section.icon }}"></i>
-                    {% endif %}
+                        {% endif %}
+                    </div>
+                    <h2>{{ section.title }}</h2>
                 </div>
-                <h2 class="about-card-title">{{ section.title }}</h2>
+                <div class="bd">{{ section.content|safe }}</div>
             </div>
-            <div class="about-card-content">
-                {{ section.content|safe }}
+            {% endfor %}
+        {% endif %}
+
+        <!-- About Project -->
+        {% if about_info.about_project %}
+        <div class="about-card">
+            <div class="hd"><div class="ic"><i class="bi bi-info-circle"></i></div><h2>{{ about_info.project_title|default:"关于博客" }}</h2></div>
+            <div class="bd">{{ about_info.about_project|linebreaksbr }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Footer Blessing -->
+        {% if about_info.footer_blessing %}
+        <div style="text-align:center;padding:20px 0;font-size:.9rem;color:var(--ink-muted)">{{ about_info.footer_blessing }}</div>
+        {% endif %}
+
+        <!-- Comments -->
+        <div class="comment-form-card">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+                <i class="bi bi-chat-heart" style="color:var(--b-dark);font-size:1.1rem"></i>
+                <h3 style="font-size:1rem;font-weight:700;color:var(--ink)">{% if comment_count %}已有 {{ comment_count }} 条评论{% else %}评论{% endif %}</h3>
             </div>
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    
-    <!-- 关于项目/博客 -->
-    {% if about_info.about_project %}
-    <div class="about-project">
-        <h2>{{ about_info.project_title|default:"关于博客" }}</h2>
-        <p>{{ about_info.about_project|linebreaksbr }}</p>
-    </div>
-    {% endif %}
-    
-    <!-- 页脚祝福 -->
-    {% if about_info.footer_blessing %}
-    <div class="about-footer">
-        <p class="about-blessing">{{ about_info.footer_blessing }}</p>
-    </div>
-    {% endif %}
-    
-    <!-- 评论区 -->
-    <div class="comments-section">
-        <div class="comments-header">
-            <h2>
-                <i class="bi bi-chat-heart"></i>
-                {% if comment_count %}已有 {{ comment_count }} 条评论{% else %}评论{% endif %}
-            </h2>
-        </div>
-        
-        <!-- 评论表单 -->
-        <div class="comment-form-wrapper">
             <form method="post" class="comment-form">
                 {% csrf_token %}
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form.nickname }}
-                        {% if form.nickname.errors %}
-                        <div class="error-message">{{ form.nickname.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="form-group">
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                        <div class="error-message">{{ form.email.errors.0 }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="form-group">
-                        {{ form.website }}
-                        {% if form.website.errors %}
-                        <div class="error-message">{{ form.website.errors.0 }}</div>
-                        {% endif %}
-                    </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+                    <div class="form-group">{{ form.nickname }}{% if form.nickname.errors %}<div style="color:#ef4444;font-size:.72rem;margin-top:4px">{{ form.nickname.errors.0 }}</div>{% endif %}</div>
+                    <div class="form-group">{{ form.email }}{% if form.email.errors %}<div style="color:#ef4444;font-size:.72rem;margin-top:4px">{{ form.email.errors.0 }}</div>{% endif %}</div>
+                    <div class="form-group">{{ form.website }}{% if form.website.errors %}<div style="color:#ef4444;font-size:.72rem;margin-top:4px">{{ form.website.errors.0 }}</div>{% endif %}</div>
                 </div>
-                
-                <div class="form-group">
-                    {{ form.content }}
-                    {% if form.content.errors %}
-                    <div class="error-message">{{ form.content.errors.0 }}</div>
-                    {% endif %}
-                </div>
-                
+                <div class="form-group">{{ form.content }}{% if form.content.errors %}<div style="color:#ef4444;font-size:.72rem;margin-top:4px">{{ form.content.errors.0 }}</div>{% endif %}</div>
                 {{ form.parent }}
-                
-                <div class="form-actions">
-                    <button type="submit" class="btn-submit">
-                        <i class="bi bi-send"></i> 发表评论
-                    </button>
-                </div>
+                <div style="text-align:right"><button type="submit" class="btn-submit"><i class="bi bi-send"></i> 发表评论</button></div>
             </form>
         </div>
-        
-        <!-- 评论列表 -->
+
         {% if comments %}
-        <div class="comments-list">
+        <div class="comment-list">
             {% for comment in comments %}
             <div class="comment-item">
-                <div class="comment-avatar">
+                <div class="comment-header">
                     {% if comment.avatar %}
-                        <img src="{{ comment.avatar }}" alt="{{ comment.nickname }}">
+                    <img src="{{ comment.avatar }}" alt="{{ comment.nickname }}" class="comment-avatar">
                     {% else %}
-                        <div class="default-avatar">
-                            <i class="bi bi-person-fill"></i>
-                        </div>
+                    <div class="comment-avatar" style="display:flex;align-items:center;justify-content:center;color:var(--b-dark);font-size:.8rem"><i class="bi bi-person-fill"></i></div>
                     {% endif %}
+                    <span class="comment-author">{{ comment.nickname }}</span>
+                    <span class="comment-time">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
                 </div>
-                
-                <div class="comment-body">
-                    <div class="comment-header">
-                        <span class="comment-nickname">{{ comment.nickname }}</span>
-                        <span class="comment-date">{{ comment.created_at|date:"Y-m-d H:i" }}</span>
-                    </div>
-                    
-                    <div class="comment-content">
-                        {{ comment.content|linebreaksbr }}
-                    </div>
-                    
-                    <div class="comment-actions">
-                        <button class="btn-reply" onclick="replyToComment({{ comment.id }}, '{{ comment.nickname }}')">
-                            <i class="bi bi-reply"></i> 回复
-                        </button>
-                    </div>
-                    
-                    <!-- 回复列表 -->
-                    {% if comment.replies.all %}
-                    <div class="comment-replies">
-                        {% for reply in comment.replies.all %}
-                        <div class="reply-item">
-                            <div class="comment-header">
-                                <span class="comment-nickname">{{ reply.nickname }}</span>
-                                <span class="comment-date">{{ reply.created_at|date:"Y-m-d H:i" }}</span>
-                            </div>
-                            <div class="comment-content">
-                                {{ reply.content|linebreaksbr }}
-                            </div>
+                <div class="comment-body">{{ comment.content|linebreaksbr }}</div>
+                <div style="margin-top:6px;margin-left:42px">
+                    <button class="btn-reply" onclick="replyToComment({{ comment.id }}, '{{ comment.nickname }}')" style="background:none;border:none;color:var(--b-dark);font-size:.72rem;font-weight:600;cursor:pointer">
+                        <i class="bi bi-reply"></i> 回复
+                    </button>
+                </div>
+                {% if comment.replies.all %}
+                <div style="margin-left:42px;margin-top:8px;padding-left:12px;border-left:2px solid var(--b3)">
+                    {% for reply in comment.replies.all %}
+                    <div class="comment-item" style="padding:8px 0">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ reply.nickname }}</span>
+                            <span class="comment-time">{{ reply.created_at|date:"Y-m-d H:i" }}</span>
                         </div>
-                        {% endfor %}
+                        <div class="comment-body">{{ reply.content|linebreaksbr }}</div>
                     </div>
-                    {% endif %}
+                    {% endfor %}
                 </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
@@ -178,19 +120,13 @@
 {% block extra_js %}
 <script>
 function replyToComment(commentId, nickname) {
-    const parentInput = document.querySelector('input[name="parent"]');
-    const contentTextarea = document.querySelector('textarea[name="content"]');
-    
+    var parentInput = document.querySelector('input[name="parent"]');
+    var contentTextarea = document.querySelector('textarea[name="content"]');
     if (parentInput) {
         parentInput.value = commentId;
-        contentTextarea.placeholder = `回复 @${nickname}：`;
+        contentTextarea.placeholder = '回复 @' + nickname + '：';
         contentTextarea.focus();
-        
-        // 滚动到表单
-        document.querySelector('.comment-form-wrapper').scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-        });
+        document.querySelector('.comment-form-card').scrollIntoView({behavior:'smooth',block:'center'});
     }
 }
 </script>

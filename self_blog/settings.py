@@ -76,8 +76,7 @@ ROOT_URLCONF = 'self_blog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -154,10 +153,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # CKEditor Configuration
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'
-CKEDITOR_IMAGE_MAX_WIDTH = 600
-CKEDITOR_IMAGE_MAX_HEIGHT = 600
+CKEDITOR_IMAGE_MAX_WIDTH = 1920
+CKEDITOR_IMAGE_MAX_HEIGHT = 1080
 CKEDITOR_THUMBNAIL_SIZE = (300, 300)
-CKEDITOR_IMAGE_QUALITY = 85
+CKEDITOR_IMAGE_QUALITY = 82
+CKEDITOR_FORCE_JPEG_COMPRESSION = True
 CKEDITOR_BROWSE_SHOW_DIRS = True
 CKEDITOR_ALLOW_NONIMAGE_FILES = False
 CKEDITOR_CONFIGS = {
@@ -170,8 +170,14 @@ CKEDITOR_CONFIGS = {
             'tableresize', 'tabletools', 'divarea',
         ]),
         'removePlugins': 'exportpdf',
-        'filebrowserUploadUrl': '/ckeditor/upload/',
+        'allowedContent': True,
+        'extraAllowedContent': 'img[*]',
+        'image2_disableResizer': False,
+        'image2_alignClasses': ['image-left', 'image-center', 'image-right'],
+        'image2_captionedClass': 'image-captioned',
+        'filebrowserUploadUrl': '/ckeditor/custom-upload/',
         'filebrowserBrowseUrl': '/ckeditor/browse/',
+        'uploadUrl': '/ckeditor/custom-upload/',
     },
 }
 

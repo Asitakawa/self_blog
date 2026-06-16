@@ -5,9 +5,8 @@ from django.db import models
 from resume.models import (
     Profile, Hobby, SocialLink, HomePageProject, HomePageSkill,
     MusicCreation, ExhibitionDiary, ContactInfo, HomeConfig, HomePageProfile,
-    BlogPost, BlogCategory,
+    BlogPost, BlogCategory, HomeBadge, AboutPageInfo, AboutSection, Comment,
 )
-from resume.models import AboutPageInfo, AboutSection, Comment
 from resume.forms import CommentForm
 
 
@@ -57,6 +56,12 @@ def home(request):
     # 获取兴趣爱好
     hobbies = Hobby.objects.all()[:6]
 
+    # 获取最新博客文章（首页展示最多3篇）
+    blog_posts = BlogPost.objects.filter(is_published=True).order_by('-created_at')[:3]
+
+    # 获取首页浮动词条
+    badges = HomeBadge.objects.filter(is_active=True).order_by('order')
+
     context = {
         'home_profile': home_profile,
         'profile': profile,
@@ -68,7 +73,8 @@ def home(request):
         'exhibitions': exhibitions,
         'contact_info': contact_info,
         'hobbies': hobbies,
-        'request': request,  # 传递给模板用于判断当前页面
+        'blog_posts': blog_posts,
+        'badges': badges,
     }
 
     # 允许浏览器/CDN缓存5分钟
@@ -120,7 +126,6 @@ def about_view(request):
         'comments': comments,
         'comment_count': comment_count,
         'form': form,
-        'request': request,
     }
 
     return render(request, 'about.html', context)
@@ -161,7 +166,6 @@ def exhibition_list(request):
     return render(request, 'exhibitions.html', {
         'page_obj': page_obj,
         'display_pages': display_pages,
-        'request': request,
     })
 
 
@@ -203,7 +207,6 @@ def blog_list(request):
         'categories': categories,
         'home_config': home_config,
         'query': query,
-        'request': request,
     })
 
 
@@ -216,5 +219,4 @@ def blog_detail(request, slug):
 
     return render(request, 'blog_detail.html', {
         'post': post,
-        'request': request,
     })

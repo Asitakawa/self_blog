@@ -441,6 +441,23 @@ class Comment(models.Model):
         return f"{self.nickname}: {self.content[:50]}"
 
 
+class HomeBadge(models.Model):
+    """首页头像浮动词条"""
+    text = models.CharField(max_length=100, verbose_name='词条文本')
+    icon = models.CharField(max_length=50, blank=True, verbose_name='图标（emoji 或 图标类名）')
+    order = models.IntegerField(default=0, verbose_name='排序')
+    is_active = models.BooleanField(default=True, verbose_name='是否启用')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    class Meta:
+        verbose_name = '首页浮动词条'
+        verbose_name_plural = '首页浮动词条'
+        ordering = ['order']
+
+    def __str__(self):
+        return self.text
+
+
 class BlogCategory(models.Model):
     """博客文章分类"""
     name = models.CharField(max_length=50, verbose_name='分类名称')

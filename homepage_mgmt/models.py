@@ -1,6 +1,7 @@
 from resume.models import (
     HomePageProfile, HomeConfig, SocialLink, HomePageProject,
-    HomePageSkill, ContactInfo, ExhibitionDiary, MusicCreation
+    HomePageSkill, ContactInfo, ExhibitionDiary, MusicCreation,
+    HomeBadge
 )
 
 
@@ -66,3 +67,11 @@ class MusicCreationProxy(MusicCreation):
         app_label = 'homepage_mgmt'
         verbose_name = '校园生活'
         verbose_name_plural = '校园生活'
+
+
+class HomeBadgeProxy(HomeBadge):
+    class Meta:
+        proxy = True
+        app_label = 'homepage_mgmt'
+        verbose_name = '首页浮动词条'
+        verbose_name_plural = '首页浮动词条'

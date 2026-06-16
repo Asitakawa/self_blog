@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.utils.html import format_html
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from ckeditor_uploader.fields import RichTextUploadingField
 from .models import (
     ProfileProxy, EducationProxy, InternshipProxy, ProjectProxy,
     SkillProxy, CampusActivityProxy, HobbyProxy, TagProxy,
@@ -34,9 +37,25 @@ class SingletonMixin:
 
 @admin.register(ProfileProxy)
 class ProfileProxyAdmin(SingletonMixin, admin.ModelAdmin):
-    list_display = ['name', 'gender', 'age', 'phone', 'email', 'updated_at']
-    search_fields = ['name', 'phone', 'email']
+    list_display = ['name', 'job_intention', 'gender', 'age', 'hometown', 'expected_salary', 'phone', 'email', 'updated_at']
+    list_filter = ['gender']
+    search_fields = ['name', 'phone', 'email', 'job_intention']
     readonly_fields = ['created_at', 'updated_at']
+    date_hierarchy = 'updated_at'
+    fieldsets = (
+        ('个人信息', {
+            'fields': ('name', 'gender', 'age', 'hometown', 'avatar', 'introduction')
+        }),
+        ('求职信息', {
+            'fields': ('job_intention', 'expected_salary')
+        }),
+        ('联系方式', {
+            'fields': ('phone', 'email')
+        }),
+        ('时间', {
+            'fields': ('created_at', 'updated_at')
+        }),
+    )
 
 
 @admin.register(EducationProxy)
@@ -45,6 +64,17 @@ class EducationProxyAdmin(DateRangeMixin, admin.ModelAdmin):
     list_filter = ['degree', 'start_date']
     search_fields = ['school', 'major']
     list_editable = ['order']
+    fieldsets = (
+        ('学校信息', {
+            'fields': ('school', 'major', 'degree', 'image')
+        }),
+        ('时间', {
+            'fields': ('start_date', 'end_date')
+        }),
+        ('描述与排序', {
+            'fields': ('description', 'order')
+        }),
+    )
 
 
 @admin.register(InternshipProxy)
@@ -53,14 +83,42 @@ class InternshipProxyAdmin(DateRangeMixin, admin.ModelAdmin):
     list_filter = ['start_date']
     search_fields = ['company', 'position']
     list_editable = ['order']
+    fieldsets = (
+        ('公司信息', {
+            'fields': ('company', 'position', 'image')
+        }),
+        ('时间', {
+            'fields': ('start_date', 'end_date')
+        }),
+        ('职责与排序', {
+            'fields': ('responsibilities', 'order')
+        }),
+    )
 
 
 @admin.register(ProjectProxy)
 class ProjectProxyAdmin(DateRangeMixin, admin.ModelAdmin):
-    list_display = ['name', 'role', 'date_range', 'order']
+    list_display = ['name', 'role', 'technologies_short', 'date_range', 'order']
     list_filter = ['start_date']
-    search_fields = ['name', 'role']
+    search_fields = ['name', 'role', 'technologies']
     list_editable = ['order']
+    fieldsets = (
+        ('项目信息', {
+            'fields': ('name', 'role', 'technologies', 'image')
+        }),
+        ('时间', {
+            'fields': ('start_date', 'end_date')
+        }),
+        ('描述与排序', {
+            'fields': ('description', 'order')
+        }),
+    )
+
+    def technologies_short(self, obj):
+        if obj.technologies:
+            return obj.technologies[:30] + '...' if len(obj.technologies) > 30 else obj.technologies
+        return '-'
+    technologies_short.short_description = '技术栈'
 
 
 @admin.register(SkillProxy)
@@ -73,10 +131,27 @@ class SkillProxyAdmin(admin.ModelAdmin):
 
 @admin.register(CampusActivityProxy)
 class CampusActivityProxyAdmin(DateRangeMixin, admin.ModelAdmin):
-    list_display = ['organization', 'role', 'date_range', 'order']
+    list_display = ['organization', 'role', 'achievements_short', 'date_range', 'order']
     list_filter = ['start_date']
     search_fields = ['organization', 'role']
     list_editable = ['order']
+    fieldsets = (
+        ('活动信息', {
+            'fields': ('organization', 'role', 'achievements', 'image')
+        }),
+        ('时间', {
+            'fields': ('start_date', 'end_date')
+        }),
+        ('描述与排序', {
+            'fields': ('description', 'order')
+        }),
+    )
+
+    def achievements_short(self, obj):
+        if obj.achievements:
+            return obj.achievements[:30] + '...' if len(obj.achievements) > 30 else obj.achievements
+        return '-'
+    achievements_short.short_description = '成就'
 
 
 @admin.register(HobbyProxy)
@@ -96,6 +171,9 @@ class TagProxyAdmin(admin.ModelAdmin):
 
 @admin.register(BlogPostProxy)
 class BlogPostProxyAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        RichTextUploadingField: {'widget': CKEditorUploadingWidget},
+    }
     list_display = ['title', 'category_link', 'views_count', 'is_published', 'created_at']
     list_filter = ['category', 'is_published']
     search_fields = ['title', 'tags', 'content']
@@ -117,7 +195,6 @@ class BlogPostProxyAdmin(admin.ModelAdmin):
 
     def category_link(self, obj):
         if obj.category:
-            from django.utils.html import format_html
             return format_html(
                 '<span style="background:{};color:#fff;padding:2px 10px;border-radius:10px;font-size:0.85rem">{}</span>',
                 obj.category.color, obj.category.name
@@ -140,7 +217,6 @@ class BlogCategoryProxyAdmin(admin.ModelAdmin):
     )
 
     def color_display(self, obj):
-        from django.utils.html import format_html
         return format_html(
             '<span style="display:inline-block;width:20px;height:20px;background:{};border-radius:50%"></span> {}',
             obj.color, obj.color

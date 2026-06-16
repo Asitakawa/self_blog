@@ -3,96 +3,65 @@
 
 {% block title %}日常分享 - 全部展览{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/exhibitions.css' %}">
-{% endblock %}
-
 {% block content %}
-<!-- 返回上一页按钮 -->
-<div class="back-to-home">
-    <a href="javascript:void(0)" onclick="history.back()" class="btn-back-home">
-        <i class="bi bi-arrow-left"></i>
-        <span>返回上一页</span>
-    </a>
-</div>
+<div class="wrap">
 
-<div class="exhibitions-page-wrapper">
-    <div class="exhibitions-page-header">
-        <h1 class="exhibitions-page-title">
-            <i class="bi bi-camera"></i> 日常分享
-        </h1>
-        <p class="exhibitions-page-subtitle">记录生活中的每一个美好瞬间</p>
-    </div>
+    <a href="javascript:void(0)" onclick="history.back()" class="back-btn"><i class="bi bi-arrow-left"></i> 返回</a>
+
+    <div class="sh" style="margin-top:20px"><span class="n">✦</span><h2>日常分享</h2></div>
+    <p style="font-size:.82rem;color:var(--ink-muted);margin-bottom:28px">记录生活中的每一个美好瞬间</p>
 
     {% if page_obj %}
-        <div class="exhibitions-page-grid">
-            {% for exhibition in page_obj %}
-            <div class="exhibition-page-card">
-                {% if exhibition.image %}
-                <div class="exhibition-page-image" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
-                    <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
-                    <div class="image-overlay">
-                        <i class="bi bi-zoom-in"></i>
-                    </div>
-                </div>
+    <div class="gg">
+        {% for exhibition in page_obj %}
+        {% if exhibition.image %}
+        <div class="gi" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
+            <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
+            <div class="go">
+                <h4>{{ exhibition.title }}</h4>
+                {% if exhibition.url %}
+                <span><i class="bi bi-box-arrow-up-right"></i> 查看详情</span>
                 {% endif %}
-                <div class="exhibition-page-content">
-                    <h3 class="exhibition-page-title-text">{{ exhibition.title }}</h3>
-                    {% if exhibition.url %}
-                    <a href="{{ exhibition.url }}" target="_blank" class="exhibition-page-link">
-                        <i class="bi bi-box-arrow-up-right"></i> 查看详情
-                    </a>
-                    {% endif %}
-                </div>
             </div>
-            {% endfor %}
         </div>
+        {% endif %}
+        {% endfor %}
+    </div>
 
-        <!-- 分页 -->
-        <div class="pagination">
-            {% if page_obj.paginator.num_pages > 1 %}
-            <div class="pagination-row">
-                <div class="pagination-links">
-                    {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn nav-btn" title="上一页">
-                        <i class="bi bi-chevron-left"></i>
-                    </a>
-                    {% endif %}
-
-                    {% for p in display_pages %}
-                        {% if p == '…' %}
-                        <span class="pagination-ellipsis">…</span>
-                        {% elif p == page_obj.number %}
-                        <span class="pagination-btn current">{{ p }}</span>
-                        {% else %}
-                        <a href="?page={{ p }}" class="pagination-btn">{{ p }}</a>
-                        {% endif %}
-                    {% endfor %}
-
-                    {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn nav-btn" title="下一页">
-                        <i class="bi bi-chevron-right"></i>
-                    </a>
-                    {% endif %}
-                </div>
-
-                <div class="pagination-jump">
-                    <span>跳转至</span>
-                    <form method="get" action="" class="jump-form">
-                        <input type="number" name="page" min="1" max="{{ page_obj.paginator.num_pages }}"
-                               value="{{ page_obj.number }}" class="jump-input"
-                               onkeydown="if(event.key==='Enter'){event.target.closest('form').submit();}">
-                        <button type="submit" class="jump-btn">页</button>
-                    </form>
-                </div>
-            </div>
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn"><i class="bi bi-chevron-left"></i></a>
+        {% endif %}
+        {% for p in display_pages %}
+            {% if p == '…' %}
+            <span class="pagination-btn dots">…</span>
+            {% elif p == page_obj.number %}
+            <span class="pagination-btn current">{{ p }}</span>
+            {% else %}
+            <a href="?page={{ p }}" class="pagination-btn">{{ p }}</a>
             {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn"><i class="bi bi-chevron-right"></i></a>
+        {% endif %}
+        <div class="pagination-jump">
+            <span style="font-size:.75rem;color:var(--ink-muted)">跳转至</span>
+            <form method="get" action="" class="jump-form" style="display:flex;gap:4px">
+                <input type="number" name="page" min="1" max="{{ page_obj.paginator.num_pages }}" value="{{ page_obj.number }}" onkeydown="if(event.key==='Enter'){event.target.closest('form').submit();}">
+                <button type="submit">页</button>
+            </form>
         </div>
-    {% else %}
-        <div class="exhibitions-empty">
-            <i class="bi bi-images"></i>
-            <p>还没有分享内容，敬请期待~</p>
-        </div>
+    </div>
     {% endif %}
+
+    {% else %}
+    <div style="text-align:center;padding:80px 20px">
+        <i class="bi bi-images" style="font-size:3rem;color:var(--ink-muted);display:block;margin-bottom:16px"></i>
+        <p style="font-size:1rem;color:var(--ink-soft)">还没有分享内容，敬请期待~</p>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

@@ -3,141 +3,90 @@
 {% load custom_filters %}
 
 {% block title %}博客文章 - Asitakawa的网络小树洞{% endblock %}
-{% block meta_description %}{{ home_config.blog_subtitle|default:'用文字记录热爱与思考' }} - Asitakawa的网络小树洞{% endblock %}
+{% block meta_description %}{{ home_config.blog_subtitle|default:'用文字记录热爱与思考' }}{% endblock %}
 {% block meta_keywords %}博客,技术,生活,分享,ACG{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/blog.css' %}">
-{% endblock %}
-
 {% block content %}
-<!-- 返回上一页按钮 -->
-<div class="back-to-home">
-    <a href="javascript:void(0)" onclick="history.back()" class="btn-back-home">
-        <i class="bi bi-arrow-left"></i>
-        <span>返回上一页</span>
-    </a>
-</div>
+<div class="wrap">
 
-<div class="blog-wrapper">
-    <!-- 页面标题 -->
-    <div class="blog-header">
-        <h1 class="blog-header-title">
-            <i class="bi bi-book"></i> 博客文章
-        </h1>
-        <p class="blog-header-desc">{{ home_config.blog_subtitle|default:'用文字记录热爱与思考' }}</p>
-    </div>
+    <a href="javascript:void(0)" onclick="history.back()" class="back-btn"><i class="bi bi-arrow-left"></i> 返回</a>
 
-    <!-- 搜索框 -->
-    <div class="blog-search">
-        <form method="get" action="{% url 'blog_list' %}" class="blog-search-form">
-            <i class="bi bi-search search-icon"></i>
-            <input type="text" name="q" class="blog-search-input" placeholder="搜索文章标题、内容或标签..." value="{{ query }}">
-            {% if current_category %}
-            <input type="hidden" name="category" value="{{ current_category }}">
-            {% endif %}
-            <button type="submit" class="blog-search-btn">搜索</button>
+    <div class="sh" style="margin-top:20px"><span class="n">✦</span><h2>博客文章</h2></div>
+    <p style="font-size:.82rem;color:var(--ink-muted);margin-bottom:24px">{{ home_config.blog_subtitle|default:'用文字记录热爱与思考' }}</p>
+
+    <!-- Search -->
+    <div style="margin-bottom:20px">
+        <form method="get" action="{% url 'blog_list' %}" style="display:flex;gap:10px;max-width:500px">
+            {% if current_category %}<input type="hidden" name="category" value="{{ current_category }}">{% endif %}
+            <input type="text" name="q" placeholder="搜索文章标题、内容或标签..." value="{{ query }}" style="flex:1;padding:10px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:.85rem;font-family:var(--font);outline:none;transition:border-color .3s;background:var(--surface)" onfocus="this.style.borderColor='var(--b1)'" onblur="this.style.borderColor='#e2e8f0'">
+            <button type="submit" style="padding:10px 20px;border:none;border-radius:12px;background:var(--b-deep);color:#fff;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .3s" onmouseover="this.style.background='var(--b-dark)'" onmouseout="this.style.background='var(--b-deep)'"><i class="bi bi-search"></i></button>
         </form>
     </div>
 
-    <!-- 分类筛选 -->
-    <div class="blog-categories">
-        <a href="{% url 'blog_list' %}" class="category-badge {% if not current_category %}active{% endif %}">
-            全部
-        </a>
+    <!-- Categories -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px">
+        <a href="{% url 'blog_list' %}" style="padding:6px 16px;border-radius:999px;font-size:.78rem;font-weight:600;text-decoration:none;transition:all .3s;background:{% if not current_category %}var(--b-deep){% else %}var(--surface){% endif %};color:{% if not current_category %}#fff{% else %}var(--ink-soft){% endif %};border:2px solid {% if not current_category %}var(--b-deep){% else %}#e2e8f0{% endif %}" onmouseover="this.style.borderColor='var(--b1)'" onmouseout="this.style.borderColor='{% if not current_category %}var(--b-deep){% else %}#e2e8f0{% endif %}'">全部</a>
         {% for cat in categories %}
-        <a href="{% url 'blog_list' %}?category={{ cat.slug }}"
-           class="category-badge {% if current_category == cat.slug %}active{% endif %}">
-            {{ cat.name }}
-        </a>
+        <a href="{% url 'blog_list' %}?category={{ cat.slug }}" style="padding:6px 16px;border-radius:999px;font-size:.78rem;font-weight:600;text-decoration:none;transition:all .3s;background:{% if current_category == cat.slug %}var(--b-deep){% else %}var(--surface){% endif %};color:{% if current_category == cat.slug %}#fff{% else %}var(--ink-soft){% endif %};border:2px solid {% if current_category == cat.slug %}var(--b-deep){% else %}#e2e8f0{% endif %}" onmouseover="this.style.borderColor='var(--b1)'" onmouseout="this.style.borderColor='{% if current_category == cat.slug %}var(--b-deep){% else %}#e2e8f0{% endif %}'">{{ cat.name }}</a>
         {% endfor %}
     </div>
 
-    <!-- 文章列表 -->
-    <div class="blog-posts">
+    <!-- Posts -->
+    <div class="posts-grid">
         {% if page_obj %}
             {% for post in page_obj %}
-            <article class="blog-card">
-                {% if post.cover_image %}
-                <div class="blog-card-image">
+            <article class="post-card">
+                <div class="post-img">
+                    {% if post.cover_image %}
                     <a href="{% url 'blog_detail' slug=post.slug %}">
                         <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
-                        <div class="image-overlay">
-                            <i class="bi bi-eye"></i>
-                        </div>
                     </a>
-                </div>
-                {% endif %}
-                <div class="blog-card-body {% if not post.cover_image %}no-image{% endif %}">
-                    <div class="blog-card-meta">
-                        <span class="blog-category-tag" style="background:{{ post.category.color }}">
-                            {{ post.category.name }}
-                        </span>
-                        <span class="blog-date">
-                            <i class="bi bi-calendar3"></i> {{ post.created_at|date:"Y年m月d日" }}
-                        </span>
-                        <span class="blog-views">
-                            <i class="bi bi-eye"></i> {{ post.views_count }}
-                        </span>
-                    </div>
-                    <h2 class="blog-card-title">
-                        <a href="{% url 'blog_detail' slug=post.slug %}">{{ post.title }}</a>
-                    </h2>
-                    <p class="blog-card-excerpt">{{ post.excerpt }}</p>
-                    {% if post.tags %}
-                    <div class="blog-card-tags">
-                        {% for tag in post.tags|split %}
-                        <span class="blog-tag">#{{ tag }}</span>
-                        {% endfor %}
-                    </div>
                     {% endif %}
-                    <a href="{% url 'blog_detail' slug=post.slug %}" class="blog-read-more">
-                        阅读全文 <i class="bi bi-arrow-right"></i>
-                    </a>
+                    <span class="post-cat" style="background:{{ post.category.color }};color:#fff;padding:4px 12px;border-radius:6px;font-size:.6rem;font-weight:700">{{ post.category.name }}</span>
+                </div>
+                <div class="post-body">
+                    <div class="post-meta">
+                        <i class="bi bi-calendar3"></i><span>{{ post.created_at|date:"Y.m" }}</span>
+                        <span class="post-dot"></span>
+                        <i class="bi bi-eye"></i><span>{{ post.views_count }}</span>
+                    </div>
+                    <h2 class="post-title"><a href="{% url 'blog_detail' slug=post.slug %}">{{ post.title }}</a></h2>
+                    <p class="post-excerpt">{{ post.excerpt }}</p>
+                    <div class="post-footer">
+                        <a href="{% url 'blog_detail' slug=post.slug %}" class="post-read">阅读 <i class="bi bi-arrow-right"></i></a>
+                    </div>
                 </div>
             </article>
             {% endfor %}
         {% else %}
-            <div class="blog-empty">
-                <i class="bi bi-journal-text"></i>
-                <p>还没有文章，敬请期待～</p>
-                <p class="blog-empty-sub">正在构思中，很快就会和大家见面！</p>
+            <div style="grid-column:1/-1;text-align:center;padding:60px 20px">
+                <i class="bi bi-journal-text" style="font-size:2.5rem;color:var(--ink-muted);display:block;margin-bottom:12px"></i>
+                <p style="font-size:.95rem;color:var(--ink-soft)">还没有文章，敬请期待～</p>
+                <p style="font-size:.78rem;color:var(--ink-muted);margin-top:6px">正在构思中，很快就会和大家见面！</p>
             </div>
         {% endif %}
     </div>
 
-    <!-- 分页 -->
+    <!-- Pagination -->
     {% if page_obj.paginator.num_pages > 1 %}
     <div class="pagination">
-        <div class="pagination-row">
-            <div class="pagination-links">
-                {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}"
-                   class="pagination-btn nav-btn">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-                {% endif %}
-
-                {% for p in page_obj.paginator.page_range %}
-                    {% if p == page_obj.number %}
-                    <span class="pagination-btn current">{{ p }}</span>
-                    {% elif p >= page_obj.number|add:'-2' and p <= page_obj.number|add:'2' or p == 1 or p == page_obj.paginator.num_pages %}
-                    <a href="?page={{ p }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}"
-                       class="pagination-btn">{{ p }}</a>
-                    {% elif p == page_obj.number|add:'-3' or p == page_obj.number|add:'3' %}
-                    <span class="pagination-ellipsis">…</span>
-                    {% endif %}
-                {% endfor %}
-
-                {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}"
-                   class="pagination-btn nav-btn">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-                {% endif %}
-            </div>
-        </div>
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}" class="pagination-btn"><i class="bi bi-chevron-left"></i></a>
+        {% endif %}
+        {% for p in page_obj.paginator.page_range %}
+            {% if p == page_obj.number %}
+            <span class="pagination-btn current">{{ p }}</span>
+            {% elif p >= page_obj.number|add:'-2' and p <= page_obj.number|add:'2' or p == 1 or p == page_obj.paginator.num_pages %}
+            <a href="?page={{ p }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}" class="pagination-btn">{{ p }}</a>
+            {% elif p == page_obj.number|add:'-3' or p == page_obj.number|add:'3' %}
+            <span class="pagination-btn dots">…</span>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if current_category %}&category={{ current_category }}{% endif %}{% if query %}&q={{ query }}{% endif %}" class="pagination-btn"><i class="bi bi-chevron-right"></i></a>
+        {% endif %}
     </div>
     {% endif %}
+
 </div>
 {% endblock %}

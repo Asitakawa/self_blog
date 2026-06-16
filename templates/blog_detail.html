@@ -14,61 +14,41 @@
 {% endif %}
 {% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/blog.css' %}">
-{% endblock %}
-
 {% block content %}
-<div class="blog-detail-wrapper">
-    <!-- 返回上一页按钮 -->
-<div class="back-to-home">
-    <a href="javascript:void(0)" onclick="history.back()" class="btn-back-home">
-        <i class="bi bi-arrow-left"></i>
-        <span>返回上一页</span>
-    </a>
-</div>
+<div class="wrap">
 
-<!-- 文章头部 -->
-<article class="blog-detail-article">
-        {% if post.cover_image %}
-        <div class="blog-detail-cover">
-            <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
-        </div>
-        {% endif %}
+    <a href="javascript:void(0)" onclick="history.back()" class="back-btn"><i class="bi bi-arrow-left"></i> 返回</a>
 
-        <div class="blog-detail-header">
-            <div class="blog-detail-meta">
-                <span class="blog-category-tag" style="background:{{ post.category.color }}">
-                    {{ post.category.name }}
-                </span>
-                <span class="blog-date">
-                    <i class="bi bi-calendar3"></i> {{ post.created_at|date:"Y年m月d日" }}
-                </span>
-                <span class="blog-views">
-                    <i class="bi bi-eye"></i> {{ post.views_count }}
-                </span>
+    <div class="blog-detail-wrapper" style="margin-top:20px">
+        <article class="blog-detail-article">
+            {% if post.cover_image %}
+            <div class="blog-detail-cover">
+                <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
             </div>
-            <h1 class="blog-detail-title">{{ post.title }}</h1>
-        </div>
-
-        <div class="blog-detail-content">
-            {{ post.content|safe }}
-        </div>
-
-        {% if post.tags %}
-        <div class="blog-detail-tags">
-            <span class="tags-label"><i class="bi bi-tags"></i> 标签：</span>
-            {% for tag in post.tags|split %}
-            <span class="blog-tag">{{ tag }}</span>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="blog-detail-footer">
-            <div class="blog-detail-updated" title="最后更新于 {{ post.updated_at|date:'Y-m-d H:i' }}">
+            {% endif %}
+            <div class="blog-detail-header">
+                <div class="blog-detail-meta">
+                    <span style="background:{{ post.category.color }};color:#fff;padding:3px 12px;border-radius:999px;font-size:.72rem;font-weight:600">{{ post.category.name }}</span>
+                    <span><i class="bi bi-calendar3"></i> {{ post.created_at|date:"Y年m月d日" }}</span>
+                    <span><i class="bi bi-eye"></i> {{ post.views_count }}</span>
+                </div>
+                <h1>{{ post.title }}</h1>
+            </div>
+            <div class="blog-detail-content">
+                {{ post.content|safe }}
+            </div>
+            {% if post.tags %}
+            <div class="blog-detail-tags">
+                {% for tag in post.tags|split %}
+                <span class="t">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div style="padding:0 36px 28px;font-size:.72rem;color:var(--ink-muted);border-top:1px solid #e2e8f0;padding-top:16px;margin:0 36px">
                 <i class="bi bi-pencil"></i> 更新于 {{ post.updated_at|date:"Y年m月d日" }}
             </div>
-        </div>
-    </article>
+        </article>
+    </div>
+
 </div>
 {% endblock %}

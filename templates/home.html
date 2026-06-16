@@ -4,88 +4,93 @@
 
 {% block title %}Asitakawa的网络小树洞 - 首页{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-{% endblock %}
-
 {% block content %}
-<div class="home-wrapper">
-    <!-- 个人介绍区域 -->
-    <section class="hero-section" id="profile">
-        <div class="hero-content">
-            <div class="avatar-container">
-                {% if home_profile and home_profile.avatar %}
-                    <img src="{{ home_profile.avatar.url }}" alt="{{ home_profile.name }}" class="hero-avatar">
-                {% elif profile and profile.avatar %}
-                    <img src="{{ profile.avatar.url }}" alt="{{ profile.name }}" class="hero-avatar">
-                {% else %}
-                    <div class="hero-avatar-placeholder">
-                        <i class="bi bi-person-fill"></i>
-                    </div>
-                {% endif %}
+<div class="wrap">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hlf">
+            <div class="k">✦ {{ home_config.hero_title|default:"✧ こんにちは" }}</div>
+            <h1>Hi, I'm <span class="hl">Asitakawa</span></h1>
+            <p class="sub">{% if home_profile %}{{ home_profile.title }}{% elif profile %}{{ profile.job_intention }}{% endif %}</p>
+            <p class="d">{% if home_config.hero_description %}{{ home_config.hero_description }}{% if home_profile and home_profile.description %}<br>{% endif %}{% endif %}{% if home_profile %}{{ home_profile.description }}{% elif profile %}{{ profile.introduction }}{% endif %}</p>
+            <div class="ac">
+                <a href="/resume/" class="btn btn-p"><i class="bi bi-person-circle"></i> {% if home_profile %}{{ home_profile.resume_button_text }}{% else %}查看简历{% endif %}</a>
+                <a href="/about/" class="btn btn-g"><i class="bi bi-person-heart"></i> 关于我</a>
+                <a href="{% url 'blog_list' %}" class="btn btn-g"><i class="bi bi-book"></i> 博客文章</a>
+                <a href="{% if home_profile %}{{ home_profile.contact_link }}{% else %}#contact{% endif %}" class="btn btn-g"><i class="bi bi-envelope"></i> {% if home_profile %}{{ home_profile.contact_button_text }}{% else %}联系我{% endif %}</a>
             </div>
-            
-            <h1 class="hero-name">
-                {% if home_profile %}{{ home_profile.name }}
-                {% elif profile %}{{ profile.name }}
-                {% else %}A{% endif %}
-            </h1>
-            
-            {% if home_profile and home_profile.title %}
-            <p class="hero-title">{{ home_profile.title }}</p>
-            {% elif home_config and home_config.hero_title %}
-            <p class="hero-title">{{ home_config.hero_title }}</p>
-            {% elif profile and profile.job_intention %}
-            <p class="hero-title">{{ profile.job_intention }}</p>
+        </div>
+        <div class="rt">
+            {% if home_profile and home_profile.avatar %}
+            <div class="av"><img src="{{ home_profile.avatar.url }}" alt="{{ home_profile.name }}"></div>
+            {% elif profile and profile.avatar %}
+            <div class="av"><img src="{{ profile.avatar.url }}" alt="{{ profile.name }}"></div>
+            {% else %}
+            <div class="av"><i class="bi bi-person-fill"></i></div>
             {% endif %}
-            
-            {% if home_profile and home_profile.description %}
-            <p class="hero-description">{{ home_profile.description }}</p>
-            {% elif home_config and home_config.hero_description %}
-            <p class="hero-description">{{ home_config.hero_description }}</p>
-            {% elif profile and profile.introduction %}
-            <p class="hero-description">{{ profile.introduction }}</p>
-            {% endif %}
-            
-            <div class="hero-actions">
-                <a href="/resume/" class="btn-hero-primary">
-                    <i class="bi bi-person-circle"></i> {% if home_profile %}{{ home_profile.resume_button_text }}{% else %}查看简历{% endif %}
-                </a>
-                <a href="/about/" class="btn-hero-secondary">
-                    <i class="bi bi-person-heart"></i> 关于我
-                </a>
-                <a href="{% url 'blog_list' %}" class="btn-hero-secondary">
-                    <i class="bi bi-book"></i> 博客文章
-                </a>
-                <a href="{% if home_profile %}{{ home_profile.contact_link }}{% else %}#contact{% endif %}" class="btn-hero-secondary">
-                    <i class="bi bi-envelope"></i> {% if home_profile %}{{ home_profile.contact_button_text }}{% else %}联系我{% endif %}
-                </a>
-            </div>
+            {% for badge in badges %}
+            <span class="f">{% if badge.icon %}{{ badge.icon }} {% endif %}{{ badge.text }}</span>
+            {% endfor %}
         </div>
     </section>
 
-    <!-- 社交链接区域 -->
+    <!-- BLOG -->
+    {% if blog_posts %}
+    <section style="margin-bottom:50px">
+        <div class="sh"><span class="n">✦</span><h2>博客文章</h2><span class="tg">最近更新</span></div>
+        <div class="posts-grid">
+            {% for post in blog_posts %}
+            <article class="post-card">
+                <div class="post-img">
+                    {% if post.cover_image %}
+                    <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+                    {% else %}
+                    <div class="post-img-placeholder p{{ forloop.counter }}"><i class="bi bi-file-text"></i></div>
+                    {% endif %}
+                    {% if post.category %}
+                    <span class="post-cat" style="background:{{ post.category.color }};color:#fff">{{ post.category.name }}</span>
+                    {% endif %}
+                </div>
+                <div class="post-body">
+                    <div class="post-meta">
+                        <i class="bi bi-calendar3"></i><span>{{ post.created_at|date:"Y.m" }}</span>
+                        <span class="post-dot"></span>
+                        <i class="bi bi-eye"></i><span>{{ post.views_count }}</span>
+                    </div>
+                    <h3 class="post-title">{{ post.title }}</h3>
+                    <p class="post-excerpt">{{ post.excerpt }}</p>
+                    <div class="post-footer">
+                        <a href="{% url 'blog_detail' slug=post.slug %}" class="post-read">阅读 <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- SOCIAL -->
     {% if social_links %}
-    <section class="social-section" id="social">
-        <h2 class="section-title">
-            <i class="bi bi-share"></i> 关注我
-        </h2>
-        <div class="social-grid">
+    <section style="margin-bottom:50px">
+        <div class="sh"><span class="n">✦</span><h2>社交链接</h2></div>
+        <div class="sg">
             {% for social in social_links %}
-            <a href="{{ social.url }}" target="_blank" class="social-card">
-                {% if social.icon_image %}
-                    <img src="{{ social.icon_image.url }}" alt="{{ social.name }}" class="social-icon-image" onerror="this.style.display='none'; this.parentElement.querySelector('.social-icon-fallback').style.display='block';">
-                    <i class="social-icon-fallback" style="display:none;"></i>
-                {% elif 'bi-' in social.icon %}
+            <a href="{{ social.url }}" target="_blank" class="sc">
+                <span class="si">
+                    {% if social.icon_image %}
+                    <img src="{{ social.icon_image.url }}" alt="{{ social.name }}" class="social-icon-image">
+                    {% elif 'bi-' in social.icon %}
                     <i class="bi {{ social.icon }}"></i>
-                {% elif social.icon %}
+                    {% elif social.icon %}
                     <i class="{{ social.icon }}"></i>
-                {% else %}
+                    {% else %}
                     <i class="bi bi-link-45deg"></i>
-                {% endif %}
-                <span class="social-name">{{ social.name }}</span>
+                    {% endif %}
+                </span>
+                <span class="sn">{{ social.name }}</span>
                 {% if social.description %}
-                <span class="social-stats">{{ social.description }}</span>
+                <span class="sd">{{ social.description }}</span>
                 {% endif %}
             </a>
             {% endfor %}
@@ -93,30 +98,28 @@
     </section>
     {% endif %}
 
-    <!-- 个人项目区域 -->
+    <!-- PROJECTS -->
     {% if projects %}
-    <section class="projects-section" id="projects">
-        <h2 class="section-title">
-            <i class="bi bi-folder"></i> {{ home_config.section_title_projects|default:"个人项目" }}
-        </h2>
-        <div class="projects-grid">
+    <section style="margin-bottom:50px">
+        <div class="sh"><span class="n">✦</span><h2>{{ home_config.section_title_projects|default:"项目展示" }}</h2></div>
+        <div class="pg">
             {% for project in projects %}
-            <div class="project-card-home">
-                <div class="project-icon">
+            <div class="pc">
+                <div class="pi">
                     {% if project.icon_image %}
-                        <img src="{{ project.icon_image.url }}" alt="{{ project.name }}" class="project-icon-image">
+                    <img src="{{ project.icon_image.url }}" alt="{{ project.name }}">
                     {% elif 'bi-' in project.icon %}
-                        <i class="bi {{ project.icon }}"></i>
+                    <i class="bi {{ project.icon }}"></i>
                     {% else %}
-                        <i class="{{ project.icon }}"></i>
+                    <i class="{{ project.icon }}"></i>
                     {% endif %}
                 </div>
-                <h3 class="project-name">{{ project.name }}</h3>
-                <p class="project-desc">{{ project.description }}</p>
+                <h3>{{ project.name }}</h3>
+                <p>{{ project.description }}</p>
                 {% if project.technologies %}
-                <div class="project-tags">
-                    {% for tech in project.technologies.split %}
-                    <span class="tag">{{ tech }}</span>
+                <div class="tt">
+                    {% for tech in project.technologies|split %}
+                    <span>{{ tech }}</span>
                     {% endfor %}
                 </div>
                 {% endif %}
@@ -126,93 +129,52 @@
     </section>
     {% endif %}
 
-    <!-- 技能展示区域 -->
-    {% if skills %}
-    <section class="skills-section">
-        <h2 class="section-title">
-            <i class="bi bi-tools"></i> {{ home_config.section_title_skills|default:"专业技能" }}
-        </h2>
-        <div class="skills-grid">
-            {% for skill_category in skills %}
-            <div class="skill-category-card">
-                <h3>
-                    {% if skill_category.icon_image %}
-                        <img src="{{ skill_category.icon_image.url }}" alt="{{ skill_category.category }}" class="skill-icon-image">
-                    {% elif 'bi-' in skill_category.icon %}
-                        <i class="bi {{ skill_category.icon }}"></i>
-                    {% else %}
-                        <i class="{{ skill_category.icon }}"></i>
-                    {% endif %}
-                    {{ skill_category.category }}
-                </h3>
-                <ul class="skill-list">
-                    {% for skill in skill_category.skills.splitlines %}
-                    <li>{{ skill }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- 兴趣爱好区域 -->
-    {% if hobbies %}
-    <section class="hobbies-section">
-        <h2 class="section-title">
-            <i class="bi bi-heart"></i> 兴趣爱好
-        </h2>
-        <div class="hobbies-grid">
-            {% for hobby in hobbies %}
-            <div class="hobby-card-home">
-                {% if hobby.image %}
-                <div class="hobby-image-home">
-                    <img src="{{ hobby.image.url }}" alt="{{ hobby.name }}">
-                </div>
-                {% else %}
-                <div class="hobby-icon-home">
-                    <i class="bi {{ hobby.icon|default:'bi-stars' }}"></i>
-                </div>
-                {% endif %}
-                <h4>{{ hobby.name }}</h4>
-                {% if hobby.description %}
-                <p>{{ hobby.description }}</p>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-    {% endif %}
-
-    <!-- 日常分享区域 -->
+    <!-- GALLERY / EXHIBITIONS -->
     {% if exhibitions %}
-    <section class="exhibitions-section">
-        <div class="section-title-wrapper">
-            <h2 class="section-title">
-                <i class="bi bi-camera"></i> {{ home_config.section_title_exhibitions|default:"日常分享" }}
-            </h2>
-            <a href="{% url 'exhibitions' %}" class="section-more-link">
-                查看更多 <i class="bi bi-arrow-right"></i>
-            </a>
+    <section style="margin-bottom:50px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div class="sh" style="margin-bottom:0"><span class="n">✦</span><h2>{{ home_config.section_title_exhibitions|default:"日常分享" }}</h2></div>
+            <a href="{% url 'exhibitions' %}" style="font-size:.75rem;font-weight:600;color:var(--b-dark);display:flex;align-items:center;gap:4px">查看更多 <i class="bi bi-arrow-right"></i></a>
         </div>
-        <div class="exhibitions-grid">
+        <div class="gg">
             {% for exhibition in exhibitions %}
-            <div class="exhibition-card">
-                {% if exhibition.image %}
-                <div class="exhibition-image" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
-                    <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
-                    <div class="image-overlay">
-                        <i class="bi bi-zoom-in"></i>
-                    </div>
+            {% if exhibition.image %}
+            <div class="gi" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
+                <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}" style="width:100%;height:100%;object-fit:cover">
+                <div class="go">
+                    <h4>{{ exhibition.title }}</h4>
+                    <span>{{ exhibition.created_at|date:"Y.m.d" }}</span>
                 </div>
-                {% endif %}
-                <div class="exhibition-content">
-                    <h3 class="exhibition-title">{{ exhibition.title }}</h3>
-                    {% if exhibition.url %}
-                    <a href="{{ exhibition.url }}" target="_blank" class="exhibition-link">
-                        <i class="bi bi-box-arrow-up-right"></i> 查看详情
-                    </a>
-                    {% endif %}
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- SKILLS -->
+    {% if skills %}
+    <section style="margin-bottom:40px">
+        <div class="sh"><span class="n">✦</span><h2>{{ home_config.section_title_skills|default:"技能展示" }}</h2></div>
+        <div class="skillg">
+            {% for skill_category in skills %}
+            <div class="sk">
+                <div class="shd">
+                    <div class="ic">
+                        {% if skill_category.icon_image %}
+                        <img src="{{ skill_category.icon_image.url }}" alt="{{ skill_category.category }}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">
+                        {% elif 'bi-' in skill_category.icon %}
+                        <i class="bi {{ skill_category.icon }}"></i>
+                        {% else %}
+                        <i class="{{ skill_category.icon }}"></i>
+                        {% endif %}
+                    </div>
+                    <h3>{{ skill_category.category }}</h3>
+                </div>
+                <div class="si">
+                    {% for skill in skill_category.skills.splitlines %}
+                    <div class="it">{{ skill }}</div>
+                    {% endfor %}
                 </div>
             </div>
             {% endfor %}
@@ -220,34 +182,29 @@
     </section>
     {% endif %}
 
-    <!-- 联系信息区域 -->
+    <!-- CONTACT -->
     {% if contact_info %}
-    <section class="contact-section" id="contact">
-        <h2 class="section-title">
-            <i class="bi bi-chat-dots"></i> 联系我
-        </h2>
-        <div class="contact-grid">
+    <section id="contact" style="margin-bottom:40px">
+        <div class="sh"><span class="n">✦</span><h2>联系我</h2></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
             {% for contact in contact_info %}
-            <div class="contact-card">
-                {% if contact.url %}
-                <a href="{{ contact.url }}" target="_blank" style="text-decoration: none; color: inherit;">
-                {% endif %}
+            <div class="card" style="padding:24px;text-align:center">
+                {% if contact.url %}<a href="{{ contact.url }}" target="_blank" style="text-decoration:none;color:inherit">{% endif %}
                     {% if contact.icon_image %}
-                        <img src="{{ contact.icon_image.url }}" alt="{{ contact.get_contact_type_display }}" class="contact-icon-image">
+                    <img src="{{ contact.icon_image.url }}" alt="{{ contact.get_contact_type_display }}" style="width:50px;height:50px;object-fit:contain;margin:0 auto 12px;display:block">
                     {% elif 'bi-' in contact.icon %}
-                        <i class="bi {{ contact.icon }}"></i>
+                    <div style="font-size:1.8rem;color:var(--b-dark);margin-bottom:8px"><i class="bi {{ contact.icon }}"></i></div>
                     {% else %}
-                        <i class="{{ contact.icon }}"></i>
+                    <div style="font-size:1.8rem;color:var(--b-dark);margin-bottom:8px"><i class="{{ contact.icon }}"></i></div>
                     {% endif %}
-                    <h3>{{ contact.get_contact_type_display }}</h3>
-                    <p>{{ contact.value }}</p>
-                {% if contact.url %}
-                </a>
-                {% endif %}
+                    <h3 style="font-size:.95rem;font-weight:600;color:var(--ink);margin-bottom:4px">{{ contact.get_contact_type_display }}</h3>
+                    <p style="font-size:.78rem;color:var(--ink-muted)">{{ contact.value }}</p>
+                {% if contact.url %}</a>{% endif %}
             </div>
             {% endfor %}
         </div>
     </section>
     {% endif %}
+
 </div>
 {% endblock %}

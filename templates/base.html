@@ -4,98 +4,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="max-age=86400, public">
-
-    <!-- SEO Meta Tags -->
     <meta name="author" content="Asitakawa">
     <meta name="description" content="{% block meta_description %}Asitakawa的网络小树洞 - 一个分享技术、生活与日常的个人博客站点{% endblock %}">
     <meta name="keywords" content="{% block meta_keywords %}Asitakawa,个人博客,技术分享,日常分享,网络小树洞{% endblock %}">
-
-    <!-- Open Graph / Social Meta Tags -->
     <meta property="og:site_name" content="Asitakawa的网络小树洞">
     <meta property="og:type" content="{% block og_type %}website{% endblock %}">
     <meta property="og:title" content="{% block og_title %}Asitakawa的网络小树洞{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Asitakawa的网络小树洞 - 一个分享技术、生活与日常的个人博客站点{% endblock %}">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     {% block og_image %}{% endblock %}
-
     <title>{% block title %}Asitakawa的网络小树洞{% endblock %}</title>
-
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
-    
-    <!-- DNS预取和预连接优化 -->
-    <link rel="dns-prefetch" href="https://cdn.bootcdn.net">
-    <link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
-    
-    <!-- Bootstrap 5.3.8 CSS -->
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <!-- Bootstrap Icons - 使用国内CDN加速 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
-    <!-- Font Awesome 6.5.1 - 使用国内CDN加速 -->
     <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <!-- Sidebar CSS -->
-    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}">
-    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}?v=5">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Background Images -->
-    <div class="background-container">
-        <div class="background-image background-1 active" style="background-image: url('{% static "images/back_1.jpg" %}');"></div>
-        <div class="background-image background-2" style="background-image: url('{% static "images/back_2.png" %}');"></div>
+    <div class="bg-system">
+        <div class="bg-layer active" style="background-image: url('{% static "images/back_1.jpg" %}');"></div>
+        <div class="bg-layer" style="background-image: url('{% static "images/back_2.png" %}');"></div>
     </div>
+    <div class="bg-veil"></div>
 
-    <!-- 全局侧边栏导航 -->
     {% include 'resume/sidebar.html' %}
 
     <!-- Main Content -->
     <main>
+
+    <!-- Top Bar -->
+    <div class="top" style="max-width:1080px;margin:0 auto;padding:0 28px">
+        <span class="logo">✦ ASITAKAWA</span>
+        <span class="ln"></span>
+        <span class="st"><span class="d pulse"></span> 网络小树洞</span>
+    </div>
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="site-footer">
-        <div class="footer-content">
-            <p>Made with ❤️ by Asitakawa | Powered by Bootstrap & Django</p>
+    <footer class="ft">
+        <div class="fi">
+            <div class="col">
+                <h4>✦ Asitakawa</h4>
+                <p>用代码构建数字世界<br>用文字记录热爱与思考</p>
+            </div>
+            <div class="col">
+                <h4>链接</h4>
+                <a href="/">首页</a>
+                <a href="{% url 'blog_list' %}">博客</a>
+                <a href="/about/">关于</a>
+                <a href="/resume/">简历</a>
+            </div>
+            <div class="col">
+                <h4>社交</h4>
+                <a href="#">GitHub</a>
+                <a href="#">Bilibili</a>
+                <a href="#">Twitter</a>
+            </div>
         </div>
+        <div class="fb">Made with ♥ by Asitakawa</div>
     </footer>
 
-    <!-- Bootstrap 5.3.8 JS Bundle with Popper -->
-    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-    
-    <!-- Custom JavaScript -->
     <script src="{% static 'js/main.js' %}"></script>
-    
     {% block extra_js %}{% endblock %}
-
-    <style>
-        .site-footer {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            padding: 20px;
-            color: #4a5568;
-            font-size: 0.9rem;
-            margin-top: 20px;
-        }
-        
-        .site-footer p {
-            margin: 0;
-        }
-        
-        .site-footer .footer-content {
-            background-color: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 15px 30px;
-            display: inline-block;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        }
-    </style>
 </body>
 </html>
