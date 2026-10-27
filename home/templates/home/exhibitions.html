@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}日常分享 - 全部展览{% endblock %}
+
+{% block content %}
+<div class="wrap">
+
+    <a href="javascript:void(0)" onclick="history.back()" class="back-btn"><i class="bi bi-arrow-left"></i> 返回</a>
+
+    <div class="sh" style="margin-top:20px"><span class="n">✦</span><h2>日常分享</h2></div>
+    <p style="font-size:.82rem;color:var(--ink-muted);margin-bottom:28px">记录生活中的每一个美好瞬间</p>
+
+    {% if page_obj %}
+    <div class="gg">
+        {% for exhibition in page_obj %}
+        {% if exhibition.image %}
+        <div class="gi" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
+            <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
+            <div class="go">
+                <h4>{{ exhibition.title }}</h4>
+                {% if exhibition.url %}
+                <span><i class="bi bi-box-arrow-up-right"></i> 查看详情</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="pagination-btn"><i class="bi bi-chevron-left"></i></a>
+        {% endif %}
+        {% for p in page_range %}
+            {% if p == '…' %}
+            <span class="pagination-btn dots">…</span>
+            {% elif p == page_obj.number %}
+            <span class="pagination-btn current">{{ p }}</span>
+            {% else %}
+            <a href="?page={{ p }}" class="pagination-btn">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="pagination-btn"><i class="bi bi-chevron-right"></i></a>
+        {% endif %}
+        <div class="pagination-jump">
+            <span style="font-size:.75rem;color:var(--ink-muted)">跳转至</span>
+            <form method="get" action="" class="jump-form" style="display:flex;gap:4px">
+                <input type="number" name="page" min="1" max="{{ page_obj.paginator.num_pages }}" value="{{ page_obj.number }}" onkeydown="if(event.key==='Enter'){event.target.closest('form').submit();}">
+                <button type="submit">页</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div style="text-align:center;padding:80px 20px">
+        <i class="bi bi-images" style="font-size:3rem;color:var(--ink-muted);display:block;margin-bottom:16px"></i>
+        <p style="font-size:1rem;color:var(--ink-soft)">还没有分享内容，敬请期待~</p>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

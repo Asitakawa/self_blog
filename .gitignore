@@ -14,6 +14,7 @@ db.sqlite3-journal
 # Django
 *.log
 local_settings.py
+.env
 /staticfiles/
 /media/
 
@@ -42,3 +43,6 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# WorkBuddy 项目记忆
+.workbuddy/

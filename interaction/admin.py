@@ -1,14 +1,14 @@
 from django.contrib import admin
-from .models import CommentProxy
+
+from .models import Comment
 
 
-@admin.register(CommentProxy)
-class CommentProxyAdmin(admin.ModelAdmin):
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
     list_display = ['nickname', 'content_short', 'is_approved', 'is_hidden', 'created_at']
     list_filter = ['is_approved', 'is_hidden', 'created_at']
     search_fields = ['nickname', 'email', 'content']
     readonly_fields = ['created_at', 'ip_address']
-
     fieldsets = (
         ('评论信息', {
             'fields': ('nickname', 'email', 'website', 'content')

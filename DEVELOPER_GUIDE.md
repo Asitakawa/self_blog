@@ -53,17 +53,17 @@
 
 | 技术 | 版本 | 用途 |
 |------|------|------|
-| Python | 3.13 | 编程语言 |
+| Python | 3.12+ | 编程语言 |
 | Django | 6.0.4 | Web框架 |
 | SQLite | 内置 | 开发数据库 |
 | Pillow | 12.2.0 | 图片处理 |
-| django-ckeditor | 6.7.3 | 富文本编辑器 |
+| django-ckeditor | 6.7.4 | 富文本编辑器 |
 
 ### 前端技术
 
 | 技术 | 版本 | 用途 |
 |------|------|------|
-| Bootstrap | 5.3.8 | CSS框架 |
+| 手写 CSS | - | CSS 变量 + 组件类，无前端框架 |
 | Bootstrap Icons | 1.10.0 | 图标库 |
 | 原生JavaScript | ES6+ | 交互逻辑 |
 
@@ -80,50 +80,57 @@
 
 ```
 self_blog/
-├── self_blog/                  # Django项目配置
-│   ├── settings.py            # 配置文件
-│   ├── urls.py                # 主路由
-│   ├── views.py               # 全局视图（首页、关于、博客、展览）
-│   └── sitemaps.py            # Sitemap配置
-├── resume/                     # 核心应用（数据模型）
-│   ├── migrations/             # 数据库迁移文件
-│   ├── templatetags/           # 自定义模板过滤器
-│   ├── models.py              # 所有数据模型定义
-│   ├── admin.py               # 部分后台配置
-│   ├── views.py               # 简历视图
-│   ├── urls.py                # 简历路由
-│   └── utils.py               # 图片压缩工具
-├── content_mgmt/               # 内容管理后台分组（代理模型）
-├── homepage_mgmt/              # 首页管理后台分组（代理模型）
-├── about_mgmt/                 # 关于页管理后台分组（代理模型）
-├── interaction/                # 用户互动后台分组（代理模型）
-├── templates/                  # HTML模板
-│   ├── base.html              # 基础模板（导航、背景、SEO基础）
-│   ├── home.html              # 首页
-│   ├── about.html             # 关于我页面
-│   ├── exhibitions.html       # 日常分享（展览）页面
-│   ├── blog_list.html         # 博客列表页（搜索+分类筛选+分页）
-│   ├── blog_detail.html       # 博客详情页
-│   └── resume/
-│       ├── resume.html        # 简历页
-│       └── sidebar.html       # 侧边栏
+├── self_blog/                  # 项目配置层，不放业务代码
+│   ├── settings.py            # 配置，敏感项走环境变量
+│   ├── urls.py                # 主路由，按 app include
+│   ├── sitemaps.py            # Sitemap 配置
+│   └── uploader.py            # CKEditor 自定义图片上传
+├── core/                       # 公共组件
+│   ├── images.py              # 图片压缩
+│   ├── pagination.py          # 带省略号的页码生成
+│   ├── utils.py               # 客户端 IP 等小工具
+│   ├── admin_utils.py         # 后台通用 Mixin
+│   └── templatetags/          # 自定义模板过滤器
+├── home/                       # 首页与日常分享
+│   ├── models.py              # 首页相关 9 个模型
+│   ├── views.py               # home / exhibition_list
+│   ├── urls.py
+│   ├── admin.py
+│   └── templates/home/        # index.html / exhibitions.html
+├── blog/                       # 博客
+│   ├── models.py              # BlogCategory / BlogPost
+│   ├── views.py               # blog_list / blog_detail
+│   ├── urls.py / admin.py
+│   └── templates/blog/        # list.html / detail.html
+├── about/                      # 关于页
+│   ├── models.py              # AboutPageInfo / AboutSection
+│   ├── views.py / urls.py / admin.py
+│   └── templates/about/index.html
+├── resume/                     # 简历
+│   ├── models.py              # 8 个简历模型
+│   ├── views.py / urls.py / admin.py
+│   └── templates/resume/index.html
+├── interaction/               # 评论
+│   ├── models.py              # Comment
+│   ├── forms.py               # 评论表单
+│   ├── admin.py               # 审核 / 隐藏 / 批量操作
+│   └── migrations/
+├── templates/                  # 项目级模板
+│   ├── base.html              # 基础模板（导航、背景、SEO）
+│   └── partials/sidebar.html  # 全站侧边栏
 ├── static/                     # 静态资源
 │   ├── css/
-│   │   ├── style.css          # 全局通用样式
-│   │   ├── home.css           # 首页样式
-│   │   ├── resume-optimized.css # 简历页样式
-│   │   ├── about.css          # 关于页样式
-│   │   ├── blog.css           # 博客页样式
-│   │   ├── exhibitions.css    # 展览页样式
-│   │   └── sidebar.css        # 侧边栏样式
-│   ├── images/                # 静态图片（背景图等）
-│   ├── js/
-│   │   └── main.js            # 主逻辑文件
-│   ├── favicon.ico            # 网站图标
-│   └── robots.txt             # 爬虫规则
+│   │   ├── style.css          # 全站样式（设计变量 + 组件类）
+│   │   ├── sidebar.css        # 侧边栏
+│   │   ├── about.css          # 关于页
+│   │   └── resume-optimized.css
+│   ├── images/
+│   ├── js/main.js             # 背景切换、灯箱、侧边栏
+│   ├── favicon.ico
+│   └── robots.txt
 ├── media/                      # 用户上传文件（git忽略）
-├── manage.py                   # Django管理脚本
-└── requirements.txt            # Python依赖包
+├── manage.py
+└── requirements.txt
 ```
 
 ---
@@ -190,7 +197,7 @@ python manage.py runserver
 #### Tag - 个人标签
 `name, color, order`
 
-### 首页相关模型（resume）
+### 首页相关模型（home）
 
 #### HomePageProfile - 首页个人介绍
 `name, title, description, avatar, resume_link, contact_link, ...`
@@ -216,7 +223,7 @@ python manage.py runserver
 #### MusicCreation - 音乐作品
 `title, original_author, version, url, views, order, is_active, created_at`
 
-### 博客相关模型（resume）
+### 博客相关模型（blog）
 
 #### BlogCategory - 博客分类（后台可动态管理）
 `name, slug, color, order, created_at`
@@ -224,7 +231,7 @@ python manage.py runserver
 #### BlogPost - 博客文章
 `title, slug, content(RichTextUploadingField), excerpt, cover_image, category(ForeignKey→BlogCategory), tags, is_published, views_count, created_at, updated_at`
 
-### 关于页面模型（resume）
+### 关于页面模型（about）
 
 #### AboutPageInfo - 关于页面基本信息
 `welcome_text, introduction, about_project, project_title, footer_blessing, is_active`
@@ -232,7 +239,7 @@ python manage.py runserver
 #### AboutSection - 关于页面章节卡片
 `title, icon, icon_image, content(HTML), order, is_active`
 
-### 用户互动模型（resume）
+### 用户互动模型（interaction）
 
 #### Comment - 评论
 `nickname, email, website, content, avatar, ip_address, is_approved, is_hidden, parent(自关联), created_at`
@@ -243,8 +250,8 @@ python manage.py runserver
 
 ### 1. 首页 (`/`)
 
-**模板**：`templates/home.html`  
-**视图**：`self_blog/views.py:home()`
+**模板**：`home/templates/home/index.html`  
+**视图**：`home/views.py:home()`
 
 功能模块：
 - Hero区域 + 社交链接 + 项目展示
@@ -253,29 +260,29 @@ python manage.py runserver
 
 ### 2. 简历页 (`/resume/`)
 
-**模板**：`templates/resume/resume.html`  
+**模板**：`resume/templates/resume/index.html`  
 **视图**：`resume/views.py:resume_view()`
 
 侧边栏（个人信息、标签、兴趣） + 主内容（教育、实习、项目、技能、校园实践）
 
 ### 3. 关于我 (`/about/`)
 
-**模板**：`templates/about.html`  
-**视图**：`self_blog/views.py:about_view()`
+**模板**：`about/templates/about/index.html`  
+**视图**：`about/views.py:about_view()`
 
 欢迎语 + 个人介绍 + 自定义章节卡片 + 评论区
 
 ### 4. 日常分享 (`/exhibitions/`)
 
-**模板**：`templates/exhibitions.html`  
-**视图**：`self_blog/views.py:exhibitions_view()`
+**模板**：`home/templates/home/exhibitions.html`  
+**视图**：`home/views.py:exhibition_list()`
 
 图片墙展示，支持 Lightbox
 
 ### 5. 博客列表 (`/blog/`)
 
-**模板**：`templates/blog_list.html`  
-**视图**：`self_blog/views.py:blog_list()`
+**模板**：`blog/templates/blog/list.html`  
+**视图**：`blog/views.py:blog_list()`
 
 - 搜索框（标题/内容/标签）
 - 分类筛选（动态分类）
@@ -283,8 +290,8 @@ python manage.py runserver
 
 ### 6. 博客详情 (`/blog/<slug>/`)
 
-**模板**：`templates/blog_detail.html`  
-**视图**：`self_blog/views.py:blog_detail()`
+**模板**：`blog/templates/blog/detail.html`  
+**视图**：`blog/views.py:blog_detail()`
 
 - 文章内容（支持富文本/图片）
 - 浏览量自动 +1
@@ -301,35 +308,36 @@ python manage.py runserver
 
 ### 管理分组
 
-后台按功能模块分为 4 个管理区：
+后台按业务域分为 5 个管理区，和 5 个 app 一一对应：
 
-#### 内容管理
+#### 首页（`home`）
+- 首页个人介绍、首页配置（含博客副标题）、浮动词条
+- 社交链接、首页项目、首页技能分类、联系信息
+- 日常分享、校园生活
+
+#### 博客（`blog`）
 - 博客文章：发布/编辑/删除，含 CKEditor 富文本编辑器
-- 博客分类：动态添加/删除/修改分类名称、颜色、排序
-- 首页个人介绍、首页配置（含博客副标题）
-- 首页项目、首页技能分类、社交链接
-- 联系信息、展览日记、音乐作品
+- 博客分类：动态增删改分类名称、颜色、排序
 
-#### 首页管理
-- 首页个人介绍、首页配置
-- 社交链接、首页项目、首页技能分类
-- 联系信息
-
-#### 关于页面管理
+#### 关于页（`about`）
 - 关于页面信息、关于页面章节
 
-#### 用户互动
-- 评论审核与管理
+#### 简历（`resume`）
+- 个人基本信息、教育、实习/工作、项目、技能、校园实践、兴趣爱好、标签
 
-### 内容管理入口
+#### 用户互动（`interaction`）
+- 评论审核、隐藏、批量操作
 
-所有数据模型定义在 `resume/models.py`，通过代理模型（Proxy Model）在 4 个管理应用中注册。
+### 后台注册方式
+
+模型直接定义在各自 app 的 `models.py`，并在同 app 的 `admin.py` 注册——不再需要代理模型（Proxy Model）或额外的分组 app。
 
 | 管理区 | 对应 app | 入口 |
 |--------|----------|------|
-| 内容管理 | `content_mgmt` | 博客文章、博客分类、展览日记等 |
-| 首页管理 | `homepage_mgmt` | 首页配置、社交链接等 |
-| 关于页面管理 | `about_mgmt` | 关于信息、章节卡片 |
+| 首页 | `home` | 首页配置、社交链接、项目、技能、日常分享等 |
+| 博客 | `blog` | 博客文章、博客分类 |
+| 关于页 | `about` | 关于信息、章节卡片 |
+| 简历 | `resume` | 基本信息、教育、实习、项目、技能等 |
 | 用户互动 | `interaction` | 评论管理 |
 
 ---
@@ -337,13 +345,12 @@ python manage.py runserver
 ## 前端开发规范
 
 ### CSS 文件组织
-- `style.css`：全局通用样式（背景、返回按钮、Lightbox、滚动条）
-- `home.css`：首页专属
-- `resume-optimized.css`：简历页
+- `style.css`：全站样式（设计变量、卡片、按钮、博客、灯箱、滚动条）
+- `sidebar.css`：侧边栏（简历/关于/展览/博客等页面共用）
 - `about.css`：关于页
-- `blog.css`：博客列表 + 详情页
-- `exhibitions.css`：展览页
-- `sidebar.css`：侧边栏（显示在简历/关于/展览/博客等页面）
+- `resume-optimized.css`：简历页动画与滚动条
+
+模板在 `base.html` 只引 `style.css` + `sidebar.css`，各页面通过 `extra_css` 追加自己的样式。
 
 ### 颜色方案
 ```css
@@ -369,6 +376,9 @@ backdrop-filter: blur(10px);
 git pull
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+export DJANGO_SECRET_KEY='你的密钥'
+export DJANGO_DEBUG=False
+export DJANGO_ALLOWED_HOSTS='www.asitakawa.top,asitakawa.top'
 python manage.py migrate
 python manage.py collectstatic --noinput --clear
 sudo systemctl restart gunicorn nginx

@@ -10,7 +10,7 @@ from django.utils.html import escape
 from ckeditor_uploader import utils
 from ckeditor_uploader.utils import storage
 
-from resume.utils import compress_image
+from core.images import compress_image
 
 
 @require_POST

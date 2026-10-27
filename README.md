@@ -1,6 +1,6 @@
 # 个人博客系统 - Personal Blog & Resume Website
 
-一个基于 Django 6.0.4 和 Bootstrap 5 构建的现代化个人博客网站，集成简历展示、博客文章、日常分享、评论互动等功能。所有内容可通过 Django Admin 分组管理，实时生效。
+一个基于 Django 6.0.4 构建的个人博客网站，集成简历展示、博客文章、日常分享、评论互动等功能。样式全部手写（CSS 变量 + 组件类），不依赖前端 CSS 框架；内容通过 Django Admin 按业务模块分组管理，实时生效。
 
 在线访问：[www.asitakawa.top](http://www.asitakawa.top)
 
@@ -20,13 +20,15 @@
 - **SEO优化**：语义化 HTML、Open Graph 标签、Sitemap
 - **背景切换**：滚动时自动切换背景图
 
-### 后台管理（四组独立管理区）
-| 管理区 | 管理内容 |
-|--------|----------|
-| 内容管理 | 博客文章、博客分类、个人基本信息、教育/实习/项目/技能/校园实践/兴趣爱好/标签 |
-| 首页管理 | 首页个人介绍、首页配置（含博客副标题）、社交链接、首页项目、首页技能分类、联系信息、展览日记、校园生活、浮动词条 |
-| 关于页面管理 | 关于页面信息、关于页面章节卡片 |
-| 用户互动 | 评论审核与管理 |
+### 后台管理（按业务模块分组）
+
+| 管理区 | 对应 app | 管理内容 |
+|--------|----------|----------|
+| 首页 | `home` | 首页个人介绍、首页配置（含博客副标题）、浮动词条、社交链接、首页项目、首页技能分类、联系信息、日常分享、校园生活 |
+| 博客 | `blog` | 博客文章（CKEditor 富文本）、博客分类 |
+| 关于页 | `about` | 关于页面信息、关于页面章节卡片 |
+| 简历 | `resume` | 个人基本信息、教育/实习/项目/技能/校园实践/兴趣爱好/个人标签 |
+| 用户互动 | `interaction` | 评论审核、隐藏、批量操作 |
 
 ---
 
@@ -34,12 +36,12 @@
 
 | 技术 | 版本 | 用途 |
 |------|------|------|
-| Python | 3.13 | 编程语言 |
+| Python | 3.12+ | 编程语言 |
 | Django | 6.0.4 | Web 框架 |
 | SQLite | 内置 | 开发数据库 |
 | Pillow | 12.2.0 | 图片处理 |
-| django-ckeditor | 6.7.3 | 富文本编辑器 |
-| Bootstrap | 5.3.8 | CSS 框架 |
+| django-ckeditor | 6.7.4 | 富文本编辑器 |
+| 手写 CSS | - | 全站样式（CSS 变量 + 组件类） |
 | Bootstrap Icons | 1.10.0 | 图标库 |
 | Font Awesome | 6.5.1 | 图标库 |
 | Gunicorn + Nginx | - | 生产部署 |
@@ -49,9 +51,8 @@
 ## 快速开始
 
 ### 环境要求
-- Python 3.10+
+- Python 3.12+（Django 6 的最低要求）
 - pip
-- Node.js（可选，用于 Bootstrap 编译）
 
 ### 安装运行
 
@@ -81,57 +82,56 @@ python manage.py runserver
 访问 http://127.0.0.1:8000 查看网站  
 访问 http://127.0.0.1:8000/admin 管理后台
 
+### 环境变量
+
+本地开发不配置也能直接跑（默认 `DEBUG=True` 且使用内置的开发密钥）。生产环境必须设置：
+
+| 变量 | 说明 | 示例 |
+|------|------|------|
+| `DJANGO_SECRET_KEY` | 生产密钥，务必替换 | `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"` |
+| `DJANGO_DEBUG` | 生产设为 `False` | `False` |
+| `DJANGO_ALLOWED_HOSTS` | 允许的域名，逗号分隔 | `www.asitakawa.top,asitakawa.top` |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | CSRF 信任源，逗号分隔 | `https://www.asitakawa.top` |
+
 ---
 
 ## 项目结构
 
 ```
 self_blog/
-├── self_blog/              # Django 项目配置
-│   ├── settings.py         # 配置文件
-│   ├── urls.py             # 主路由
-│   ├── views.py            # 全局视图（首页、关于、博客、展览）
+├── self_blog/              # 项目配置（不含业务视图）
+│   ├── settings.py         # 配置，敏感项走环境变量
+│   ├── urls.py             # 主路由，按应用 include
 │   ├── sitemaps.py         # Sitemap 配置
 │   └── uploader.py         # CKEditor 自定义图片上传
-├── resume/                 # 核心应用（数据模型）
-│   ├── models.py           # 所有数据模型定义
-│   ├── admin.py            # Django Admin 基础配置
-│   ├── views.py            # 简历视图
-│   ├── urls.py             # 简历路由
-│   ├── forms.py            # 评论表单
-│   ├── utils.py            # 图片压缩工具
-│   └── templatetags/       # 自定义模板标签/过滤器
-├── content_mgmt/           # 内容管理后台（代理模型分组）
-├── homepage_mgmt/          # 首页管理后台（代理模型分组）
-├── about_mgmt/             # 关于页管理后台（代理模型分组）
-├── interaction/            # 用户互动后台（代理模型分组）
-├── templates/              # HTML 模板
+├── core/                   # 公共组件：图片压缩、分页、后台 Mixin、模板过滤器
+├── home/                   # 首页：个人信息、配置、社交、项目、技能、日常分享
+├── blog/                   # 博客：文章、分类
+├── about/                  # 关于页：页面信息、章节卡片
+├── resume/                 # 简历：教育、实习、项目、技能、实践、兴趣、标签
+├── interaction/            # 互动：评论模型、表单、审核后台
+├── templates/              # 项目级模板
 │   ├── base.html           # 基础模板
-│   ├── home.html           # 首页
-│   ├── about.html          # 关于我
-│   ├── blog_list.html      # 博客列表
-│   ├── blog_detail.html    # 博客详情
-│   ├── exhibitions.html    # 日常分享
-│   ├── ui_preview.html     # UI 预览页
-│   └── resume/
-│       ├── resume.html     # 简历页
-│       └── sidebar.html    # 侧边栏组件
+│   └── partials/
+│       └── sidebar.html    # 全站侧边栏导航
 ├── static/                 # 静态资源
 │   ├── css/
-│   │   ├── style.css       # 全局通用样式
+│   │   ├── style.css       # 全局样式（设计变量 + 组件类）
 │   │   ├── sidebar.css     # 侧边栏样式
 │   │   ├── about.css       # 关于页面样式
-│   │   └── resume-optimized.css  # 简历页样式 + 滚动条美化
-│   ├── js/main.js          # 主逻辑（背景切换、轻量框、侧边栏）
+│   │   └── resume-optimized.css  # 简历页动画与滚动条
+│   ├── js/main.js          # 主逻辑（背景切换、灯箱、侧边栏）
 │   └── images/             # 静态图片资源
 └── media/                  # 用户上传文件（git 忽略）
 ```
+
+每个业务 app 自带 `models.py` / `views.py` / `urls.py` / `admin.py` / `templates/<app>/`，改一个模块不需要再翻全局目录。
 
 ---
 
 ## 数据模型
 
-### 简历模块
+### 简历模块（`resume`）
 - **Profile** - 个人基本信息（姓名、性别、年龄、籍贯、联系方式、求职意向等）
 - **Education** - 教育经历
 - **Internship** - 实习/工作经历
@@ -141,7 +141,7 @@ self_blog/
 - **Hobby** - 兴趣爱好
 - **Tag** - 个人标签（带颜色）
 
-### 首页模块
+### 首页模块（`home`）
 - **HomePageProfile** - 首页个人介绍
 - **HomeConfig** - 首页配置（Hero 标题、各区块标题、博客副标题）
 - **HomeBadge** - 首页头像浮动词条
@@ -152,15 +152,15 @@ self_blog/
 - **ExhibitionDiary** - 日常分享
 - **ContactInfo** - 联系信息
 
-### 博客模块
+### 博客模块（`blog`）
 - **BlogCategory** - 博客分类（可动态管理）
 - **BlogPost** - 博客文章（标题、别名、富文本内容、封面图、分类、标签、浏览量等）
 
-### 关于模块
+### 关于模块（`about`）
 - **AboutPageInfo** - 关于页面信息
 - **AboutSection** - 关于页面章节卡片
 
-### 互动模块
+### 互动模块（`interaction`）
 - **Comment** - 评论（昵称、邮箱、网站、内容、IP、审核、自关联回复）
 
 ---
@@ -177,14 +177,13 @@ self_blog/
 | `/blog/<slug>/` | 博客详情 | 文章正文 + 标签 + 浏览量 |
 | `/admin/` | 后台管理 | 四组独立管理区 |
 | `/sitemap.xml` | Sitemap | 搜索引擎站点地图 |
-| `/ui-preview/` | UI 预览 | 组件预览页 |
 
 ---
 
 ## 使用指南
 
 ### 发布博客文章
-1. 登录后台 → **内容管理 → 博客文章 → 增加博客文章**
+1. 登录后台 → **博客 → 博客文章 → 增加博客文章**
 2. 填写标题，自动生成 URL 别名（可手动修改）
 3. 选择分类，用 CKEditor 富文本编辑器编写内容
 4. 可选上传封面图、填写标签（逗号分隔）
@@ -192,12 +191,12 @@ self_blog/
 6. 点击保存
 
 ### 管理博客分类
-1. 登录后台 → **内容管理 → 博客分类**
+1. 登录后台 → **博客 → 博客分类**
 2. 可添加/删除/修改分类名称、颜色、排序
 3. `slug` 字段影响 URL 筛选参数 `?category=<slug>`
 
 ### 修改博客副标题
-1. 登录后台 → **首页管理 → 首页配置**
+1. 登录后台 → **首页 → 首页配置**
 2. 修改"博客副标题"字段
 
 ### 评论管理
@@ -213,6 +212,8 @@ self_blog/
 git pull
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+export DJANGO_SECRET_KEY='你的密钥'
+export DJANGO_DEBUG=False
 python manage.py migrate
 python manage.py collectstatic --noinput --clear
 sudo systemctl restart gunicorn nginx

@@ -1,6 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
-from resume.models import ExhibitionDiary, BlogPost
+
+from blog.models import BlogPost
 
 
 class StaticViewSitemap(Sitemap):
@@ -13,18 +14,6 @@ class StaticViewSitemap(Sitemap):
 
     def location(self, item):
         return reverse(item)
-
-
-class ExhibitionDiarySitemap(Sitemap):
-    """日常分享页面站点地图"""
-    changefreq = 'weekly'
-    priority = 0.5
-
-    def items(self):
-        return ExhibitionDiary.objects.filter(is_active=True)
-
-    def lastmod(self, obj):
-        return obj.created_at
 
 
 class BlogPostSitemap(Sitemap):
