@@ -1,6 +1,7 @@
 Django==6.0.4
 django-ckeditor==6.7.4
 Pillow==12.2.0
+pypinyin==0.55.0
 asgiref==3.11.1
 sqlparse==0.5.5
 tzdata==2026.2

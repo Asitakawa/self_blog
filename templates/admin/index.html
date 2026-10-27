@@ -1,0 +1,123 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static admin_stats log %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static "admin/css/dashboard.css" %}">
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+{% block bodyclass %}{{ block.super }} dashboard sb-dashboard{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+{% block nav-sidebar %}{% endblock %}
+
+{% block content %}
+{% admin_stats as stats %}
+
+<div class="sb-cards">
+  <a class="sb-card" href="{% url 'admin:blog_blogpost_changelist' %}">
+    <span class="sb-card-label">博客文章</span>
+    <strong class="sb-card-value">{{ stats.posts }}</strong>
+    <span class="sb-card-sub">草稿 {{ stats.drafts }} 篇</span>
+  </a>
+  <a class="sb-card" href="{% url 'admin:interaction_comment_changelist' %}">
+    <span class="sb-card-label">评论</span>
+    <strong class="sb-card-value">{{ stats.comments }}</strong>
+    <span class="sb-card-sub">待审核 {{ stats.pending_comments }} 条</span>
+  </a>
+  <a class="sb-card" href="{% url 'admin:home_exhibitiondiary_changelist' %}">
+    <span class="sb-card-label">日常分享</span>
+    <strong class="sb-card-value">{{ stats.exhibitions }}</strong>
+    <span class="sb-card-sub">图片记录</span>
+  </a>
+  <a class="sb-card" href="{% url 'admin:resume_project_changelist' %}">
+    <span class="sb-card-label">项目</span>
+    <strong class="sb-card-value">{{ stats.projects }}</strong>
+    <span class="sb-card-sub">简历 + 首页</span>
+  </a>
+</div>
+
+<div class="sb-quick">
+  <a class="button" href="{% url 'admin:blog_blogpost_add' %}"><i class="bi bi-pencil-square"></i> 写文章</a>
+  <a class="button" href="{% url 'admin:home_exhibitiondiary_add' %}"><i class="bi bi-image"></i> 新增日常分享</a>
+  <a class="button" href="{% url 'admin:home_homeconfig_changelist' %}"><i class="bi bi-sliders"></i> 首页配置</a>
+  <a class="button" href="/" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> 查看站点</a>
+</div>
+
+<div class="sb-recent">
+  <section class="sb-panel">
+    <h3>最近文章</h3>
+    {% if stats.recent_posts %}
+    <ul class="sb-list">
+      {% for post in stats.recent_posts %}
+      <li>
+        <a href="{% url 'admin:blog_blogpost_change' post.pk %}">
+          <span>{{ post.title }}</span>
+          <time>{{ post.created_at|date:"m-d" }}</time>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="sb-empty">还没有文章，点上面的「写文章」开始吧。</p>
+    {% endif %}
+  </section>
+
+  <section class="sb-panel">
+    <h3>最近评论</h3>
+    {% if stats.recent_comments %}
+    <ul class="sb-list">
+      {% for comment in stats.recent_comments %}
+      <li>
+        <a href="{% url 'admin:interaction_comment_change' comment.pk %}">
+          <span>{{ comment.nickname }}：{{ comment.content|truncatechars:22 }}</span>
+          <time>{{ comment.created_at|date:"m-d" }}</time>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="sb-empty">还没有评论。</p>
+    {% endif %}
+  </section>
+</div>
+
+<h2 class="sb-section-title">内容管理</h2>
+<div id="content-main" class="app-list">
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+  <div class="module" id="recent-actions-module">
+    <h2>{% translate 'Recent actions' %}</h2>
+    <h3>{% translate 'My actions' %}</h3>
+    {% get_admin_log 10 as admin_log for_user user %}
+    {% if not admin_log %}
+    <p class="sb-empty">{% translate 'None available' %}</p>
+    {% else %}
+    <ul class="actionlist">
+      {% for entry in admin_log %}
+      <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+        <span class="visually-hidden">
+          {% if entry.is_addition %}{% translate 'Added:' %}{% elif entry.is_change %}{% translate 'Changed:' %}{% elif entry.is_deletion %}{% translate 'Deleted:' %}{% endif %}
+        </span>
+        {% if entry.is_deletion or not entry.get_admin_url %}
+          {{ entry.object_repr }}
+        {% else %}
+          <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+        {% endif %}
+        <br>
+        {% if entry.content_type %}
+          <span class="mini quiet">{% filter capfirst %}{{ entry.content_type.name }}{% endfilter %}</span>
+        {% else %}
+          <span class="mini quiet">{% translate 'Unknown content' %}</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

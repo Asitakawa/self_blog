@@ -88,9 +88,10 @@ self_blog/
 ├── core/                       # 公共组件
 │   ├── images.py              # 图片压缩
 │   ├── pagination.py          # 带省略号的页码生成
+│   ├── slug.py                # 中文标题 -> 拼音 slug
 │   ├── utils.py               # 客户端 IP 等小工具
-│   ├── admin_utils.py         # 后台通用 Mixin
-│   └── templatetags/          # 自定义模板过滤器
+│   ├── admin_base.py          # 后台共用 ModelAdmin / Mixin
+│   └── templatetags/          # 模板过滤器、后台统计标签
 ├── home/                       # 首页与日常分享
 │   ├── models.py              # 首页相关 9 个模型
 │   ├── views.py               # home / exhibition_list
@@ -117,12 +118,14 @@ self_blog/
 │   └── migrations/
 ├── templates/                  # 项目级模板
 │   ├── base.html              # 基础模板（导航、背景、SEO）
-│   └── partials/sidebar.html  # 全站侧边栏
+│   ├── partials/sidebar.html  # 全站侧边栏
+│   └── admin/                 # 后台品牌页与仪表盘
 ├── static/                     # 静态资源
 │   ├── css/
 │   │   ├── style.css          # 全站样式（设计变量 + 组件类）
 │   │   ├── sidebar.css        # 侧边栏
 │   │   ├── about.css          # 关于页
+│   │   ├── admin-custom.css   # 后台品牌配色
 │   │   └── resume-optimized.css
 │   ├── images/
 │   ├── js/main.js             # 背景切换、灯箱、侧边栏
@@ -331,6 +334,26 @@ python manage.py runserver
 ### 后台注册方式
 
 模型直接定义在各自 app 的 `models.py`，并在同 app 的 `admin.py` 注册——不再需要代理模型（Proxy Model）或额外的分组 app。
+
+公共行为统一收敛在 `core/admin_base.py`：
+
+| 类 | 作用 |
+|----|------|
+| `BaseModelAdmin` | 分页 30 条、保存按钮置顶、空值显示、筛选面板常显 |
+| `SingletonAdmin` | 单例配置（首页配置、个人信息）禁止重复新增 |
+| `DateRangeMixin` | 列表显示「2024.09 - 至今」并放开结束时间必填 |
+| `ImagePreviewMixin` | 编辑页当前图片预览 + 列表页缩略图 |
+| `IconPreviewMixin` | 图标字段：有图显示图，没图按 `bi-*` 类名渲染 |
+| `ActiveToggleMixin` | 带 `is_active` 的模型提供批量启用/停用 |
+
+后台首页是自定义仪表盘：`templates/admin/index.html` + `core/templatetags/admin_stats.py` 提供统计；品牌配色在 `static/css/admin-custom.css`，同时适配浅色与深色模式。
+
+### URL 别名规则
+
+`BlogPost.slug` 和 `BlogCategory.slug` 都允许留空，保存时由 `core/slug.py` 用 pypinyin 转拼音并保证唯一，例如：
+
+- `重构之后的第一篇文章` → `zhong-gou-zhi-hou-de-di-yi-pian-wen-zhang`
+- 同名标题第二篇 → 自动追加 `-2`
 
 | 管理区 | 对应 app | 入口 |
 |--------|----------|------|
