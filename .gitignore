@@ -46,3 +46,6 @@ Thumbs.db
 
 # WorkBuddy 项目记忆
 .workbuddy/
+
+# Node
+node_modules/

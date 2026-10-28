@@ -20,7 +20,8 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('about/', include('about.urls')),
     path('resume/', include('resume.urls')),
-    path('', include('home.urls')),
+    path('home/', include('home.urls')),
+    path('', include('game.urls')),
 ]
 
 if settings.DEBUG:

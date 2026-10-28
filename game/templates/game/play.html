@@ -1,0 +1,99 @@
+{% load static %}<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>树洞奇缘 · Asitakawa 的网络小树洞</title>
+<meta name="description" content="以视觉小说的方式探索 Asitakawa 的个人世界：剧情推进、分支选择、解锁档案。">
+<link rel="icon" href="{% static 'favicon.ico' %}">
+<link rel="stylesheet" href="{% static 'css/game.css' %}">
+</head>
+<body>
+<div id="vn-app" data-api="{% url 'game:story_api' %}" data-home="{% url 'home:index' %}">
+
+  <!-- 背景双层交叉淡化 -->
+  <div class="vn-bg" id="vn-bg-a"></div>
+  <div class="vn-bg" id="vn-bg-b"></div>
+  <div class="vn-vignette"></div>
+
+  <!-- 顶部菜单 -->
+  <header id="vn-topbar" class="vn-hidden">
+    <span id="vn-chapter-label">序章</span>
+    <nav id="vn-menu">
+      <button class="vn-menu-btn" data-act="auto">自动</button>
+      <button class="vn-menu-btn" data-act="skip">快进</button>
+      <button class="vn-menu-btn" data-act="log">履历</button>
+      <button class="vn-menu-btn" data-act="save">存档</button>
+      <button class="vn-menu-btn" data-act="load">读档</button>
+      <button class="vn-menu-btn" data-act="chapters">章节</button>
+      <button class="vn-menu-btn" data-act="title">标题</button>
+    </nav>
+  </header>
+
+  <!-- 说话者头像 -->
+  <div id="vn-avatar" class="vn-hidden"><img id="vn-avatar-img" src="" alt=""></div>
+
+  <!-- 对话框 -->
+  <div id="vn-dialog" class="vn-hidden">
+    <div id="vn-name-plate" class="vn-hidden">
+      <span id="vn-name"></span>
+      <span id="vn-name-title"></span>
+    </div>
+    <p id="vn-text"></p>
+    <span id="vn-caret">▼</span>
+  </div>
+
+  <!-- 选项 -->
+  <div id="vn-choices" class="vn-hidden"></div>
+
+  <!-- 标题画面 -->
+  <section id="vn-title">
+    <div class="vn-title-inner">
+      <p class="vn-title-sub">— Asitakawa's Web Hollow —</p>
+      <h1 class="vn-title-main">树 洞 奇 缘</h1>
+      <p class="vn-title-desc">一位神秘程序员的记忆，散落在这片夜色里。<br>点击屏幕，拾起它们。</p>
+      <div class="vn-title-actions">
+        <button class="vn-btn vn-btn-primary" data-act="start">开始游戏</button>
+        <button class="vn-btn" data-act="continue" id="vn-btn-continue" hidden>继续游戏</button>
+        <button class="vn-btn" data-act="chapters">章节选择</button>
+        <button class="vn-btn" data-act="leave">离开树洞</button>
+      </div>
+      <p class="vn-title-hint">剧情与内容由后台实时驱动 · 进度自动保存</p>
+    </div>
+  </section>
+
+  <!-- 章节通关 -->
+  <section id="vn-clear" class="vn-hidden">
+    <div class="vn-clear-inner">
+      <p class="vn-clear-badge" id="vn-clear-badge">CHAPTER CLEAR</p>
+      <h2 id="vn-clear-title"></h2>
+      <p id="vn-clear-desc"></p>
+      <div class="vn-title-actions" id="vn-clear-actions"></div>
+    </div>
+  </section>
+
+  <!-- 履历 -->
+  <aside id="vn-log" class="vn-panel vn-hidden">
+    <div class="vn-panel-head"><h3>对话履历</h3><button class="vn-close" data-act="close">×</button></div>
+    <div class="vn-panel-body" id="vn-log-body"></div>
+  </aside>
+
+  <!-- 章节选择 -->
+  <aside id="vn-chapter-panel" class="vn-panel vn-hidden">
+    <div class="vn-panel-head"><h3>章节选择</h3><button class="vn-close" data-act="close">×</button></div>
+    <div class="vn-panel-body" id="vn-chapter-body"></div>
+  </aside>
+
+  <!-- 存读档 -->
+  <aside id="vn-save-panel" class="vn-panel vn-hidden">
+    <div class="vn-panel-head"><h3 id="vn-save-title">存档</h3><button class="vn-close" data-act="close">×</button></div>
+    <div class="vn-panel-body" id="vn-save-body"></div>
+  </aside>
+
+  <div id="vn-toast" class="vn-hidden"></div>
+  <div id="vn-loading"><span class="vn-loader"></span>正在加载剧情…</div>
+</div>
+
+<script src="{% static 'js/game/engine.js' %}"></script>
+</body>
+</html>

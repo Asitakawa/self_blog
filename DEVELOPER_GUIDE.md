@@ -111,6 +111,12 @@ self_blog/
 │   ├── models.py              # 8 个简历模型
 │   ├── views.py / urls.py / admin.py
 │   └── templates/resume/index.html
+├── game/                       # 视觉小说《树洞奇缘》
+│   ├── models.py              # GameCharacter / GameChapter / GameDialogue / GameChoice
+│   ├── views.py               # /api/story/ 剧情 JSON API（含最新文章动态数据）
+│   ├── urls.py / admin.py     # 章节内联台词、台词内联选项
+│   ├── management/commands/seed_story.py   # 示例剧情重置命令
+│   └── templates/game/play.html   # 游戏主界面（独立模板）
 ├── interaction/               # 评论
 │   ├── models.py              # Comment
 │   ├── forms.py               # 评论表单
@@ -251,9 +257,27 @@ python manage.py runserver
 
 ## 页面功能说明
 
-### 1. 首页 (`/`)
+### 0. 视觉小说《树洞奇缘》 (`/`、`/play/`)
 
-**模板**：`home/templates/home/index.html`  
+**模板**：`game/templates/game/play.html`（独立模板，不继承 base.html）
+**引擎**：`static/js/game/engine.js`（原生 JS，无第三方依赖）+ `static/css/game.css`
+**数据**：`/api/story/`（`game/views.py:story_api`），一次性返回全部章节/台词/选项和最新 5 篇文章
+
+数据流：Django Admin 编辑剧情 → `/api/story/` 输出 JSON → 引擎渲染。台词类型三种：
+- `text`：角色台词（带名牌与头像，头像来自 `GameCharacter.avatar`）
+- `narration`：旁白（无名牌，暗色文字）
+- `dynamic_blogs`：动态节点——引擎把 `latest_posts` 渲染为选项，点击跳真实文章页
+
+选项跳转优先级：`url` > `goto_chapter` > `goto_dialogue`，三者都空则线性继续。
+
+引擎内置：打字机（点击跳过）、自动播放、快进、对话履历、自动+手动存档（localStorage）、
+章节解锁（`vn_unlocked`，通关或到达即解锁）、章节通关画面。选项弹出时点击不推进剧情。
+
+内容页通过 `templates/partials/game_orb.html` 的「回到游戏」浮球与游戏互通。
+
+### 1. 树洞小屋 (`/home/`)
+
+**模板**：`home/templates/home/index.html`
 **视图**：`home/views.py:home()`
 
 功能模块：
@@ -275,7 +299,7 @@ python manage.py runserver
 
 欢迎语 + 个人介绍 + 自定义章节卡片 + 评论区
 
-### 4. 日常分享 (`/exhibitions/`)
+### 4. 日常分享 (`/home/exhibitions/`)
 
 **模板**：`home/templates/home/exhibitions.html`  
 **视图**：`home/views.py:exhibition_list()`

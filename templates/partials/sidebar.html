@@ -10,10 +10,16 @@
     <div class="sidebar-menu-wrapper">
         <!-- 页面跳转菜单 -->
         <div class="sidebar-menu-items page-navigation">
-            <!-- 首页按钮 -->
-            <a href="/" class="sidebar-item {% if request.path == '/' %}active{% endif %}" data-section="home" title="首页">
+            <!-- 首页按钮（即游戏入口） -->
+            <a href="/" class="sidebar-item {% if request.path == '/' %}active{% endif %}" data-section="home" title="树洞奇缘 · 游戏">
+                <i class="bi bi-controller"></i>
+                <span class="item-label">树洞奇缘</span>
+            </a>
+
+            <!-- 树洞小屋按钮 -->
+            <a href="{% url 'home:index' %}" class="sidebar-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}" title="树洞小屋">
                 <i class="bi bi-house-door"></i>
-                <span class="item-label">首页</span>
+                <span class="item-label">树洞小屋</span>
             </a>
             
             <!-- 博客按钮 -->
@@ -22,7 +28,7 @@
                 <span class="item-label">博客文章</span>
             </a>
             <!-- 日常分享按钮 -->
-            <a href="{% url 'exhibitions' %}" class="sidebar-item {% if request.resolver_match.url_name == 'exhibitions' %}active{% endif %}" title="日常分享">
+            <a href="{% url 'home:exhibitions' %}" class="sidebar-item {% if request.resolver_match.url_name == 'exhibitions' %}active{% endif %}" title="日常分享">
                 <i class="bi bi-camera"></i>
                 <span class="item-label">日常分享</span>
             </a>

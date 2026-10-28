@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'about',
     'resume',
     'interaction',
+    'game',
 ]
 
 MIDDLEWARE = [
