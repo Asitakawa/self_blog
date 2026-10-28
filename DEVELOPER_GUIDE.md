@@ -112,11 +112,12 @@ self_blog/
 │   ├── views.py / urls.py / admin.py
 │   └── templates/resume/index.html
 ├── game/                       # 视觉小说《树洞奇缘》
-│   ├── models.py              # GameCharacter / GameChapter / GameDialogue / GameChoice
-│   ├── views.py               # /api/story/ 剧情 JSON API（含最新文章动态数据）
-│   ├── urls.py / admin.py     # 章节内联台词、台词内联选项
-│   ├── management/commands/seed_story.py   # 示例剧情重置命令
+│   ├── models.py              # 角色 / 章节 / 台词 / 选项 / 记忆碎片 / 留言
+│   ├── views.py               # /api/story/ 剧情、/api/content/ 场景内容、阅读器与留言 API
+│   ├── urls.py / admin.py     # 章节内联台词、台词内联选项、碎片场景下拉
+│   ├── management/commands/seed_story.py   # 示例剧情与碎片重置命令
 │   └── templates/game/play.html   # 游戏主界面（独立模板）
+├── static/js/game/shelf3d.js   # 3D 书架（Three.js，动态 import）
 ├── interaction/               # 评论
 │   ├── models.py              # Comment
 │   ├── forms.py               # 评论表单
@@ -282,6 +283,19 @@ python manage.py runserver
 
 阅读器单独走 `/api/post/<slug>/`，返回文章正文 HTML（内容由后台 CKEditor 撰写，属可信来源）。
 
+#### 3D 书架（`static/js/game/shelf3d.js`）
+
+书架场景默认是 Three.js 实时渲染的 3D 木书柜，不是贴图：
+
+- **模型**：全部程序化生成——柜体由 BoxGeometry 拼装，书脊用 CanvasTexture 现场绘制（分类色底 + 书名竖排 + 烫金线），装饰旧书用同一函数留空书名填充空隙。
+- **真实文章**：按发布时间从上往下、从左往右摆，书脊带金色书签带，只有这些参与拾取；装饰书不响应点击。
+- **交互**：pointer 拖拽旋转（方位角 ±0.5 rad）、滚轮缩放（4.7–8.2）、悬停 Raycaster 命中后抬起 0.055 并点亮书脊、tooltip 显示标题与分类；点击调 `GameScenes.openPost(slug)` 打开游戏内阅读器。触摸设备在 pointerup 时重新拾取，因为没有 hover。
+- **性能与生命周期**：像素比上限 1.75、单方向光阴影 1024；场景关闭或切换时 `dispose()` 释放 renderer / geometry / material / texture，并移除 canvas。
+- **回退**：`scenes.js` 先检测 WebGL，不支持或模块加载失败时渲染 2D 书单，并给出提示；用户可用「切换列表视图 / 切换 3D 书架」手动切换，偏好存 `vn_shelf_mode`。
+- **依赖**：`static/js/vendor/three.module.js`（r160，MIT，本地内置，不走 CDN）。
+
+调试技巧：`/?scene=blogs` 直接打开书架；`window.GameScenes.shelfInstance()` 可取到当前实例。
+
 **收集与成就**：`GameMemoryFragment` 定义碎片藏在哪个场景（`panel` 字段：resume / blogs / gallery / about / board）。前端在对应场景的 `.vn-scene-body` 里随机撒一个 `.vn-spark`，点击写入 `vn_frags`；集齐全部触发真结局。成就有 10 项，存在 `vn_ach`；阅读记录 `vn_read`；昵称绑定 `vn_nick`。
 
 引擎内置：打字机（点击跳过）、自动播放、快进、对话履历、自动+手动存档（localStorage）、
@@ -289,6 +303,16 @@ python manage.py runserver
 场景打开时键盘与点击都不会穿透到剧情（`GameScenes.isOpen()` 守卫）。
 
 内容页通过 `templates/partials/game_orb.html` 的「回到游戏」浮球与游戏互通。
+
+#### 前端测试
+
+```bash
+npm install --no-save jsdom puppeteer-core   # 仅测试用，不入库
+node test_scenes.js      # 场景与剧情交互（jsdom，48 项）
+node test_shelf3d.js     # 3D 书架端到端（真实 Chrome + WebGL，13 项）
+```
+
+`test_shelf3d.js` 需要本机 Chrome，路径写在文件顶部；它验证渲染、悬停命中、点击阅读、拖拽旋转与资源释放。
 
 ### 1. 树洞小屋 (`/home/`)
 

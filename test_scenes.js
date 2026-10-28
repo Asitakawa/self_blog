@@ -153,6 +153,7 @@ function ok(cond, label, extra) {
   click(q('[data-scene="blogs"]'));
   await sleep(500);
   ok(q('.vn-scene[data-scene="blogs"]').classList.contains('active'), '书架场景打开');
+  ok($('scene-blogs-body').dataset.shelfMode === 'list', '无 WebGL 时自动回退列表视图');
   ok(qa('#scene-blogs-body .vn-book').length === content.posts.length, '书籍数量与文章数一致');
   ok(qa('#scene-blogs-body .vn-spark').length === 1, '书架藏有碎片');
 

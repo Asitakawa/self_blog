@@ -16,7 +16,7 @@
     guestbookPost: app.dataset.guestbookPost,
   };
 
-  var LS = { frags: 'vn_frags', ach: 'vn_ach', nick: 'vn_nick', read: 'vn_read' };
+  var LS = { frags: 'vn_frags', ach: 'vn_ach', nick: 'vn_nick', read: 'vn_read', shelf: 'vn_shelf_mode' };
 
   var ACHIEVEMENTS = [
     { key: 'start', name: '推开树洞的门', desc: '开始这段故事' },
@@ -107,8 +107,18 @@
 
   /* ---------------- 场景开关 ---------------- */
 
+  var shelf3d = null;
+
+  function disposeShelf() {
+    if (shelf3d) {
+      try { shelf3d.dispose(); } catch (e) { /* 忽略 GPU 释放异常 */ }
+      shelf3d = null;
+    }
+  }
+
   function open(kind) {
     if (!kind) kind = 'resume';
+    if (kind !== 'blogs') disposeShelf();
     ensureData().then(function () {
       current = kind;
       root.classList.remove('vn-hidden');
@@ -138,6 +148,7 @@
   }
 
   function close() {
+    disposeShelf();
     root.classList.add('vn-hidden');
     document.body.classList.remove('scene-open');
     current = null;
@@ -272,25 +283,86 @@
 
   /* ---------------- 场景二：书架 / 阅读器 ---------------- */
 
+  function hasWebGL() {
+    try {
+      var c = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
+    } catch (e) { return false; }
+  }
+
+  function shelfMode() {
+    return readLS(LS.shelf, '3d') === 'list' ? 'list' : '3d';
+  }
+
+  function shelfBar(mode, total, can3d) {
+    return '<div class="vn-shelf-bar">' +
+      '<span class="vn-shelf-count">' + total + ' 本书在架上</span>' +
+      (can3d
+        ? '<button class="vn-shelf-toggle" id="vn-shelf-toggle">' +
+          (mode === '3d' ? '切换列表视图' : '切换 3D 书架') + '</button>'
+        : '<span class="vn-shelf-badge">列表视图</span>') +
+      '</div>';
+  }
+
+  function bookGridHtml(posts) {
+    return '<div class="vn-book-grid">' + posts.map(function (p, i) {
+      return '<button class="vn-book" data-post="' + esc(p.slug) + '">' +
+        '<span class="vn-book-spine" style="background:' + esc(p.color) + '"></span>' +
+        '<span class="vn-book-main">' +
+        '<span class="vn-book-meta">' + esc(p.category || '随笔') + ' · ' + esc(p.date) + '</span>' +
+        '<span class="vn-book-title">' + esc(p.title) + '</span>' +
+        '<span class="vn-book-excerpt">' + esc(p.excerpt || '') + '</span>' +
+        '<span class="vn-book-action">翻开第 ' + (i + 1) + ' 本 →</span>' +
+        '</span></button>';
+    }).join('') + '</div>';
+  }
+
+  function renderBookList(body, posts, fallbackNote) {
+    body.dataset.shelfMode = 'list';
+    body.innerHTML = shelfBar('list', posts.length, hasWebGL()) +
+      (fallbackNote ? '<p class="vn-shelf-note">3D 书架加载失败，已切换为列表视图。</p>' : '') +
+      bookGridHtml(posts);
+    plantFragment('blogs', body);
+  }
+
+  function renderShelf3D(body, posts) {
+    body.dataset.shelfMode = '3d';
+    body.innerHTML = shelfBar('3d', posts.length, true) +
+      '<div class="vn-shelf3d" id="vn-shelf3d"><div class="vn-shelf-loading">正在把书架立起来…</div></div>' +
+      '<p class="vn-shelf-hint">拖动旋转 · 滚轮缩放 · 点击书脊翻开' +
+      (posts.length > 40 ? ' · 架上只摆最近 40 本' : '') + '</p>';
+    plantFragment('blogs', body);
+
+    var stage = $('vn-shelf3d');
+    if (!stage) return;
+    import(app.dataset.shelf3d).then(function (mod) {
+      if (!stage || current !== 'blogs' || !document.body.contains(stage)) return;
+      stage.innerHTML = '';
+      shelf3d = new mod.Shelf3D(stage, posts, { onOpen: openReader });
+      stage.classList.add('ready');
+    }).catch(function (err) {
+      body.dataset.shelfError = (err && err.message) || String(err);
+      if (current === 'blogs') renderBookList(body, posts, true);
+    });
+  }
+
   function renderBlogs() {
     var posts = data.posts || [];
-    var h = '';
+    var body = $('scene-blogs-body');
+    disposeShelf();
+    body.dataset.shelfMode = '';
+
     if (!posts.length) {
-      h = empty('书架上还空着，等主人写下第一篇。');
-    } else {
-      h = '<div class="vn-book-grid">' + posts.map(function (p, i) {
-        return '<button class="vn-book" data-post="' + esc(p.slug) + '">' +
-          '<span class="vn-book-spine" style="background:' + esc(p.color) + '"></span>' +
-          '<span class="vn-book-main">' +
-          '<span class="vn-book-meta">' + esc(p.category || '随笔') + ' · ' + esc(p.date) + '</span>' +
-          '<span class="vn-book-title">' + esc(p.title) + '</span>' +
-          '<span class="vn-book-excerpt">' + esc(p.excerpt || '') + '</span>' +
-          '<span class="vn-book-action">翻开第 ' + (i + 1) + ' 本 →</span>' +
-          '</span></button>';
-      }).join('') + '</div>';
+      body.innerHTML = empty('书架上还空着，等主人写下第一篇。');
+      plantFragment('blogs', body);
+      return;
     }
-    $('scene-blogs-body').innerHTML = h;
-    plantFragment('blogs', $('scene-blogs-body'));
+
+    if (shelfMode() === '3d' && hasWebGL()) {
+      renderShelf3D(body, posts);
+    } else {
+      renderBookList(body, posts, shelfMode() === '3d' && !hasWebGL());
+    }
   }
 
   function renderReader() {
@@ -579,6 +651,11 @@
   /* ---------------- 事件绑定 ---------------- */
 
   document.addEventListener('click', function (e) {
+    if (e.target.closest('#vn-shelf-toggle')) {
+      writeLS(LS.shelf, shelfMode() === '3d' ? 'list' : '3d');
+      renderBlogs();
+      return;
+    }
     // 关闭类先判定：场景容器本身也带 data-scene，不能让它把关闭点击吃掉
     if (e.target.closest('[data-scene-close]')) { close(); return; }
     if (e.target.closest('[data-reader-back]')) { open('blogs'); return; }
@@ -618,12 +695,34 @@
     }
   });
 
+  /* ---------------- 深链：#scene=blogs 直接进场景 ---------------- */
+
+  var SCENES = ['resume', 'blogs', 'gallery', 'about', 'board', 'achievements'];
+
+  function sceneFromUrl() {
+    var s = null;
+    try {
+      s = new URLSearchParams(location.search).get('scene');
+    } catch (e) { /* 老浏览器忽略 */ }
+    if (!s && location.hash.indexOf('#scene=') === 0) s = location.hash.slice(7);
+    return SCENES.indexOf(s) !== -1 ? s : null;
+  }
+
+  function openFromUrl() {
+    var s = sceneFromUrl();
+    if (s) open(s);
+  }
+
+  window.addEventListener('load', openFromUrl);
+  window.addEventListener('hashchange', openFromUrl);
+
   /* ---------------- 对外接口 ---------------- */
 
   window.GameScenes = {
     open: open,
     close: close,
     openPost: openReader,
+    shelfInstance: function () { return shelf3d; },
     isOpen: function () { return !!current; },
     toast: toast,
     unlock: unlock,
