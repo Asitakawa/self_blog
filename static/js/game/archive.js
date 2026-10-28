@@ -501,4 +501,11 @@
   };
 
   updateRecord();
+
+  // ?night=1 直接进入夜班，方便演示与截图
+  if (/[?&]night(=1)?(&|$)/.test(window.location.search)) {
+    window.addEventListener('load', function () {
+      setTimeout(function () { start(); }, 320);
+    });
+  }
 })();
