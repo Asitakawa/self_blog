@@ -260,18 +260,33 @@ python manage.py runserver
 ### 0. 视觉小说《树洞奇缘》 (`/`、`/play/`)
 
 **模板**：`game/templates/game/play.html`（独立模板，不继承 base.html）
-**引擎**：`static/js/game/engine.js`（原生 JS，无第三方依赖）+ `static/css/game.css`
-**数据**：`/api/story/`（`game/views.py:story_api`），一次性返回全部章节/台词/选项和最新 5 篇文章
+**引擎**：`static/js/game/engine.js`（剧情推进 / 存档 / 章节）+ `static/js/game/scenes.js`（游戏内场景）+ `static/css/game.css`
 
 数据流：Django Admin 编辑剧情 → `/api/story/` 输出 JSON → 引擎渲染。台词类型三种：
 - `text`：角色台词（带名牌与头像，头像来自 `GameCharacter.avatar`）
 - `narration`：旁白（无名牌，暗色文字）
-- `dynamic_blogs`：动态节点——引擎把 `latest_posts` 渲染为选项，点击跳真实文章页
+- `dynamic_blogs`：动态节点——引擎把 `latest_posts` 渲染为选项
 
 选项跳转优先级：`url` > `goto_chapter` > `goto_dialogue`，三者都空则线性继续。
 
+**`panel:` 协议**：选项的 `url` 以 `panel:` 开头时，不跳页，而是在游戏内打开场景：
+
+| 值 | 场景 | 数据来源 |
+|----|------|----------|
+| `panel:resume` | 档案室（简历手账） | `/api/content/` 的 profile / educations / internships / projects / skills / campus / hobbies / tags |
+| `panel:blogs` | 书架 | `/api/content/` 的 posts |
+| `panel:gallery` | 相册 | `/api/content/` 的 exhibitions（图片 + 灯箱） |
+| `panel:about` | 关于（信件） | `/api/content/` 的 about + contacts + socials |
+| `panel:guestbook` | 留言板 | `/api/guestbook/`，POST 同路径 `/api/guestbook/post/` |
+| `panel:achievements` | 探索记录 | 本地 localStorage |
+
+阅读器单独走 `/api/post/<slug>/`，返回文章正文 HTML（内容由后台 CKEditor 撰写，属可信来源）。
+
+**收集与成就**：`GameMemoryFragment` 定义碎片藏在哪个场景（`panel` 字段：resume / blogs / gallery / about / board）。前端在对应场景的 `.vn-scene-body` 里随机撒一个 `.vn-spark`，点击写入 `vn_frags`；集齐全部触发真结局。成就有 10 项，存在 `vn_ach`；阅读记录 `vn_read`；昵称绑定 `vn_nick`。
+
 引擎内置：打字机（点击跳过）、自动播放、快进、对话履历、自动+手动存档（localStorage）、
-章节解锁（`vn_unlocked`，通关或到达即解锁）、章节通关画面。选项弹出时点击不推进剧情。
+章节解锁（`vn_unlocked`，通关或到达即解锁）、章节通关画面。选项弹出时点击不推进剧情；
+场景打开时键盘与点击都不会穿透到剧情（`GameScenes.isOpen()` 守卫）。
 
 内容页通过 `templates/partials/game_orb.html` 的「回到游戏」浮球与游戏互通。
 

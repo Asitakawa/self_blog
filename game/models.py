@@ -75,7 +75,11 @@ class GameDialogue(models.Model):
 
 
 class GameChoice(models.Model):
-    """选项：绑定在某句台词后。跳转目标三选一：章节 / 台词 / 外部链接。"""
+    """选项：绑定在某句台词后。跳转目标：章节 / 台词 / 站内链接 / 游戏内场景面板。
+
+    url 填 panel:resume / panel:blogs / panel:gallery / panel:about /
+    panel:guestbook / panel:achievements 时，会在游戏内打开对应场景，不跳页。
+    """
 
     dialogue = models.ForeignKey(GameDialogue, on_delete=models.CASCADE, related_name='choices',
                                  verbose_name='所属台词')
@@ -84,7 +88,7 @@ class GameChoice(models.Model):
                                      related_name='entry_choices', verbose_name='跳转到章节')
     goto_dialogue = models.ForeignKey(GameDialogue, null=True, blank=True, on_delete=models.SET_NULL,
                                       related_name='+', verbose_name='跳转到指定台词')
-    url = models.CharField(max_length=300, blank=True, verbose_name='或跳转链接（如 /blog/）')
+    url = models.CharField(max_length=300, blank=True, verbose_name='或跳转（/blog/ 或 panel:resume）')
     order = models.IntegerField(default=0, verbose_name='排序')
 
     class Meta:
@@ -94,3 +98,45 @@ class GameChoice(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class GameGuestbook(models.Model):
+    """树洞留言板：昵称由客户端绑定后复用，同一昵称可留下多条。"""
+
+    nickname = models.CharField(max_length=30, db_index=True, verbose_name='昵称')
+    content = models.CharField(max_length=200, verbose_name='留言内容')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='留言时间')
+
+    class Meta:
+        verbose_name = '树洞留言'
+        verbose_name_plural = '树洞留言'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.nickname}: {self.content[:20]}'
+
+
+class GameMemoryFragment(models.Model):
+    """记忆碎片：藏在游戏场景里的收集要素，集齐后解锁真结局。"""
+
+    PANEL_CHOICES = [
+        ('resume', '档案室'),
+        ('blogs', '书架'),
+        ('gallery', '相册'),
+        ('about', '关于'),
+        ('board', '留言板'),
+    ]
+
+    code = models.SlugField(max_length=50, unique=True, verbose_name='碎片标识')
+    name = models.CharField(max_length=50, verbose_name='碎片名称')
+    hint = models.CharField(max_length=200, verbose_name='获得时的独白')
+    panel = models.CharField(max_length=30, choices=PANEL_CHOICES, default='resume', verbose_name='藏在哪个场景')
+    order = models.IntegerField(default=0, verbose_name='排序')
+
+    class Meta:
+        verbose_name = '记忆碎片'
+        verbose_name_plural = '记忆碎片'
+        ordering = ['order', 'id']
+
+    def __str__(self):
+        return self.name

@@ -125,6 +125,7 @@
     if (recordUnlock !== false) unlock(chapters[ci].id);
     hide(el.title); hide(el.clear);
     show(el.topbar); show(el.dialog);
+    show($('vn-hud'));
     el.chapterLabel.textContent =
       (chapters[ci].badge ? chapters[ci].badge + ' · ' : '') + chapters[ci].title;
     showLine();
@@ -210,7 +211,8 @@
     var list = [];
     if (d.kind === 'dynamic_blogs') {
       latestPosts.forEach(function (p) {
-        list.push({ text: p.title, sub: p.excerpt, url: p.url, ext: true });
+        // 直接在游戏内阅读器打开，不跳出网页
+        list.push({ text: p.title, sub: p.excerpt, post: p.slug });
       });
       list.push({ text: '先不看了，继续剧情 →' });
     } else {
@@ -252,6 +254,19 @@
   }
 
   function choose(c) {
+    // 动态文章节点：游戏内阅读器
+    if (c.post && window.GameScenes && window.GameScenes.openPost) {
+      autoSave();
+      window.GameScenes.openPost(c.post);
+      return;
+    }
+    // 游戏内场景：panel:resume / panel:blogs / panel:gallery / panel:about / panel:guestbook
+    if (c.url && c.url.indexOf('panel:') === 0) {
+      autoSave();
+      var kind = c.url.slice(6);
+      if (window.GameScenes) window.GameScenes.open(kind);
+      return;
+    }
     hide(el.choices);
     if (c.url) {
       autoSave();
@@ -415,8 +430,9 @@
     skipMode = false; autoMode = false;
     syncMenuButtons();
     closePanels();
+    if (window.GameScenes) window.GameScenes.close();
     hide(el.topbar); hide(el.dialog); hide(el.avatar);
-    hide(el.choices); hide(el.clear);
+    hide(el.choices); hide(el.clear); hide($('vn-hud'));
     if (chapters.length && chapters[0].background) setBackground(chapters[0].background);
     el.btnContinue.hidden = !readLS(LS.auto, null);
     show(el.title);
@@ -437,8 +453,19 @@
     document.querySelector('[data-act="skip"]').classList.toggle('on', skipMode);
   }
 
+  // 侧面板关闭按钮（履历 / 章节 / 存档）
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('.vn-close')) closePanels();
+  });
+
   document.getElementById('vn-menu').addEventListener('click', function (e) {
     e.stopPropagation();
+    // 场景入口（档案 / 书架 / 相册 / 关于 / 留言 / 记录）
+    var sceneBtn = e.target.closest('button[data-scene]');
+    if (sceneBtn && window.GameScenes) {
+      window.GameScenes.open(sceneBtn.dataset.scene);
+      return;
+    }
     var act = e.target.dataset && e.target.dataset.act;
     if (!act) return;
     if (act === 'auto') { autoMode = !autoMode; if (autoMode) skipMode = false; syncMenuButtons(); toast(autoMode ? '自动播放：开' : '自动播放：关'); }
@@ -447,10 +474,12 @@
     if (act === 'save') openSave('save');
     if (act === 'load') openSave('load');
     if (act === 'chapters') openChapters();
+    if (act === 'achievements') { if (window.GameScenes) window.GameScenes.open('achievements'); }
     if (act === 'title') showTitle();
   });
 
   document.addEventListener('keydown', function (e) {
+    if (window.GameScenes && window.GameScenes.isOpen()) return;
     if (e.key === 'Escape') { closePanels(); return; }
     if (!pos || typeTimer === null && el.choices && !el.choices.classList.contains('vn-hidden')) return;
     if (e.key === ' ' || e.key === 'Enter') {
@@ -468,6 +497,8 @@
   }
 
   app.addEventListener('click', function (e) {
+    // 场景面板打开时，点击只属于场景
+    if (window.GameScenes && window.GameScenes.isOpen()) return;
     // 面板与按钮自己处理
     if (e.target.closest('.vn-panel') || e.target.closest('#vn-topbar')) return;
     if (e.target.closest('#vn-title') || e.target.closest('#vn-clear')) return;
@@ -481,11 +512,29 @@
   el.title.addEventListener('click', function (e) {
     var act = e.target.dataset && e.target.dataset.act;
     if (!act) return;
-    if (act === 'start') { history = []; goto(0, 0); }
+    if (act === 'start') {
+      history = [];
+      goto(0, 0);
+      if (window.GameScenes) window.GameScenes.unlock('start');
+    }
     if (act === 'continue') { var s = readLS(LS.auto, null); if (s) loadFrom(s); }
     if (act === 'chapters') openChapters();
     if (act === 'leave') window.location.href = HOME;
   });
+
+  /* ---------------- 对外接口 ---------------- */
+
+  window.VNEngine = {
+    toast: toast,
+    showTitle: showTitle,
+    pauseAuto: function () {
+      autoMode = false;
+      skipMode = false;
+      clearTimeout(autoTimer);
+      syncMenuButtons();
+    },
+    start: function () { history = []; goto(0, 0); },
+  };
 
   /* ---------------- 启动 ---------------- */
 

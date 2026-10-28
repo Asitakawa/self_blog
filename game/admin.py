@@ -1,7 +1,8 @@
 from django.contrib import admin
 
 from core.admin_base import BaseModelAdmin, ImagePreviewMixin, ActiveToggleMixin
-from game.models import GameCharacter, GameChapter, GameDialogue, GameChoice
+from game.models import (GameCharacter, GameChapter, GameDialogue, GameChoice,
+                         GameGuestbook, GameMemoryFragment)
 
 
 class GameChoiceInline(admin.TabularInline):
@@ -10,7 +11,7 @@ class GameChoiceInline(admin.TabularInline):
     extra = 1
     fields = ['order', 'text', 'goto_chapter', 'goto_dialogue', 'url']
     verbose_name = '选项'
-    verbose_name_plural = '该句后的选项（跳转目标三选一）'
+    verbose_name_plural = '该句后的选项（章节 / 台词 / 链接 / panel:场景）'
 
 
 class GameDialogueInline(admin.StackedInline):
@@ -50,3 +51,24 @@ class GameDialogueAdmin(BaseModelAdmin):
     @admin.display(description='台词内容')
     def text_preview(self, obj):
         return obj.text[:40]
+
+
+@admin.register(GameGuestbook)
+class GameGuestbookAdmin(BaseModelAdmin):
+    list_display = ['nickname', 'content', 'created_at']
+    search_fields = ['nickname', 'content']
+    readonly_fields = ['created_at']
+    fields = ['nickname', 'content', 'created_at']
+
+    def has_add_permission(self, request):
+        # 留言只能由访客在游戏内留下
+        return False
+
+
+@admin.register(GameMemoryFragment)
+class GameMemoryFragmentAdmin(BaseModelAdmin):
+    list_display = ['name', 'code', 'panel', 'hint', 'order']
+    list_editable = ['panel', 'order']
+    list_filter = ['panel']
+    fields = ['code', 'name', 'hint', 'panel', 'order']
+
