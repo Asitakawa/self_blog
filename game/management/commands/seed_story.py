@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
         guide = GameCharacter.objects.create(
             name='小栗',
-            name_color='#f5c542',
+            name_color='#d9c3a0',
             title='树洞看门向导',
             avatar='/static/images/game/guide_avatar.jpg',
             order=1,

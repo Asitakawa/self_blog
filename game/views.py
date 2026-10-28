@@ -37,11 +37,16 @@ def story_api(request):
                 'character': None,
             }
             if d.character and d.character.is_active:
+                avatar_url = ''
+                if d.character.avatar:
+                    name = d.character.avatar.name
+                    # 允许后台直接引用静态图（/static/...），否则按上传文件走 media
+                    avatar_url = name if name.startswith('/') else d.character.avatar.url
                 item['character'] = {
                     'name': d.character.name,
                     'color': d.character.name_color,
                     'title': d.character.title,
-                    'avatar': d.character.avatar.url if d.character.avatar else '',
+                    'avatar': avatar_url,
                 }
             if d.is_branch_point or d.kind == GameDialogue.KIND_BLOGS:
                 item['choices'] = [

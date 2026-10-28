@@ -715,6 +715,8 @@
 
   window.addEventListener('load', openFromUrl);
   window.addEventListener('hashchange', openFromUrl);
+  // 提前取一次内容，HUD 的碎片总数不用等场景打开
+  window.addEventListener('load', function () { ensureData(); });
 
   /* ---------------- 对外接口 ---------------- */
 

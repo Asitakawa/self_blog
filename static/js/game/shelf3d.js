@@ -124,8 +124,8 @@ export class Shelf3D {
 
   _initScene() {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x070912);
-    this.scene.fog = new THREE.Fog(0x070912, 9, 16);
+    this.scene.background = new THREE.Color(0x0a0806);
+    this.scene.fog = new THREE.Fog(0x0a0806, 9, 16);
 
     this.camera = new THREE.PerspectiveCamera(42, 1, 0.1, 60);
     this.camera.position.set(0, 2.5, 6.3);
@@ -138,10 +138,10 @@ export class Shelf3D {
   _buildRoom() {
     const s = this.scene;
 
-    s.add(new THREE.AmbientLight(0x94a3e8, 0.85));
-    s.add(new THREE.HemisphereLight(0x9fb0ff, 0x241a20, 0.85));
+    s.add(new THREE.AmbientLight(0xb7a689, 0.6));
+    s.add(new THREE.HemisphereLight(0xd9c8a8, 0x1a120c, 0.65));
 
-    const key = new THREE.DirectionalLight(0xffe6bd, 2.0);
+    const key = new THREE.DirectionalLight(0xffd9a3, 1.9);
     key.position.set(3.4, 6.2, 5.4);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -152,18 +152,18 @@ export class Shelf3D {
     key.shadow.bias = -0.0012;
     s.add(key);
 
-    const warm = new THREE.PointLight(0xf5c542, 24, 10, 2);
+    const warm = new THREE.PointLight(0xff9d5c, 18, 9, 2);
     warm.position.set(-2.2, 2.7, 2.4);
     s.add(warm);
 
-    const rim = new THREE.PointLight(0x6f8cff, 16, 9, 2);
+    const rim = new THREE.PointLight(0x8a5a2e, 10, 8, 2);
     rim.position.set(2.6, 1.4, 2.2);
     s.add(rim);
 
     // 地板
     const floor = new THREE.Mesh(
       new THREE.PlaneGeometry(24, 24),
-      new THREE.MeshStandardMaterial({ color: 0x121528, roughness: 0.94, metalness: 0.05 })
+      new THREE.MeshStandardMaterial({ color: 0x120e0a, roughness: 0.94, metalness: 0.04 })
     );
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
@@ -172,7 +172,7 @@ export class Shelf3D {
     // 背墙
     const wall = new THREE.Mesh(
       new THREE.PlaneGeometry(16, 9),
-      new THREE.MeshStandardMaterial({ color: 0x0d1022, roughness: 0.96 })
+      new THREE.MeshStandardMaterial({ color: 0x0e0b08, roughness: 0.96 })
     );
     wall.position.set(0, 4, -1.6);
     wall.receiveShadow = true;
@@ -181,15 +181,15 @@ export class Shelf3D {
     // 墙上的一圈暖光，制造房间感
     const glow = new THREE.Mesh(
       new THREE.CircleGeometry(2.6, 48),
-      new THREE.MeshBasicMaterial({ color: 0x2a2350, transparent: true, opacity: 0.55 })
+      new THREE.MeshBasicMaterial({ color: 0x2b1f17, transparent: true, opacity: 0.5 })
     );
     glow.position.set(0, 2.4, -1.55);
     s.add(glow);
   }
 
   _buildShelf() {
-    const wood = new THREE.MeshStandardMaterial({ color: 0x4a3425, roughness: 0.7, metalness: 0.06 });
-    const woodDark = new THREE.MeshStandardMaterial({ color: 0x35241a, roughness: 0.78 });
+    const wood = new THREE.MeshStandardMaterial({ color: 0x4d3624, roughness: 0.66, metalness: 0.05 });
+    const woodDark = new THREE.MeshStandardMaterial({ color: 0x32211a, roughness: 0.8 });
 
     const frame = new THREE.Group();
     frame.position.z = 0;
@@ -227,10 +227,10 @@ export class Shelf3D {
     const startX = -innerW / 2;
     const right = innerW / 2;
     const rowCursor = new Array(ROWS).fill(startX);
-    const sideBase = new THREE.MeshStandardMaterial({ color: 0xdedad2, roughness: 0.85 });
+    const sideBase = new THREE.MeshStandardMaterial({ color: 0xd8cbb2, roughness: 0.88 });
     const ribbonMat = new THREE.MeshStandardMaterial({
-      color: 0xf5c542,
-      emissive: 0x6b4e05,
+      color: 0xb23a2b,
+      emissive: 0x4a120b,
       emissiveIntensity: 0.9,
       roughness: 0.55,
     });
@@ -311,7 +311,7 @@ export class Shelf3D {
   /** 用没有书名的旧书填充空隙，仅作背景，不参与拾取。 */
   _fillProps(rowCursor, startX, right) {
     const rng = mulberry32(20261028);
-    const palette = [0x232a45, 0x33283f, 0x2a3529, 0x3d2828, 0x22333f, 0x4a3d28, 0x2e2738];
+    const palette = [0x3a2f24, 0x4a3a2a, 0x2f2a22, 0x53372c, 0x3d3a2e, 0x2b2320, 0x5a4a33, 0x2f3a3c, 0x38303f, 0x2c342c];
     const matCache = {};
 
     for (let r = 0; r < ROWS; r++) {
@@ -353,10 +353,10 @@ export class Shelf3D {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     const mat = new THREE.PointsMaterial({
-      color: 0xffe0a0,
-      size: 0.022,
+      color: 0xffd9a8,
+      size: 0.02,
       transparent: true,
-      opacity: 0.45,
+      opacity: 0.32,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });

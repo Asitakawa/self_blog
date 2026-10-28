@@ -431,21 +431,38 @@ node test_shelf3d.js     # 3D 书架端到端（真实 Chrome + WebGL，13 项�
 ## 前端开发规范
 
 ### CSS 文件组织
-- `style.css`：全站样式（设计变量、卡片、按钮、博客、灯箱、滚动条）
+- `game.css`：视觉小说与游戏内场景（「深夜档案馆」主题，变量 + 组件）
+- `style.css`：站点内容页样式（旧版深蓝主题）
 - `sidebar.css`：侧边栏（简历/关于/展览/博客等页面共用）
 - `about.css`：关于页
 - `resume-optimized.css`：简历页动画与滚动条
 
 模板在 `base.html` 只引 `style.css` + `sidebar.css`，各页面通过 `extra_css` 追加自己的样式。
 
-### 颜色方案
+### 游戏 UI 视觉系统（`game.css`）
+
+游戏与场景统一为「深夜档案馆」：深墨色空间 + 纸页场景 + 朱砂印记，刻意避开渐变字、毛玻璃与药丸按钮。
+
 ```css
-/* 主色调 */
-background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-/* 毛玻璃容器 */
-background-color: rgba(255, 255, 255, 0.75);
-backdrop-filter: blur(10px);
+:root {
+  --ink-0: #0b0907;   /* 夜色底 */
+  --paper: #e9e0cc;   /* 纸页 */
+  --paper-ink: #221b14;
+  --seal: #b23a2b;    /* 朱砂：印章、强调、进度 */
+  --brass: #a1854f;   /* 黄铜：极小面积的点缀 */
+  --text: #ece3d2;
+  --text-dim: #9b9182;
+}
 ```
+
+- **字体**：标题/姓名/书名用宋体（`--serif`：Songti SC / Noto Serif CJK SC / SimSun）；正文用系统无衬线；拉丁小标用 Georgia 宽字距。
+- **纸页场景**：`.vn-scene` 内部重定义 `--vn-ink` 等变量为纸面值，旧组件自动变为墨色；细线分隔（1px）、零圆角、无卡片阴影。
+- **规则**：不在场景里用发光/渐变；强调只允许朱砂一处；数字与编号用衬线或等宽，不用药丸标签。
+- **动效**：统一 `cubic-bezier(.16,1,.3,1)`，纸页进入是 22px 上浮淡入，不做回弹。
+- **可访问性**：`focus-visible` 朱砂描边；`prefers-reduced-motion` 关闭全部动画；正文对比度 ≥ 7:1。
+- **3D 书架**：暖钨丝灯 + 深棕木柜，书签带改为朱砂色，和纸页 UI 同一套印色。
+
+> 站点内容页（`style.css`）仍是旧版深蓝主题；如要统一，按同一套 token 迁移即可，但需逐页回归截图。
 
 ### 图片优化
 - 背景图：宽度 ≤1920px，文件 <2MB

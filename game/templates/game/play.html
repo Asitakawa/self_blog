@@ -6,7 +6,6 @@
 <title>树洞奇缘 · Asitakawa 的网络小树洞</title>
 <meta name="description" content="一部关于 Asitakawa 的视觉小说：剧情推进中翻阅他的档案、书架、相册与留言板，收集散落的记忆碎片。">
 <link rel="icon" href="{% static 'favicon.ico' %}">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <link rel="stylesheet" href="{% static 'css/game.css' %}">
 </head>
 <body>
@@ -35,20 +34,20 @@
       <button class="vn-menu-btn" data-act="load">读档</button>
       <button class="vn-menu-btn" data-act="chapters">章节</button>
       <span class="vn-menu-sep"></span>
-      <button class="vn-menu-btn vn-menu-scene" data-scene="resume" title="档案室"><i class="bi bi-person-vcard"></i><span>档案</span></button>
-      <button class="vn-menu-btn vn-menu-scene" data-scene="blogs" title="书架"><i class="bi bi-book"></i><span>书架</span></button>
-      <button class="vn-menu-btn vn-menu-scene" data-scene="gallery" title="相册"><i class="bi bi-images"></i><span>相册</span></button>
-      <button class="vn-menu-btn vn-menu-scene" data-scene="about" title="关于"><i class="bi bi-chat-square-heart"></i><span>关于</span></button>
-      <button class="vn-menu-btn vn-menu-scene" data-scene="board" title="留言板"><i class="bi bi-envelope-paper"></i><span>留言</span></button>
-      <button class="vn-menu-btn" data-act="achievements" title="探索记录"><i class="bi bi-trophy"></i><span>记录</span></button>
+      <button class="vn-menu-btn vn-menu-scene" data-scene="resume" title="档案室"><span>档案</span></button>
+      <button class="vn-menu-btn vn-menu-scene" data-scene="blogs" title="书架"><span>书架</span></button>
+      <button class="vn-menu-btn vn-menu-scene" data-scene="gallery" title="相册"><span>相册</span></button>
+      <button class="vn-menu-btn vn-menu-scene" data-scene="about" title="关于"><span>关于</span></button>
+      <button class="vn-menu-btn vn-menu-scene" data-scene="board" title="留言板"><span>留言</span></button>
+      <button class="vn-menu-btn" data-act="achievements" title="探索记录"><span>记录</span></button>
       <button class="vn-menu-btn" data-act="title">标题</button>
     </nav>
   </header>
 
   <!-- 进度 HUD -->
   <div id="vn-hud" class="vn-hidden">
-    <span class="vn-hud-item"><i class="bi bi-stars"></i>记忆碎片 <b id="vn-frag-count">0</b>/<span id="vn-frag-total">5</span></span>
-    <span class="vn-hud-item"><i class="bi bi-trophy"></i><b id="vn-ach-count">0</b> 项成就</span>
+    <span class="vn-hud-item">碎片 <b id="vn-frag-count">0</b> / <span id="vn-frag-total">5</span></span>
+    <span class="vn-hud-item">成就 <b id="vn-ach-count">0</b></span>
   </div>
 
   <!-- 说话者头像 -->
@@ -69,24 +68,34 @@
 
   <!-- 标题画面 -->
   <section id="vn-title">
-    <div class="vn-title-inner">
-      <p class="vn-title-sub">— Asitakawa's Web Hollow —</p>
-      <h1 class="vn-title-main">树 洞 奇 缘</h1>
-      <p class="vn-title-desc">一位神秘程序员的记忆，散落在这片夜色里。<br>翻开他的档案、书架与相册，把碎片拾回来。</p>
-      <div class="vn-title-actions">
-        <button class="vn-btn vn-btn-primary" data-act="start">开始游戏</button>
-        <button class="vn-btn" data-act="continue" id="vn-btn-continue" hidden>继续游戏</button>
-        <button class="vn-btn" data-act="chapters">章节选择</button>
-        <button class="vn-btn" data-act="leave">离开树洞</button>
+    <div class="vn-cover">
+      <div class="vn-cover-main">
+        <p class="vn-cover-masthead">ASITAKAWA<span>个人志 · 2026</span></p>
+        <h1 class="vn-cover-title">
+          <span>树洞</span>
+          <span>奇缘<em class="vn-cover-seal" aria-hidden="true">洞</em></span>
+        </h1>
+        <p class="vn-cover-latin">A WEB HOLLOW STORY</p>
+        <p class="vn-cover-desc">一位程序员的记忆散落在五个房间里。<br>翻开它们，把碎片拾回来。</p>
+        <div class="vn-cover-actions">
+          <button class="vn-btn vn-btn-primary" data-act="start"><i>01</i>开始游戏</button>
+          <button class="vn-btn" data-act="continue" id="vn-btn-continue" hidden><i>02</i>继续游戏</button>
+          <button class="vn-btn" data-act="chapters"><i>03</i>章节选择</button>
+          <button class="vn-btn vn-btn-quiet" data-act="leave"><i>04</i>离开树洞</button>
+        </div>
       </div>
-      <p class="vn-title-shortcuts">也可以直接逛逛：
-        <button data-scene="resume">档案室</button>
-        <button data-scene="blogs">书架</button>
-        <button data-scene="gallery">相册</button>
-        <button data-scene="about">关于</button>
-        <button data-scene="board">树洞留言</button>
-      </p>
-      <p class="vn-title-hint">剧情与场景内容由后台实时驱动 · 进度自动保存</p>
+
+      <aside class="vn-cover-side">
+        <p class="vn-cover-side-title">目 录</p>
+        <nav class="vn-cover-index">
+          <button data-scene="resume"><i>01</i><b>档案室</b><em>履历与技能</em></button>
+          <button data-scene="blogs"><i>02</i><b>书架</b><em>文章与笔记</em></button>
+          <button data-scene="gallery"><i>03</i><b>相册</b><em>看过的展</em></button>
+          <button data-scene="about"><i>04</i><b>关于</b><em>一封长信</em></button>
+          <button data-scene="board"><i>05</i><b>留言板</b><em>来过的人</em></button>
+        </nav>
+        <p class="vn-cover-note">点击或空格推进 · 进度自动保存<br>五个房间各藏一块记忆碎片</p>
+      </aside>
     </div>
   </section>
 
@@ -124,7 +133,7 @@
     <section class="vn-scene" data-scene="resume">
       <header class="vn-scene-head">
         <div>
-          <p class="vn-scene-kicker">SCENE 01 · DOSSIER</p>
+          <p class="vn-scene-kicker">卷一 · 履历</p>
           <h2>档案室</h2>
           <p class="vn-scene-sub">台灯下摊着一本手账，页角被翻得发毛。</p>
         </div>
@@ -139,7 +148,7 @@
     <section class="vn-scene" data-scene="blogs">
       <header class="vn-scene-head">
         <div>
-          <p class="vn-scene-kicker">SCENE 02 · LIBRARY</p>
+          <p class="vn-scene-kicker">卷二 · 藏书</p>
           <h2>书架</h2>
           <p class="vn-scene-sub">每一本书，都是他某个深夜里写下的一段话。</p>
         </div>
@@ -163,7 +172,7 @@
     <section class="vn-scene" data-scene="gallery">
       <header class="vn-scene-head">
         <div>
-          <p class="vn-scene-kicker">SCENE 03 · GALLERY</p>
+          <p class="vn-scene-kicker">卷三 · 影像</p>
           <h2>相册</h2>
           <p class="vn-scene-sub">墙上钉着他去看过的展览，光线从窗缝里漏进来。</p>
         </div>
@@ -178,7 +187,7 @@
     <section class="vn-scene" data-scene="about">
       <header class="vn-scene-head">
         <div>
-          <p class="vn-scene-kicker">SCENE 04 · LETTER</p>
+          <p class="vn-scene-kicker">卷四 · 书信</p>
           <h2>关于</h2>
           <p class="vn-scene-sub">一封没有寄出的信，写给他自己。</p>
         </div>
@@ -193,7 +202,7 @@
     <section class="vn-scene" data-scene="board">
       <header class="vn-scene-head">
         <div>
-          <p class="vn-scene-kicker">SCENE 05 · GUESTBOOK</p>
+          <p class="vn-scene-kicker">卷五 · 留言</p>
           <h2>树洞留言板</h2>
           <p class="vn-scene-sub">来过的人，把话留在了这里。</p>
         </div>
@@ -208,7 +217,7 @@
     <section class="vn-scene" data-scene="achievements">
       <header class="vn-scene-head">
         <div>
-          <p class="vn-scene-kicker">SYSTEM · ACHIEVEMENTS</p>
+          <p class="vn-scene-kicker">附卷 · 记录</p>
           <h2>探索记录</h2>
           <p class="vn-scene-sub">你在这座树洞里留下的痕迹。</p>
         </div>
