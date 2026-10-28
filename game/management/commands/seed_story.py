@@ -24,39 +24,39 @@ class Command(BaseCommand):
             name='小栗',
             name_color='#d9c3a0',
             title='树洞看门向导',
-            avatar='/static/images/game/guide_sprite.png',
-            sprite_smile='/static/images/game/guide_sprite_smile.png',
-            sprite_worried='/static/images/game/guide_sprite_worried.png',
+            avatar='/static/images/game/guide_sprite.webp',
+            sprite_smile='/static/images/game/guide_sprite_smile.webp',
+            sprite_worried='/static/images/game/guide_sprite_worried.webp',
             order=1,
         )
 
         prologue = GameChapter.objects.create(
             badge='序章', title='误入树洞',
-            background='/static/images/game/cg_rain.jpg',
+            background='/static/images/game/cg_rain.webp',
             intro='深夜迷路的我，推开了一扇写着「网络小树洞」的门。',
             order=1,
         )
         dossier = GameChapter.objects.create(
             badge='第一章', title='亮着台灯的房间',
-            background='/static/images/game/cg_desk.jpg',
+            background='/static/images/game/cg_desk.webp',
             intro='走廊尽头那间房，桌上摊着一本被翻旧的手账。',
             order=2,
         )
         library = GameChapter.objects.create(
             badge='第二章', title='从地板到天花板的书架',
-            background='/static/images/game/cg_shelf.jpg',
+            background='/static/images/game/cg_shelf.webp',
             intro='每一本书，都是他某个深夜写下的东西。',
             order=3,
         )
         gallery = GameChapter.objects.create(
             badge='第三章', title='墙上的光与那封信',
-            background='/static/images/game/cg_photos.jpg',
+            background='/static/images/game/cg_photos.webp',
             intro='照片钉满一面墙，旁边压着一封没有寄出的信。',
             order=4,
         )
         finale = GameChapter.objects.create(
             badge='终章', title='树洞之外',
-            background='/static/images/game/cg_window.jpg',
+            background='/static/images/game/cg_window.webp',
             intro='关于这个树洞最后的秘密，和灯亮起来的方式。',
             order=5,
         )

@@ -120,6 +120,22 @@ function initBackgroundSwitch() {
 
     if (layers.length < 2) return;
 
+    // 第二张背景等真的滚动了再拉，首屏不为它买单
+    let warmed = false;
+    const warm = function () {
+        if (warmed) return;
+        warmed = true;
+        layers.forEach(function (layer) {
+            const src = layer.dataset.bg;
+            if (src && !layer.style.backgroundImage) {
+                layer.style.backgroundImage = 'url("' + src + '")';
+            }
+        });
+    };
+    window.addEventListener('scroll', warm, { passive: true, once: true });
+    window.addEventListener('wheel', warm, { passive: true, once: true });
+    window.addEventListener('touchmove', warm, { passive: true, once: true });
+
     window.addEventListener('scroll', function () {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const diff = Math.abs(scrollTop - lastScrollTop);

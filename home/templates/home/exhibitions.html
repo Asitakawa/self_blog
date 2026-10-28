@@ -16,7 +16,7 @@
         {% for exhibition in page_obj %}
         {% if exhibition.image %}
         <div class="gi" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
-            <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
+            <img loading="lazy" decoding="async" src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}">
             <div class="go">
                 <h4>{{ exhibition.title }}</h4>
                 {% if exhibition.url %}

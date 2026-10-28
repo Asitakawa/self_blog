@@ -23,7 +23,7 @@
         <article class="blog-detail-article">
             {% if post.cover_image %}
             <div class="blog-detail-cover">
-                <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+                <img loading="lazy" decoding="async" src="{{ post.cover_image.url }}" alt="{{ post.title }}">
             </div>
             {% endif %}
             <div class="blog-detail-header">

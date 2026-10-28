@@ -15,19 +15,19 @@
     {% block og_image %}{% endblock %}
     <title>{% block title %}Asitakawa的网络小树洞{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=5">
-    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}?v=5">
+    <link rel="preload" as="image" href="{% static 'images/back_1.webp' %}" fetchpriority="high">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=6">
+    <link rel="stylesheet" href="{% static 'css/sidebar.css' %}?v=6">
+    <!-- 图标不阻塞首屏：先按 print 加载，加载完再切成 all -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+          media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"></noscript>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <div class="bg-system">
-        <div class="bg-layer active" style="background-image: url('{% static "images/back_1.jpg" %}');"></div>
-        <div class="bg-layer" style="background-image: url('{% static "images/back_2.png" %}');"></div>
+        <div class="bg-layer active" style="background-image: url('{% static "images/back_1.webp" %}');"></div>
+        <div class="bg-layer" data-bg="{% static 'images/back_2.webp' %}"></div>
     </div>
     <div class="bg-veil"></div>
 

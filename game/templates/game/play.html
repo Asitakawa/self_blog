@@ -72,26 +72,35 @@
 
   <!-- 标题画面 -->
   <section id="vn-title">
-    <div class="vn-title-art" style="background-image:url('{% static 'images/game/key_visual.jpg' %}')"></div>
     <div class="vn-cover">
       <div class="vn-cover-main">
-        <p class="vn-cover-masthead">ASITAKAWA<span>个人志 · 2026</span></p>
-        <h1 class="vn-cover-title">
-          <span>树洞</span>
-          <span>奇缘<em class="vn-cover-seal" aria-hidden="true">洞</em></span>
-        </h1>
+        <p class="vn-cover-masthead">ASITAKAWA<span>网络小树洞 · 个人网站</span></p>
+        <h1 class="vn-cover-title">树洞奇缘</h1>
         <p class="vn-cover-latin">A WEB HOLLOW STORY</p>
-        <p class="vn-cover-desc">一位程序员的记忆散落在五个房间里。<br>翻开它们，把碎片拾回来。</p>
+        <p class="vn-cover-desc">一位程序员的记忆散落在五个房间里。<br>翻开它们，把碎片拾回来；或者，直接去读他的简历与文章。</p>
         <div class="vn-cover-actions">
-          <button class="vn-btn vn-btn-primary" data-act="archive"><i>01</i>开始夜班</button>
-          <button class="vn-btn" data-act="start"><i>02</i>剧情模式</button>
-          <button class="vn-btn" data-act="continue" id="vn-btn-continue" hidden><i>03</i>继续游戏</button>
-          <button class="vn-btn" data-act="chapters"><i>04</i>章节选择</button>
-          <button class="vn-btn vn-btn-quiet" data-act="leave"><i>05</i>离开树洞</button>
+          <button class="vn-btn vn-btn-primary" data-act="archive">开始夜班</button>
+          <button class="vn-btn vn-btn-ghost" data-act="start">剧情模式</button>
         </div>
+        <p class="vn-cover-quiet">
+          <button data-act="continue" id="vn-btn-continue" hidden>继续游戏</button>
+          <button data-act="chapters">章节选择</button>
+          <button data-act="leave">离开树洞</button>
+        </p>
+
+        <nav class="vn-site-nav" aria-label="站点导航">
+          <span class="vn-site-nav-label">个人网站</span>
+          <a href="{% url 'resume' %}">简历</a>
+          <a href="{% url 'blog_list' %}">博客</a>
+          <a href="{% url 'about' %}">关于</a>
+          <a href="{% url 'home:exhibitions' %}">日常分享</a>
+          <a href="{% url 'home:index' %}">主页</a>
+        </nav>
       </div>
 
       <aside class="vn-cover-side">
+        <img class="vn-cover-art" src="{% static 'images/game/key_visual.webp' %}"
+             alt="树洞图书馆的夜景" width="1536" height="966" fetchpriority="high" decoding="async">
         <p class="vn-cover-side-title">目 录</p>
         <nav class="vn-cover-index">
           <button data-scene="resume"><i>01</i><b>档案室</b><em>履历与技能</em></button>
@@ -262,7 +271,7 @@
 
   <!-- ============ 夜班归档 ============ -->
   <div id="vn-archive" class="vn-hidden" role="dialog" aria-label="夜班归档">
-    <div class="ar-scene" style="background-image:url('{% static 'images/game/cg_desk.jpg' %}')">
+    <div class="ar-scene" data-bg="{% static 'images/game/cg_desk.webp' %}">
       <div id="ar-stage" aria-hidden="true"></div>
       <header class="ar-top">
         <div class="ar-top-left">
@@ -299,6 +308,28 @@
   <div id="vn-loading"><span class="vn-loader"></span>正在加载剧情…</div>
 </div>
 
+<script>
+/* 空闲时预热 3D 引擎，进夜班/书架时就不用现下 1.3MB；移动端与省流模式跳过 */
+(function () {
+  var warmed = false;
+  var slow = navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || ''));
+  function warm() {
+    if (warmed || slow || window.innerWidth < 900) return;
+    warmed = true;
+    var link = document.createElement('link');
+    link.rel = 'modulepreload';
+    link.href = "{% static 'js/vendor/three.module.js' %}";
+    document.head.appendChild(link);
+  }
+  /* 只有真的打算进 3D 时才开始下引擎，别让路过的人也吃 1.2MB */
+  document.addEventListener('pointerenter', function (e) {
+    if (e.target.closest && e.target.closest('[data-act="archive"],[data-act="start"],[data-scene="blogs"]')) warm();
+  }, true);
+  document.addEventListener('focusin', function (e) {
+    if (e.target.closest && e.target.closest('[data-act="archive"],[data-act="start"],[data-scene="blogs"]')) warm();
+  });
+})();
+</script>
 <script src="{% static 'js/game/audio.js' %}"></script>
 <script src="{% static 'js/game/engine.js' %}"></script>
 <script src="{% static 'js/game/scenes.js' %}"></script>

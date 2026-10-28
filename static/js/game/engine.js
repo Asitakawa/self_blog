@@ -492,7 +492,7 @@
     hide(el.choices); hide(el.clear); hide($('vn-hud'));
     if (el.chapterCard) hide(el.chapterCard);
     lastCi = null;
-    if (chapters.length && chapters[0].background) setBackground(chapters[0].background);
+    setBackground(''); // 标题页是浅色封面，不再预载章节 CG
     el.btnContinue.hidden = !readLS(LS.auto, null);
     show(el.title);
   }

@@ -79,6 +79,7 @@ function ok(cond, label, extra) {
   ok(tip.text.includes(book.title), '提示内容为文章标题', tip.text);
 
   // 抬起动画
+  await sleep(260);
   const lift = await page.evaluate(() => {
     const s = window.GameScenes.shelfInstance();
     return s.books[0].userData.lift;

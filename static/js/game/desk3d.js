@@ -39,13 +39,13 @@ function woodTexture() {
   c.height = 320;
   const x = c.getContext('2d');
 
-  x.fillStyle = '#4b3625';
+  x.fillStyle = '#c3a984';
   x.fillRect(0, 0, 640, 320);
 
   const base = x.createLinearGradient(0, 0, 0, 320);
-  base.addColorStop(0, 'rgba(255, 216, 164, .10)');
+  base.addColorStop(0, 'rgba(255, 246, 230, .28)');
   base.addColorStop(0.5, 'rgba(0, 0, 0, .04)');
-  base.addColorStop(1, 'rgba(0, 0, 0, .22)');
+  base.addColorStop(1, 'rgba(80, 50, 24, .16)');
   x.fillStyle = base;
   x.fillRect(0, 0, 640, 320);
 
@@ -53,7 +53,7 @@ function woodTexture() {
     const y = Math.random() * 320;
     const amp = 1 + Math.random() * 3;
     x.beginPath();
-    x.strokeStyle = `rgba(${26 + Math.random() * 34 | 0},${15 + Math.random() * 22 | 0},9,${0.05 + Math.random() * 0.11})`;
+    x.strokeStyle = `rgba(${104 + Math.random() * 34 | 0},${82 + Math.random() * 26 | 0},56,${0.04 + Math.random() * 0.08})`;
     x.lineWidth = 0.5 + Math.random() * 1.7;
     x.moveTo(0, y);
     for (let px = 0; px <= 640; px += 20) {
@@ -68,7 +68,7 @@ function woodTexture() {
     const cy = 40 + Math.random() * 240;
     for (let r = 2; r < 16; r += 2) {
       x.beginPath();
-      x.strokeStyle = `rgba(30, 18, 10, ${0.08 - r * 0.003})`;
+      x.strokeStyle = `rgba(96, 68, 38, ${0.1 - r * 0.004})`;
       x.lineWidth = 1;
       x.ellipse(cx, cy, r * 1.7, r, 0, 0, Math.PI * 2);
       x.stroke();
@@ -119,7 +119,7 @@ function paintCard(canvas, card) {
   const x = canvas.getContext('2d');
   x.clearRect(0, 0, W, H);
 
-  x.fillStyle = '#e9dfc9';
+  x.fillStyle = '#ffffff';
   x.fillRect(0, 0, W, H);
   paperGrain(x, W, H);
 
@@ -131,7 +131,7 @@ function paintCard(canvas, card) {
   x.fillRect(0, 0, W, H);
 
   // 右侧栏线
-  x.strokeStyle = 'rgba(150, 60, 45, .2)';
+  x.strokeStyle = 'rgba(37, 99, 235, .18)';
   x.lineWidth = 2;
   x.beginPath();
   x.moveTo(W - 74, 0);
@@ -139,7 +139,7 @@ function paintCard(canvas, card) {
   x.stroke();
 
   // 横线
-  x.strokeStyle = 'rgba(120, 100, 70, .13)';
+  x.strokeStyle = 'rgba(30, 64, 175, .09)';
   x.lineWidth = 1;
   for (let y = 210; y < H - 54; y += 52) {
     x.beginPath();
@@ -149,7 +149,7 @@ function paintCard(canvas, card) {
   }
 
   // 页眉
-  x.fillStyle = '#7b6d59';
+  x.fillStyle = '#64748b';
   x.font = `500 22px ${SANS}`;
   x.textAlign = 'left';
   x.textBaseline = 'alphabetic';
@@ -161,7 +161,7 @@ function paintCard(canvas, card) {
     x.textAlign = 'left';
   }
 
-  x.strokeStyle = 'rgba(58, 46, 32, .32)';
+  x.strokeStyle = 'rgba(15, 23, 42, .22)';
   x.lineWidth = 1.4;
   x.beginPath();
   x.moveTo(64, 100);
@@ -169,7 +169,7 @@ function paintCard(canvas, card) {
   x.stroke();
 
   // 标题
-  x.fillStyle = '#241d15';
+  x.fillStyle = '#0f172a';
   x.font = `600 56px ${SERIF}`;
   const titleLines = wrapLines(x, card.title, W - 168, 2);
   let ty = 166;
@@ -179,7 +179,7 @@ function paintCard(canvas, card) {
   });
 
   // 正文
-  x.fillStyle = '#3d3427';
+  x.fillStyle = '#334155';
   x.font = `400 35px ${SANS}`;
   const bodyLines = wrapLines(x, card.text, W - 168, 6);
   let by = ty + 40;
@@ -189,7 +189,7 @@ function paintCard(canvas, card) {
   });
 
   // 底部提示
-  x.fillStyle = 'rgba(109, 98, 80, .85)';
+  x.fillStyle = 'rgba(100, 116, 139, .9)';
   x.font = `400 22px ${SANS}`;
   x.fillText('拖进抽屉 · 或按 1 – 4', 64, H - 32);
 
@@ -197,10 +197,10 @@ function paintCard(canvas, card) {
   x.save();
   x.translate(W - 150, H - 96);
   x.rotate(-0.12);
-  x.strokeStyle = 'rgba(178, 58, 43, .16)';
+  x.strokeStyle = 'rgba(37, 99, 235, .18)';
   x.lineWidth = 3;
   x.strokeRect(-56, -34, 112, 68);
-  x.fillStyle = 'rgba(178, 58, 43, .14)';
+  x.fillStyle = 'rgba(37, 99, 235, .16)';
   x.font = `600 30px ${SERIF}`;
   x.textAlign = 'center';
   x.textBaseline = 'middle';
@@ -208,7 +208,7 @@ function paintCard(canvas, card) {
   x.restore();
 
   // 边缘压暗，像在灯下放了很久
-  x.strokeStyle = 'rgba(70, 54, 34, .22)';
+  x.strokeStyle = 'rgba(15, 23, 42, .2)';
   x.lineWidth = 6;
   x.strokeRect(3, 3, W - 6, H - 6);
 }
@@ -220,33 +220,33 @@ function paintDrawer(canvas, def, count) {
   const x = canvas.getContext('2d');
   x.clearRect(0, 0, W, H);
 
-  x.fillStyle = '#e4d8bf';
+  x.fillStyle = '#ffffff';
   x.fillRect(0, 0, W, H);
   paperGrain(x, W, H);
 
-  x.fillStyle = 'rgba(72, 55, 34, .12)';
+  x.fillStyle = 'rgba(37, 99, 235, .12)';
   x.fillRect(0, 0, W, 5);
 
-  x.fillStyle = 'rgba(90, 76, 55, .5)';
+  x.fillStyle = 'rgba(100, 116, 139, .8)';
   x.font = `500 20px ${SANS}`;
   x.textAlign = 'left';
   x.fillText(def.no, 26, 40);
 
-  x.fillStyle = '#241d15';
+  x.fillStyle = '#0f172a';
   x.font = `600 62px ${SERIF}`;
   x.fillText(def.label, 26, 118);
 
-  x.fillStyle = 'rgba(90, 76, 55, .72)';
+  x.fillStyle = 'rgba(100, 116, 139, .9)';
   x.font = `400 20px ${SANS}`;
   const note = wrapLines(x, def.note, W - 52, 1)[0] || '';
   x.fillText(note, 26, 154);
 
   x.textAlign = 'right';
-  x.fillStyle = 'rgba(178, 58, 43, .9)';
+  x.fillStyle = 'rgba(30, 64, 175, .9)';
   x.font = `600 26px ${SERIF}`;
   x.fillText(String(count), W - 26, H - 22);
 
-  x.strokeStyle = 'rgba(70, 54, 34, .3)';
+  x.strokeStyle = 'rgba(15, 23, 42, .14)';
   x.lineWidth = 2;
   x.strokeRect(1, 1, W - 2, H - 2);
 }
@@ -338,7 +338,7 @@ export class Desk3D {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 0.92;
+    this.renderer.toneMappingExposure = 0.78;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     const canvas = this.renderer.domElement;
@@ -350,8 +350,8 @@ export class Desk3D {
 
   _initScene() {
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x080604);
-    this.scene.fog = new THREE.Fog(0x080604, 7.5, 14);
+    this.scene.background = new THREE.Color(0xdde9f8);
+    this.scene.fog = new THREE.Fog(0xdde9f8, 9.5, 18);
 
     this.camera = new THREE.PerspectiveCamera(41, 1, 0.1, 60);
     this.camera.position.set(0, 3.95, 5.7);
@@ -365,10 +365,10 @@ export class Desk3D {
   _buildRoom() {
     const s = this.scene;
 
-    s.add(new THREE.AmbientLight(0xc0a888, 0.7));
-    s.add(new THREE.HemisphereLight(0xd8bd97, 0x120c07, 0.7));
+    s.add(new THREE.AmbientLight(0xd7e4f7, 0.5));
+    s.add(new THREE.HemisphereLight(0xffffff, 0xa9c1e0, 0.55));
 
-    const key = new THREE.DirectionalLight(0xffd6a0, 1.0);
+    const key = new THREE.DirectionalLight(0xfff3e4, 1.0);
     key.position.set(3.6, 6.4, 4.2);
     key.castShadow = true;
     key.shadow.mapSize.set(1024, 1024);
@@ -379,14 +379,14 @@ export class Desk3D {
     key.shadow.bias = -0.0011;
     s.add(key);
 
-    const fill = new THREE.PointLight(0x9a8058, 14, 10, 2);
+    const fill = new THREE.PointLight(0x9db8e8, 6, 11, 2);
     fill.position.set(3.2, 1.6, 2.2);
     s.add(fill);
 
     // 后墙
     const wall = new THREE.Mesh(
       new THREE.PlaneGeometry(20, 10),
-      new THREE.MeshStandardMaterial({ color: 0x100c08, roughness: 0.97 })
+      new THREE.MeshStandardMaterial({ color: 0xc9d9ef, roughness: 0.97 })
     );
     wall.position.set(0, 3.2, -2.7);
     wall.receiveShadow = true;
@@ -395,13 +395,13 @@ export class Desk3D {
     // 墙上的暖光晕
     const glow = new THREE.Mesh(
       new THREE.CircleGeometry(2.8, 48),
-      new THREE.MeshBasicMaterial({ color: 0x2a1d12, transparent: true, opacity: 0.45 })
+      new THREE.MeshBasicMaterial({ color: 0xc7dcf7, transparent: true, opacity: 0.3 })
     );
     glow.position.set(-1.2, 1.9, -2.66);
     s.add(glow);
 
     // 背景里的旧书柜剪影，制造房间纵深
-    const shadeMat = new THREE.MeshStandardMaterial({ color: 0x1a1310, roughness: 0.95 });
+    const shadeMat = new THREE.MeshStandardMaterial({ color: 0xc2d3e9, roughness: 0.95 });
     [-7.6, 7.4].forEach((bx) => {
       const frame = new THREE.Mesh(new THREE.BoxGeometry(2.6, 3.4, 0.5), shadeMat);
       frame.position.set(bx, 1.75, -2.25);
@@ -418,7 +418,7 @@ export class Desk3D {
     const s = this.scene;
     const wood = new THREE.MeshStandardMaterial({
       map: woodTexture(),
-      color: 0xb08a63,
+      color: 0xe4d4bf,
       roughness: 0.68,
       metalness: 0.04,
     });
@@ -430,13 +430,13 @@ export class Desk3D {
     s.add(top);
 
     // 向前延伸的桌面，避免竖屏时桌沿下方留出大片黑边
-    const front = new THREE.Mesh(new THREE.BoxGeometry(DESK_W, 0.28, 4.2), wood);
-    front.position.set(0, -0.14, DESK_D / 2 + 2.1);
+    const front = new THREE.Mesh(new THREE.BoxGeometry(DESK_W, 0.28, 3.2), wood);
+    front.position.set(0, -0.14, DESK_D / 2 + 1.6);
     front.receiveShadow = true;
     s.add(front);
 
     // 前挡板与桌腿，避免俯视时边缘像一块悬空的板
-    const apronMat = new THREE.MeshStandardMaterial({ color: 0x2e2016, roughness: 0.85 });
+    const apronMat = new THREE.MeshStandardMaterial({ color: 0xb08a63, roughness: 0.85 });
     const apron = new THREE.Mesh(new THREE.BoxGeometry(DESK_W, 0.46, 0.1), apronMat);
     apron.position.set(0, -0.5, DESK_D / 2 - 0.06);
     s.add(apron);
@@ -448,24 +448,24 @@ export class Desk3D {
     });
 
     // 桌垫
-    const blotterMat = new THREE.MeshStandardMaterial({ color: 0x33241a, roughness: 0.88 });
-    const blotter = new THREE.Mesh(new THREE.BoxGeometry(4.5, 0.018, 3.1), blotterMat);
+    const blotterMat = new THREE.MeshStandardMaterial({ color: 0x9fb8d8, roughness: 0.94 });
+    const blotter = new THREE.Mesh(new THREE.BoxGeometry(4.15, 0.018, 2.85), blotterMat);
     blotter.position.set(0, 0.009, -0.02);
     blotter.receiveShadow = true;
     s.add(blotter);
 
-    const stitchMat = new THREE.MeshStandardMaterial({ color: 0x6b5232, roughness: 0.7, emissive: 0x120c05, emissiveIntensity: 0.6 });
+    const stitchMat = new THREE.MeshStandardMaterial({ color: 0x8fb0dc, roughness: 0.7 });
     [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([sx, sz]) => {
-      const w = sx ? 0.012 : 4.3;
-      const d = sz ? 0.012 : 2.9;
+      const w = sx ? 0.012 : 3.95;
+      const d = sz ? 0.012 : 2.65;
       const stitch = new THREE.Mesh(new THREE.BoxGeometry(w, 0.004, d), stitchMat);
-      stitch.position.set(sx * 2.2, 0.019, -0.02 + sz * 1.5);
+      stitch.position.set(sx * 2.02, 0.019, -0.02 + sz * 1.38);
       s.add(stitch);
     });
 
     // 印泥与钢笔：给桌面一点生活痕迹，也给印章一个来处
-    const padWood = new THREE.MeshStandardMaterial({ color: 0x3a2818, roughness: 0.62 });
-    const padFelt = new THREE.MeshStandardMaterial({ color: 0x7e2b22, roughness: 0.94 });
+    const padWood = new THREE.MeshStandardMaterial({ color: 0x8a6a45, roughness: 0.62 });
+    const padFelt = new THREE.MeshStandardMaterial({ color: 0x1e40af, roughness: 0.94 });
     const pad = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.07, 0.46), padWood);
     pad.position.set(2.62, 0.035, 0.18);
     pad.rotation.y = -0.26;
@@ -477,7 +477,7 @@ export class Desk3D {
     felt.rotation.y = -0.26;
     s.add(felt);
 
-    const penBody = new THREE.MeshStandardMaterial({ color: 0x1b1512, roughness: 0.36, metalness: 0.2 });
+    const penBody = new THREE.MeshStandardMaterial({ color: 0x1f2937, roughness: 0.36, metalness: 0.2 });
     const pen = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.028, 0.78, 12), penBody);
     pen.position.set(-2.0, 0.045, 0.62);
     pen.rotation.set(0, 0.5, Math.PI / 2);
@@ -492,7 +492,7 @@ export class Desk3D {
     // 桌沿的暖色高光
     const edge = new THREE.Mesh(
       new THREE.BoxGeometry(DESK_W, 0.012, 0.03),
-      new THREE.MeshStandardMaterial({ color: 0x7a5b3b, roughness: 0.55, emissive: 0x120b04, emissiveIntensity: 0.35 })
+      new THREE.MeshStandardMaterial({ color: 0xa8804f, roughness: 0.55 })
     );
     edge.position.set(0, 0.001, DESK_D / 2 - 0.015);
     s.add(edge);
@@ -501,7 +501,7 @@ export class Desk3D {
   _buildLamp() {
     const s = this.scene;
     const brass = new THREE.MeshStandardMaterial({ color: 0x8a6a3c, roughness: 0.42, metalness: 0.72 });
-    const dark = new THREE.MeshStandardMaterial({ color: 0x33443d, roughness: 0.5, metalness: 0.45, emissive: 0x0d0b06, emissiveIntensity: 0.8 });
+    const dark = new THREE.MeshStandardMaterial({ color: 0x24406e, roughness: 0.5, metalness: 0.45 });
 
     const lamp = new THREE.Group();
     lamp.position.set(-3.35, 0, -1.55);
@@ -541,7 +541,7 @@ export class Desk3D {
     const shaft = new THREE.Mesh(
       new THREE.ConeGeometry(1.55, 2.1, 32, 1, true),
       new THREE.MeshBasicMaterial({
-        color: 0xffc88a,
+        color: 0xffe8c4,
         transparent: true,
         opacity: 0.04,
         blending: THREE.AdditiveBlending,
@@ -556,7 +556,7 @@ export class Desk3D {
 
     s.add(lamp);
 
-    const spot = new THREE.SpotLight(0xffc287, 9.5, 12, Math.PI / 4.2, 0.72, 1.25);
+    const spot = new THREE.SpotLight(0xffdfb8, 7, 13, Math.PI / 4.2, 0.8, 1.15);
     spot.position.set(-2.85, 1.55, -1.45);
     spot.target.position.set(0.2, 0, 0.25);
     spot.castShadow = true;
@@ -569,8 +569,8 @@ export class Desk3D {
 
   _buildTrays() {
     const s = this.scene;
-    const trayMat = new THREE.MeshStandardMaterial({ color: 0x3a2819, roughness: 0.78, metalness: 0.05 });
-    const innerMat = new THREE.MeshStandardMaterial({ color: 0x1c1410, roughness: 0.95 });
+    const trayMat = new THREE.MeshStandardMaterial({ color: 0xc39a6a, roughness: 0.74, metalness: 0.04 });
+    const innerMat = new THREE.MeshStandardMaterial({ color: 0xe8dcc6, roughness: 0.95 });
     const brass = new THREE.MeshStandardMaterial({ color: 0x9a7742, roughness: 0.38, metalness: 0.7 });
 
     this.drawerDefs.forEach((def, i) => {
@@ -643,13 +643,13 @@ export class Desk3D {
 
     const mesh = new THREE.Mesh(
       new THREE.PlaneGeometry(CARD_W, CARD_H),
-      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.92, metalness: 0, transparent: true })
+      new THREE.MeshStandardMaterial({ map: tex, color: 0xf7f2e8, roughness: 0.94, metalness: 0, transparent: true })
     );
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     group.add(mesh);
 
-    const decalTex = sealTexture('归档', '#b23a2b');
+    const decalTex = sealTexture('归档', '#1e40af');
     const decal = new THREE.Mesh(
       new THREE.PlaneGeometry(1.16, 0.7),
       new THREE.MeshBasicMaterial({ map: decalTex, transparent: true, opacity: 0, depthWrite: false })
@@ -665,12 +665,12 @@ export class Desk3D {
     this.cardGroup = group;
     this.decal = decal;
     this.sealArchive = decalTex;
-    this.sealReject = sealTexture('退回', '#8c2a1e');
+    this.sealReject = sealTexture('退回', '#475569');
   }
 
   _buildStamp() {
     const brass = new THREE.MeshStandardMaterial({ color: 0x8a6a3c, roughness: 0.4, metalness: 0.7 });
-    const wood = new THREE.MeshStandardMaterial({ color: 0x2d1f15, roughness: 0.7 });
+    const wood = new THREE.MeshStandardMaterial({ color: 0x8a6a45, roughness: 0.7 });
 
     const g = new THREE.Group();
     const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.07, 0.34, 18), wood);
@@ -708,7 +708,7 @@ export class Desk3D {
       const glass = new THREE.Mesh(
         new THREE.SphereGeometry(0.115, 18, 14),
         new THREE.MeshStandardMaterial({
-          color: 0x3a2a12,
+          color: 0x8a6a2a,
           emissive: 0xffb257,
           emissiveIntensity: 1.8,
           roughness: 0.3,
@@ -737,8 +737,8 @@ export class Desk3D {
   /** 只给场景面板当背景时，桌上放点纸堆、墨水瓶和信封。 */
   _buildProps() {
     const s = this.scene;
-    const paperMat = new THREE.MeshStandardMaterial({ color: 0xded2b8, roughness: 0.95 });
-    const leather = new THREE.MeshStandardMaterial({ color: 0x2a1c14, roughness: 0.8 });
+    const paperMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95 });
+    const leather = new THREE.MeshStandardMaterial({ color: 0x24406e, roughness: 0.8 });
 
     for (let i = 0; i < 6; i++) {
       const sheet = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.012, 1.05), paperMat);
@@ -784,7 +784,7 @@ export class Desk3D {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     const mat = new THREE.PointsMaterial({
-      color: 0xffd9a8,
+      color: 0xe4d4bf,
       size: 0.018,
       transparent: true,
       opacity: 0.28,
@@ -1006,7 +1006,7 @@ export class Desk3D {
       if (node.lit === lit) return;
       node.lit = lit;
       node.glass.material.emissiveIntensity = lit ? 1.8 : 0;
-      node.glass.material.color.setHex(lit ? 0x3a2a12 : 0x120f0c);
+      node.glass.material.color.setHex(lit ? 0x8a6a2a : 0x9aa7b8);
       node.flame.visible = lit;
     });
     if (this.spot) {

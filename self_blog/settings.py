@@ -66,6 +66,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # 压缩 HTML / CSS / JS，3D 引擎与样式表都能小一半以上
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

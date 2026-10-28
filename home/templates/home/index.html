@@ -45,7 +45,7 @@
                 <div class="post-img">
                     {% if post.cover_image %}
                     <a href="{% url 'blog_detail' slug=post.slug %}">
-                        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+                        <img loading="lazy" decoding="async" src="{{ post.cover_image.url }}" alt="{{ post.title }}">
                     </a>
                     {% else %}
                     <div class="post-img-placeholder p{{ forloop.counter }}"><i class="bi bi-file-text"></i></div>
@@ -81,7 +81,7 @@
             <a href="{{ social.url }}" target="_blank" class="sc">
                 <span class="si">
                     {% if social.icon_image %}
-                    <img src="{{ social.icon_image.url }}" alt="{{ social.name }}" class="social-icon-image">
+                    <img loading="lazy" decoding="async" src="{{ social.icon_image.url }}" alt="{{ social.name }}" class="social-icon-image">
                     {% elif 'bi-' in social.icon %}
                     <i class="bi {{ social.icon }}"></i>
                     {% elif social.icon %}
@@ -109,7 +109,7 @@
             <div class="pc">
                 <div class="pi">
                     {% if project.icon_image %}
-                    <img src="{{ project.icon_image.url }}" alt="{{ project.name }}">
+                    <img loading="lazy" decoding="async" src="{{ project.icon_image.url }}" alt="{{ project.name }}">
                     {% elif 'bi-' in project.icon %}
                     <i class="bi {{ project.icon }}"></i>
                     {% else %}
@@ -142,7 +142,7 @@
             {% for exhibition in exhibitions %}
             {% if exhibition.image %}
             <div class="gi" onclick="openLightbox('{{ exhibition.image.url }}', '{{ exhibition.title }}')">
-                <img src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}" style="width:100%;height:100%;object-fit:cover">
+                <img loading="lazy" decoding="async" src="{{ exhibition.image.url }}" alt="{{ exhibition.title }}" style="width:100%;height:100%;object-fit:cover">
                 <div class="go">
                     <h4>{{ exhibition.title }}</h4>
                     <span>{{ exhibition.created_at|date:"Y.m.d" }}</span>
@@ -164,7 +164,7 @@
                 <div class="shd">
                     <div class="ic">
                         {% if skill_category.icon_image %}
-                        <img src="{{ skill_category.icon_image.url }}" alt="{{ skill_category.category }}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">
+                        <img loading="lazy" decoding="async" src="{{ skill_category.icon_image.url }}" alt="{{ skill_category.category }}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">
                         {% elif 'bi-' in skill_category.icon %}
                         <i class="bi {{ skill_category.icon }}"></i>
                         {% else %}
@@ -193,7 +193,7 @@
             <div class="card" style="padding:24px;text-align:center">
                 {% if contact.url %}<a href="{{ contact.url }}" target="_blank" style="text-decoration:none;color:inherit">{% endif %}
                     {% if contact.icon_image %}
-                    <img src="{{ contact.icon_image.url }}" alt="{{ contact.get_contact_type_display }}" style="width:50px;height:50px;object-fit:contain;margin:0 auto 12px;display:block">
+                    <img loading="lazy" decoding="async" src="{{ contact.icon_image.url }}" alt="{{ contact.get_contact_type_display }}" style="width:50px;height:50px;object-fit:contain;margin:0 auto 12px;display:block">
                     {% elif 'bi-' in contact.icon %}
                     <div style="font-size:1.8rem;color:var(--b-dark);margin-bottom:8px"><i class="bi {{ contact.icon }}"></i></div>
                     {% else %}

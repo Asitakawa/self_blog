@@ -451,6 +451,10 @@
     state.cleared = save.cleared;
     root.classList.remove('vn-hidden');
     document.body.classList.add('archive-open');
+    var scene = root.querySelector('.ar-scene');
+    if (scene && scene.dataset.bg && !scene.style.backgroundImage) {
+      scene.style.backgroundImage = 'url("' + scene.dataset.bg + '")';
+    }
     if (window.GameAudio) window.GameAudio.start();
     startNight(state.night);
   }
