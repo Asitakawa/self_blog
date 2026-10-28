@@ -29,6 +29,8 @@
     savePanel: $('vn-save-panel'), saveTitle: $('vn-save-title'), saveBody: $('vn-save-body'),
     toast: $('vn-toast'), loading: $('vn-loading'),
     btnContinue: $('vn-btn-continue'),
+    chapterCard: $('vn-chapter-card'), ccBadge: $('vn-cc-badge'), ccTitle: $('vn-cc-title'),
+    soundBtn: $('vn-btn-sound'),
   };
 
   var chapters = [];
@@ -43,6 +45,8 @@
   var speed = +(localStorage.getItem(LS.speed) || 26);
   if (!isFinite(speed) || speed < 1) speed = 26; // 防御非法存值
   var curLine = null;
+  var lastCi = null;
+  var ccTimer = null;
 
   /* ---------------- 工具 ---------------- */
 
@@ -96,6 +100,7 @@
     el.caret.style.visibility = 'hidden';
     typeTimer = setInterval(function () {
       if (skipMode) { i = text.length; }
+      if (!skipMode && i % 6 === 0 && window.GameAudio) window.GameAudio.sfx('type');
       el.text.textContent = text.slice(0, i);
       i++;
       if (i > text.length) {
@@ -129,6 +134,22 @@
     el.chapterLabel.textContent =
       (chapters[ci].badge ? chapters[ci].badge + ' · ' : '') + chapters[ci].title;
     showLine();
+    if (lastCi !== ci) showChapterCard(chapters[ci]);
+    lastCi = ci;
+  }
+
+  function showChapterCard(ch) {
+    if (!el.chapterCard) return;
+    el.ccBadge.textContent = ch.badge || '';
+    el.ccTitle.textContent = ch.title || '';
+    el.chapterCard.classList.remove('vn-hidden', 'show');
+    void el.chapterCard.offsetWidth;
+    el.chapterCard.classList.add('show');
+    if (window.GameAudio) window.GameAudio.sfx('chapter');
+    clearTimeout(ccTimer);
+    ccTimer = setTimeout(function () {
+      el.chapterCard.classList.add('vn-hidden');
+    }, 2100);
   }
 
   function showLine() {
@@ -142,7 +163,13 @@
 
     if (d.kind === 'narration' || !d.character) {
       hide(el.namePlate);
-      hide(el.avatar);
+      // 旁白时立绘留在场上，压暗一点，不要反复进出
+      if (el.avatarImg.getAttribute('src')) {
+        show(el.avatar);
+        el.avatar.classList.add('dim');
+      } else {
+        hide(el.avatar);
+      }
       el.text.className = 'narration';
     } else {
       show(el.namePlate);
@@ -151,7 +178,20 @@
       el.nameTitle.textContent = d.character.title || '';
       el.text.className = '';
       if (d.character.avatar) {
-        el.avatarImg.src = d.character.avatar;
+        var sprite = d.character.avatar;
+        if (el.avatarImg.getAttribute('src') !== sprite) {
+          el.avatarImg.style.opacity = '0';
+          el.avatarImg.dataset.want = sprite;
+          var pre = new Image();
+          pre.onload = function () {
+            // 快速推进时可能已经有更新的表情，别让旧图覆盖
+            if (el.avatarImg.dataset.want !== sprite) return;
+            el.avatarImg.src = sprite;
+            el.avatarImg.style.opacity = '1';
+          };
+          pre.src = sprite;
+        }
+        el.avatar.classList.remove('dim');
         show(el.avatar);
       } else {
         hide(el.avatar);
@@ -194,6 +234,22 @@
     el.clearTitle.textContent = ch.badge ? ch.badge + ' 完' : '「' + ch.title + '」完';
     el.clearDesc.textContent = next ? (next.intro || '旅程还在继续…') : '夜色温柔，故事未完待续。';
     el.clearActions.innerHTML = '';
+
+    var progress = window.GameScenes && window.GameScenes.progress
+      ? window.GameScenes.progress() : null;
+
+    // 终章：灯亮不亮，取决于你找到了多少碎片
+    if (!next && progress && progress.total) {
+      if (progress.owned >= progress.total) {
+        el.clearDesc.textContent = '灯全亮了。你把散落的记忆一块块放回了原处。';
+      } else {
+        el.clearDesc.textContent = '灯还没全亮。还有 ' +
+          (progress.total - progress.owned) + ' 块记忆碎片散在房间的角落里。';
+        el.clearActions.appendChild(btn('去找碎片', 'vn-btn vn-btn-primary', function () {
+          if (window.GameScenes) window.GameScenes.open('achievements');
+        }));
+      }
+    }
 
     if (next) {
       el.clearActions.appendChild(btn('进入 · ' + next.title, 'vn-btn vn-btn-primary', function () {
@@ -254,6 +310,7 @@
   }
 
   function choose(c) {
+    if (window.GameAudio) window.GameAudio.sfx('choice');
     // 动态文章节点：游戏内阅读器
     if (c.post && window.GameScenes && window.GameScenes.openPost) {
       autoSave();
@@ -433,6 +490,8 @@
     if (window.GameScenes) window.GameScenes.close();
     hide(el.topbar); hide(el.dialog); hide(el.avatar);
     hide(el.choices); hide(el.clear); hide($('vn-hud'));
+    if (el.chapterCard) hide(el.chapterCard);
+    lastCi = null;
     if (chapters.length && chapters[0].background) setBackground(chapters[0].background);
     el.btnContinue.hidden = !readLS(LS.auto, null);
     show(el.title);
@@ -446,6 +505,13 @@
     b.textContent = text;
     b.addEventListener('click', function (e) { e.stopPropagation(); onClick(); });
     return b;
+  }
+
+  function syncSound() {
+    if (!el.soundBtn) return;
+    var on = window.GameAudio ? window.GameAudio.isOn() : true;
+    el.soundBtn.classList.toggle('off', !on);
+    el.soundBtn.textContent = on ? '声音' : '静音';
   }
 
   function syncMenuButtons() {
@@ -474,11 +540,18 @@
     if (act === 'save') openSave('save');
     if (act === 'load') openSave('load');
     if (act === 'chapters') openChapters();
+    if (act === 'archive') { if (window.GameArchive) window.GameArchive.start(); }
     if (act === 'achievements') { if (window.GameScenes) window.GameScenes.open('achievements'); }
+    if (act === 'sound') {
+      var on = window.GameAudio ? window.GameAudio.toggle() : true;
+      syncSound();
+      toast(on ? '声音：开' : '声音：关');
+    }
     if (act === 'title') showTitle();
   });
 
   document.addEventListener('keydown', function (e) {
+    if (window.GameArchive && window.GameArchive.isOpen()) return;
     if (window.GameScenes && window.GameScenes.isOpen()) return;
     if (e.key === 'Escape') { closePanels(); return; }
     if (!pos || typeTimer === null && el.choices && !el.choices.classList.contains('vn-hidden')) return;
@@ -497,7 +570,8 @@
   }
 
   app.addEventListener('click', function (e) {
-    // 场景面板打开时，点击只属于场景
+    // 夜班与场景面板打开时，点击不穿透
+    if (window.GameArchive && window.GameArchive.isOpen()) return;
     if (window.GameScenes && window.GameScenes.isOpen()) return;
     // 面板与按钮自己处理
     if (e.target.closest('.vn-panel') || e.target.closest('#vn-topbar')) return;
@@ -514,10 +588,12 @@
     if (!act) return;
     if (act === 'start') {
       history = [];
+      if (window.GameAudio) window.GameAudio.start();
       goto(0, 0);
       if (window.GameScenes) window.GameScenes.unlock('start');
     }
     if (act === 'continue') { var s = readLS(LS.auto, null); if (s) loadFrom(s); }
+    if (act === 'archive') { if (window.GameArchive) window.GameArchive.start(); }
     if (act === 'chapters') openChapters();
     if (act === 'leave') window.location.href = HOME;
   });
@@ -534,6 +610,14 @@
       syncMenuButtons();
     },
     start: function () { history = []; goto(0, 0); },
+    gotoChapter: function (index) {
+      if (!chapters.length) return false;
+      var i = Math.max(0, Math.min(index, chapters.length - 1));
+      history = [];
+      goto(i, 0);
+      return true;
+    },
+    chapterCount: function () { return chapters.length; },
   };
 
   /* ---------------- 启动 ---------------- */
@@ -548,6 +632,15 @@
     hide(el.loading);
     showTitle();
   }
+
+  var audioArmed = false;
+  document.addEventListener('click', function () {
+    if (audioArmed) return;
+    audioArmed = true;
+    if (window.GameAudio) window.GameAudio.start();
+  }, true);
+
+  syncSound();
 
   fetch(API, { credentials: 'same-origin' })
     .then(function (r) { return r.json(); })

@@ -15,6 +15,8 @@
      data-post-api="{% url 'game:post_detail' slug='__slug__' %}"
      data-guestbook-api="{% url 'game:guestbook_api' %}"
      data-guestbook-post="{% url 'game:guestbook_post' %}"
+     data-archive-api="{% url 'game:archive_api' %}"
+     data-desk3d="{% static 'js/game/desk3d.js' %}"
      data-shelf3d="{% static 'js/game/shelf3d.js' %}"
      data-home="{% url 'home:index' %}">
 
@@ -34,12 +36,14 @@
       <button class="vn-menu-btn" data-act="load">读档</button>
       <button class="vn-menu-btn" data-act="chapters">章节</button>
       <span class="vn-menu-sep"></span>
+      <button class="vn-menu-btn" data-act="archive">夜班</button>
       <button class="vn-menu-btn vn-menu-scene" data-scene="resume" title="档案室"><span>档案</span></button>
       <button class="vn-menu-btn vn-menu-scene" data-scene="blogs" title="书架"><span>书架</span></button>
       <button class="vn-menu-btn vn-menu-scene" data-scene="gallery" title="相册"><span>相册</span></button>
       <button class="vn-menu-btn vn-menu-scene" data-scene="about" title="关于"><span>关于</span></button>
       <button class="vn-menu-btn vn-menu-scene" data-scene="board" title="留言板"><span>留言</span></button>
       <button class="vn-menu-btn" data-act="achievements" title="探索记录"><span>记录</span></button>
+      <button class="vn-menu-btn" data-act="sound" id="vn-btn-sound">声音</button>
       <button class="vn-menu-btn" data-act="title">标题</button>
     </nav>
   </header>
@@ -68,6 +72,7 @@
 
   <!-- 标题画面 -->
   <section id="vn-title">
+    <div class="vn-title-art" style="background-image:url('{% static 'images/game/key_visual.jpg' %}')"></div>
     <div class="vn-cover">
       <div class="vn-cover-main">
         <p class="vn-cover-masthead">ASITAKAWA<span>个人志 · 2026</span></p>
@@ -78,10 +83,11 @@
         <p class="vn-cover-latin">A WEB HOLLOW STORY</p>
         <p class="vn-cover-desc">一位程序员的记忆散落在五个房间里。<br>翻开它们，把碎片拾回来。</p>
         <div class="vn-cover-actions">
-          <button class="vn-btn vn-btn-primary" data-act="start"><i>01</i>开始游戏</button>
-          <button class="vn-btn" data-act="continue" id="vn-btn-continue" hidden><i>02</i>继续游戏</button>
-          <button class="vn-btn" data-act="chapters"><i>03</i>章节选择</button>
-          <button class="vn-btn vn-btn-quiet" data-act="leave"><i>04</i>离开树洞</button>
+          <button class="vn-btn vn-btn-primary" data-act="archive"><i>01</i>开始夜班</button>
+          <button class="vn-btn" data-act="start"><i>02</i>剧情模式</button>
+          <button class="vn-btn" data-act="continue" id="vn-btn-continue" hidden><i>03</i>继续游戏</button>
+          <button class="vn-btn" data-act="chapters"><i>04</i>章节选择</button>
+          <button class="vn-btn vn-btn-quiet" data-act="leave"><i>05</i>离开树洞</button>
         </div>
       </div>
 
@@ -94,10 +100,17 @@
           <button data-scene="about"><i>04</i><b>关于</b><em>一封长信</em></button>
           <button data-scene="board"><i>05</i><b>留言板</b><em>来过的人</em></button>
         </nav>
-        <p class="vn-cover-note">点击或空格推进 · 进度自动保存<br>五个房间各藏一块记忆碎片</p>
+        <p class="vn-cover-note">点击或空格推进 · 进度自动保存<br>五个房间各藏一块记忆碎片<br><span id="ar-record"></span></p>
       </aside>
     </div>
   </section>
+
+  <!-- 章节标题卡 -->
+  <div id="vn-chapter-card" class="vn-hidden" aria-hidden="true">
+    <span class="vn-cc-badge" id="vn-cc-badge"></span>
+    <h2 id="vn-cc-title"></h2>
+    <i class="vn-cc-rule"></i>
+  </div>
 
   <!-- 章节通关 -->
   <section id="vn-clear" class="vn-hidden">
@@ -129,6 +142,7 @@
 
   <!-- ============ 游戏内场景 ============ -->
   <div id="vn-scenes" class="vn-hidden">
+    <div id="scene-stage" aria-hidden="true"></div>
 
     <section class="vn-scene" data-scene="resume">
       <header class="vn-scene-head">
@@ -246,11 +260,48 @@
     </div>
   </section>
 
+  <!-- ============ 夜班归档 ============ -->
+  <div id="vn-archive" class="vn-hidden" role="dialog" aria-label="夜班归档">
+    <div class="ar-scene" style="background-image:url('{% static 'images/game/cg_desk.jpg' %}')">
+      <div id="ar-stage" aria-hidden="true"></div>
+      <header class="ar-top">
+        <div class="ar-top-left">
+          <span class="ar-night" id="ar-night">第 01 夜</span>
+          <span class="ar-count" id="ar-count">已归档 0 / 8</span>
+        </div>
+        <div class="ar-oil" id="ar-oil" aria-label="灯油"></div>
+        <button class="ar-close" id="ar-close" aria-label="离开夜班">×</button>
+      </header>
+
+      <div class="ar-desk">
+        <div class="ar-lamp" aria-hidden="true"></div>
+        <div class="ar-stack" id="ar-stack"></div>
+      </div>
+
+      <p class="ar-hint">把卡片放进正确的抽屉 · 按 1–4 · 归错会烧掉一格灯油</p>
+      <div class="ar-drawers" id="ar-drawers"></div>
+    </div>
+
+    <div class="ar-stamp" id="ar-stamp" aria-hidden="true"></div>
+
+    <section class="ar-result vn-hidden" id="ar-result">
+      <div class="ar-result-inner">
+        <p class="ar-result-kicker" id="ar-result-kicker">NIGHT 01</p>
+        <h2 id="ar-result-title">归档完成</h2>
+        <p id="ar-result-desc"></p>
+        <div class="ar-result-stats" id="ar-result-stats"></div>
+        <div class="ar-result-actions" id="ar-result-actions"></div>
+      </div>
+    </section>
+  </div>
+
   <div id="vn-toast" class="vn-hidden"></div>
   <div id="vn-loading"><span class="vn-loader"></span>正在加载剧情…</div>
 </div>
 
+<script src="{% static 'js/game/audio.js' %}"></script>
 <script src="{% static 'js/game/engine.js' %}"></script>
 <script src="{% static 'js/game/scenes.js' %}"></script>
+<script src="{% static 'js/game/archive.js' %}"></script>
 </body>
 </html>

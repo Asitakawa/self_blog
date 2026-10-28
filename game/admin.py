@@ -17,7 +17,7 @@ class GameChoiceInline(admin.TabularInline):
 class GameDialogueInline(admin.StackedInline):
     model = GameDialogue
     extra = 1
-    fields = ['order', 'kind', 'character', 'text', 'is_branch_point', 'is_active']
+    fields = ['order', 'kind', 'character', 'mood', 'text', 'is_branch_point', 'is_active']
     verbose_name = '台词'
     verbose_name_plural = '章节台词（按顺序播放）'
 
@@ -26,7 +26,7 @@ class GameDialogueInline(admin.StackedInline):
 class GameCharacterAdmin(ImagePreviewMixin, BaseModelAdmin):
     list_display = ['image_thumb', 'name', 'title', 'order', 'is_active']
     list_editable = ['order', 'is_active']
-    fields = ['name', 'name_color', 'title', 'avatar', 'is_active', 'order']
+    fields = ['name', 'name_color', 'title', 'avatar', 'sprite_smile', 'sprite_worried', 'is_active', 'order']
 
 
 @admin.register(GameChapter)
@@ -41,11 +41,11 @@ class GameChapterAdmin(BaseModelAdmin):
 
 @admin.register(GameDialogue)
 class GameDialogueAdmin(BaseModelAdmin):
-    list_display = ['chapter', 'order', 'kind', 'character', 'text_preview', 'is_branch_point', 'is_active']
+    list_display = ['chapter', 'order', 'kind', 'character', 'mood', 'text_preview', 'is_branch_point', 'is_active']
     list_editable = ['order', 'is_branch_point', 'is_active']
     list_filter = ['kind', 'is_branch_point', 'is_active', 'chapter']
     search_fields = ['text']
-    fields = ['chapter', 'order', 'kind', 'character', 'text', 'is_branch_point', 'is_active']
+    fields = ['chapter', 'order', 'kind', 'character', 'mood', 'text', 'is_branch_point', 'is_active']
     inlines = [GameChoiceInline]
 
     @admin.display(description='台词内容')

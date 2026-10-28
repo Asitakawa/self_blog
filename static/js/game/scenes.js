@@ -28,16 +28,20 @@
     { key: 'board', name: '树洞回声', desc: '在留言板留下一条话' },
     { key: 'frag1', name: '拾光者', desc: '找到第一块记忆碎片' },
     { key: 'fragall', name: '记忆收藏家', desc: '集齐全部记忆碎片' },
+    { key: 'archive', name: '夜班归档员', desc: '完成第一夜归档' },
     { key: 'ending', name: '树洞守护者', desc: '抵达真结局' },
   ];
 
   var root = document.getElementById('vn-scenes');
+  var sceneStage = document.getElementById('scene-stage');
   var lightbox = document.getElementById('vn-lightbox');
   var ending = document.getElementById('vn-ending');
   var data = null;
   var loading = null;
   var current = null;
   var lastScene = 'blogs';
+  var sceneDesk = null;
+  var sceneDeskTried = false;
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -74,7 +78,10 @@
     got[key] = Date.now();
     writeLS(LS.ach, got);
     var def = ACHIEVEMENTS.filter(function (a) { return a.key === key; })[0];
-    if (def) toast('成就解锁 · ' + def.name);
+    if (def) {
+      toast('成就解锁 · ' + def.name);
+      if (window.GameAudio) window.GameAudio.sfx('stamp');
+    }
     updateHud();
     return true;
   }
@@ -116,9 +123,68 @@
     }
   }
 
+  /* 场景背后那张真实的桌子：只在宽屏上开，手机留着纸页本身 */
+  function ensureSceneDesk() {
+    if (sceneDesk || sceneDeskTried) return Promise.resolve(sceneDesk);
+    sceneDeskTried = true;
+    if (!sceneStage || !window.WebGLRenderingContext) return Promise.resolve(null);
+    if (!window.matchMedia || !window.matchMedia('(min-width: 900px)').matches) return Promise.resolve(null);
+    var url = app.dataset.desk3d;
+    if (!url) return Promise.resolve(null);
+    return import(url).then(function (mod) {
+      try {
+        sceneDesk = new mod.Desk3D(sceneStage, { ambient: true });
+        root.classList.add('scenes-3d');
+        return sceneDesk;
+      } catch (e) {
+        sceneDeskTried = false;
+        return null;
+      }
+    }).catch(function () {
+      sceneDeskTried = false;
+      return null;
+    });
+  }
+
+  function dropSceneDesk() {
+    if (sceneDesk) {
+      try { sceneDesk.dispose(); } catch (e) { /* 忽略 GPU 释放异常 */ }
+      sceneDesk = null;
+    }
+    if (sceneStage) sceneStage.innerHTML = '';
+    root.classList.remove('scenes-3d');
+    sceneDeskTried = false;
+  }
+
+  /* 纸页跟着鼠标微微一偏，像摆在桌上被看着 */
+  function bindSheetTilt() {
+    if (root.dataset.tiltBound) return;
+    root.dataset.tiltBound = '1';
+    root.addEventListener('pointermove', function (e) {
+      if (!root.classList.contains('scenes-3d')) return;
+      var sheet = root.querySelector('.vn-scene.active');
+      if (!sheet) return;
+      var rect = root.getBoundingClientRect();
+      var dx = (e.clientX - rect.left) / rect.width - 0.5;
+      var dy = (e.clientY - rect.top) / rect.height - 0.5;
+      sheet.style.setProperty('--tilt-y', (dx * 3).toFixed(2) + 'deg');
+      sheet.style.setProperty('--tilt-x', (2 - dy * 1.8).toFixed(2) + 'deg');
+    });
+    root.addEventListener('pointerleave', function () {
+      var sheet = root.querySelector('.vn-scene.active');
+      if (!sheet) return;
+      sheet.style.setProperty('--tilt-y', '0deg');
+      sheet.style.setProperty('--tilt-x', '2deg');
+    });
+  }
+
   function open(kind) {
     if (!kind) kind = 'resume';
     if (kind !== 'blogs') disposeShelf();
+    bindSheetTilt();
+    // 书架与阅读器本身占用画面，不再压一张桌面，省一次 WebGL 上下文
+    if (kind === 'blogs' || kind === 'reader') dropSceneDesk();
+    else ensureSceneDesk();
     ensureData().then(function () {
       current = kind;
       root.classList.remove('vn-hidden');
@@ -149,6 +215,7 @@
 
   function close() {
     disposeShelf();
+    dropSceneDesk();
     root.classList.add('vn-hidden');
     document.body.classList.remove('scene-open');
     current = null;
@@ -725,6 +792,10 @@
     close: close,
     openPost: openReader,
     shelfInstance: function () { return shelf3d; },
+    progress: function () {
+      var total = (data && data.fragments) ? data.fragments.length : 0;
+      return { owned: fragmentCodes().length, total: total };
+    },
     isOpen: function () { return !!current; },
     toast: toast,
     unlock: unlock,

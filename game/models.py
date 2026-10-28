@@ -6,7 +6,9 @@ class GameCharacter(models.Model):
 
     name = models.CharField(max_length=50, verbose_name='角色名')
     name_color = models.CharField(max_length=7, default='#f5c542', verbose_name='名牌颜色')
-    avatar = models.ImageField(upload_to='game/avatars/', blank=True, verbose_name='头像')
+    avatar = models.ImageField(upload_to='game/avatars/', blank=True, verbose_name='默认立绘')
+    sprite_smile = models.CharField(max_length=300, blank=True, verbose_name='微笑立绘（/static/... 或 /media/...）')
+    sprite_worried = models.CharField(max_length=300, blank=True, verbose_name='担心立绘（/static/... 或 /media/...）')
     title = models.CharField(max_length=100, blank=True, verbose_name='角色头衔（名牌下方小字）')
     is_active = models.BooleanField(default=True, verbose_name='启用')
     order = models.IntegerField(default=0, verbose_name='排序')
@@ -61,6 +63,8 @@ class GameDialogue(models.Model):
     kind = models.CharField(max_length=20, choices=KIND_CHOICES, default=KIND_TEXT, verbose_name='类型')
     character = models.ForeignKey(GameCharacter, null=True, blank=True, on_delete=models.SET_NULL,
                                   related_name='dialogues', verbose_name='说话角色（旁白可留空）')
+    MOOD_CHOICES = [('', '默认'), ('smile', '微笑'), ('worried', '担心')]
+    mood = models.CharField(max_length=10, blank=True, choices=MOOD_CHOICES, default='', verbose_name='表情')
     text = models.TextField(verbose_name='台词内容')
     is_branch_point = models.BooleanField(default=False, verbose_name='此句后弹出选项')
     is_active = models.BooleanField(default=True, verbose_name='启用')

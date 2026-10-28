@@ -24,37 +24,39 @@ class Command(BaseCommand):
             name='小栗',
             name_color='#d9c3a0',
             title='树洞看门向导',
-            avatar='/static/images/game/guide_avatar.jpg',
+            avatar='/static/images/game/guide_sprite.png',
+            sprite_smile='/static/images/game/guide_sprite_smile.png',
+            sprite_worried='/static/images/game/guide_sprite_worried.png',
             order=1,
         )
 
         prologue = GameChapter.objects.create(
             badge='序章', title='误入树洞',
-            background='/static/images/back_2.png',
+            background='/static/images/game/cg_rain.jpg',
             intro='深夜迷路的我，推开了一扇写着「网络小树洞」的门。',
             order=1,
         )
         dossier = GameChapter.objects.create(
             badge='第一章', title='亮着台灯的房间',
-            background='/static/images/back_1.jpg',
+            background='/static/images/game/cg_desk.jpg',
             intro='走廊尽头那间房，桌上摊着一本被翻旧的手账。',
             order=2,
         )
         library = GameChapter.objects.create(
             badge='第二章', title='从地板到天花板的书架',
-            background='/static/images/back_2.png',
+            background='/static/images/game/cg_shelf.jpg',
             intro='每一本书，都是他某个深夜写下的东西。',
             order=3,
         )
         gallery = GameChapter.objects.create(
             badge='第三章', title='墙上的光与那封信',
-            background='/static/images/back_1.jpg',
+            background='/static/images/game/cg_photos.jpg',
             intro='照片钉满一面墙，旁边压着一封没有寄出的信。',
             order=4,
         )
         finale = GameChapter.objects.create(
             badge='终章', title='树洞之外',
-            background='/static/images/back_2.png',
+            background='/static/images/game/cg_window.jpg',
             intro='关于这个树洞最后的秘密，和灯亮起来的方式。',
             order=5,
         )
@@ -62,10 +64,10 @@ class Command(BaseCommand):
             prev.next_chapter = nxt
             prev.save()
 
-        def line(chapter, order, text, character=None, kind=GameDialogue.KIND_TEXT, branch=False):
+        def line(chapter, order, text, character=None, kind=GameDialogue.KIND_TEXT, branch=False, mood=''):
             return GameDialogue.objects.create(
                 chapter=chapter, order=order, text=text,
-                character=character, kind=kind, is_branch_point=branch,
+                character=character, kind=kind, is_branch_point=branch, mood=mood,
             )
 
         def branch_of(chapter, order):
@@ -80,8 +82,8 @@ class Command(BaseCommand):
         # ---------- 序章 ----------
         line(prologue, 1, '深夜，你在网络的边缘迷了路。\n指示牌歪歪斜斜地写着——「Asitakawa 的网络小树洞」。', kind=GameDialogue.KIND_NARRATION)
         line(prologue, 2, '门没有锁。推开时，一串风铃响了，屋里的灯跟着亮起来。', kind=GameDialogue.KIND_NARRATION)
-        line(prologue, 3, '欢迎光临——！我是这里的看门向导，小栗。\n等你很久了喵。', guide)
-        line(prologue, 4, '你大概以为这里是个普通的个人网站吧？\n不是的。这个树洞被做成了一部视觉小说。', guide)
+        line(prologue, 3, '欢迎光临——！我是这里的看门向导，小栗。\n等你很久了喵。', guide, mood='smile')
+        line(prologue, 4, '你大概以为这里是个普通的个人网站吧？\n不是的。这个树洞被做成了一部视觉小说。', guide, mood='smile')
         line(prologue, 5, '洞主的档案、他写的文章、看过的展、还有别人留下的话——\n都放在不同的房间里。不是链接，是能推门进去的场景。', guide)
         line(prologue, 6, '对了，五个房间里各藏着一块记忆碎片。\n全部集齐的话……嗯，先不剧透。', guide)
         line(prologue, 7, '那么，先从哪间房开始呢？', guide, branch=True)
@@ -97,12 +99,12 @@ class Command(BaseCommand):
         line(dossier, 4, '要翻开看看吗？', guide, branch=True)
         choice(dossier, 4, '翻开那本手账', url='panel:resume', choice_order=1)
         choice(dossier, 4, '先往下走', goto_chapter=library, choice_order=2)
-        line(dossier, 5, '……看懂了吗？他不是那种会把经历挂在嘴边的人。\n但该做的事，一件都没落下。', guide)
+        line(dossier, 5, '……看懂了吗？他不是那种会把经历挂在嘴边的人。\n但该做的事，一件都没落下。', guide, mood='smile')
         line(dossier, 6, '隔壁是书架。他写的东西，比他说的话多得多。', guide)
 
         # ---------- 第二章：书架 ----------
         line(library, 1, '书架从地板一直顶到天花板。有的书脊磨白了，有的还很新。', kind=GameDialogue.KIND_NARRATION)
-        line(library, 2, '这里的每一本书，都是他写的。\n有些在讲技术，有些只是深夜的牢骚。', guide)
+        line(library, 2, '这里的每一本书，都是他写的。\n有些在讲技术，有些只是深夜的牢骚。', guide, mood='smile')
         line(library, 3, '抽一本？读完记得合上，别把书页折了喵。', guide, branch=True)
         choice(library, 3, '抽一本翻开', url='panel:blogs', choice_order=1)
         choice(library, 3, '继续听下去', choice_order=2)
@@ -114,7 +116,7 @@ class Command(BaseCommand):
 
         # ---------- 第三章：相册与信 ----------
         line(gallery, 1, '走廊的墙上钉满了照片，边角被灯光照得发亮。', kind=GameDialogue.KIND_NARRATION)
-        line(gallery, 2, '他去看过的每一个展，都会留一张照片在这儿。\n点开看，是能放大到整面墙的。', guide)
+        line(gallery, 2, '他去看过的每一个展，都会留一张照片在这儿。\n点开看，是能放大到整面墙的。', guide, mood='smile')
         line(gallery, 3, '照片旁边还压着一封信，写给自己的。\n要看看哪一样？', guide, branch=True)
         choice(gallery, 3, '看看墙上的照片', url='panel:gallery', choice_order=1)
         choice(gallery, 3, '读那封没寄出的信', url='panel:about', choice_order=2)
@@ -127,9 +129,9 @@ class Command(BaseCommand):
 
         # ---------- 终章 ----------
         line(finale, 1, '走到走廊的尽头，是一扇朝着夜色的窗。', kind=GameDialogue.KIND_NARRATION)
-        line(finale, 2, '关于那五块记忆碎片——它们散在五个房间里。', guide)
+        line(finale, 2, '关于那五块记忆碎片——它们散在五个房间里。', guide, mood='worried')
         line(finale, 3, '档案、书架、相册、信、还有留言板。\n每一处都藏着一块，找到的时候会有微光闪一下。', guide)
-        line(finale, 4, '全部集齐，这个树洞的灯就会全亮。\n那是他留给自己，也留给你的真结局。', guide)
+        line(finale, 4, '全部集齐，这个树洞的灯就会全亮。\n那是他留给自己，也留给你的真结局。', guide, mood='smile')
         line(finale, 5, '不着急，慢慢逛。\n无论你什么时候回来，这里的灯都亮着。', guide, branch=True)
         choice(finale, 5, '再去找找碎片', url='panel:achievements', choice_order=1)
         choice(finale, 5, '从头再走一遍', goto_chapter=prologue, choice_order=2)

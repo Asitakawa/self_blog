@@ -117,6 +117,7 @@ self_blog/
 │   ├── urls.py / admin.py     # 章节内联台词、台词内联选项、碎片场景下拉
 │   ├── management/commands/seed_story.py   # 示例剧情与碎片重置命令
 │   └── templates/game/play.html   # 游戏主界面（独立模板）
+├── static/js/game/desk3d.js    # 3D 夜班桌面（Three.js，动态 import）
 ├── static/js/game/shelf3d.js   # 3D 书架（Three.js，动态 import）
 ├── interaction/               # 评论
 │   ├── models.py              # Comment
@@ -283,6 +284,42 @@ python manage.py runserver
 
 阅读器单独走 `/api/post/<slug>/`，返回文章正文 HTML（内容由后台 CKEditor 撰写，属可信来源）。
 
+#### 夜班归档（`static/js/game/archive.js`）
+
+主玩法，入口在标题页主按钮与顶栏「夜班」。状态与渲染分离：优先用 3D 桌面（`desk3d.js`），WebGL 不可用时同一套状态驱动 DOM 卡牌。
+
+- **数据**：`/api/archive/`（`views.archive_api`）把 Education / CampusActivity / Internship / Project / BlogPost / ExhibitionDiary / Hobby 映射成四种 `kind`：`study` / `work` / `writing` / `life`。
+- **发牌**：`buildDeck()` 先按 kind 分组洗牌，再轮询抽取，保证一晚 8 张不会全是「生活」。
+- **判定**：`file(kind)` 比较卡片 kind；正确盖章并前进，错误扣 `oil`、卡片抖一下、停在原卡。`oil <= 0` 结算失败。
+- **输入**：点抽屉、按 1–4、把卡片拖进抽屉三种都行；3D 下由 `Desk3D` 的 Raycaster 判定落点，2D 下用 `elementFromPoint`。
+- **渲染同步**：`renderCard / updateCounts / renderOil` 同时更新 DOM 与 `desk.setCard / setCounts / setOil`；DOM 版始终保留，用于回退、读屏与 jsdom 测试。
+- **存档**：`vn_archive` 存 `{night, cleared}`；成功后 `night+1`、`cleared+1`，标题页显示值守次数。
+- **与剧情衔接**：结算的「读今晚的信」调用 `VNEngine.gotoChapter(night-1)`，把当前夜映射到章节。
+- **测试**：`node test_archive.js`（jsdom，25 项，走 DOM 回退）+ `node test_desk3d.js`（真实 Chrome + WebGL，23 项）。
+
+#### 立绘、CG 与演出
+
+- **立绘**：`GameCharacter.avatar` 为默认立绘；`sprite_smile` / `sprite_worried` 存表情图路径（`/static/...` 或 `/media/...`）。`GameDialogue.mood` 选表情，`/api/story/` 会把它合并进 `character.avatar` 返回。
+- **显示**：立绘固定在右侧、底部对齐；旁白时保留并压暗（`.dim`），角色开口时恢复。切表情走 preload + `dataset.want` 守卫，快速推进不会串图。
+- **章节 CG**：就是 `GameChapter.background`，现为 `cg_rain / cg_desk / cg_shelf / cg_photos / cg_window` 五张，交叉淡化由引擎的 `.vn-bg` 双层完成。
+- **章节标题卡**：进入新章节时显示 2.1 秒（badge + 标题 + 朱砂短线），音效 `chapter`。
+- **标题封面**：`static/images/game/key_visual.jpg`，带 26 秒 ken-burns 缓动。
+- **声音**：`static/js/game/audio.js` 全部 WebAudio 合成，不加载音频文件——低频环境垫、打字纸声、选项、印章、章节转场。顶栏「声音」开关写入 `vn_sound`，首次点击时解锁 AudioContext。
+- **素材处理**：AI 生成的图底部带水印，统一裁掉最后 58px；角色图以纯黑底生成，再按亮度（≤14 透明，14–30 过渡）转 alpha 并裁边。
+
+#### 3D 夜班桌面（`static/js/game/desk3d.js`）
+
+- **场景**：程序化生成的木桌（BoxGeometry + Canvas 木纹贴图）、桌垫、银行家台灯（灯罩 + 假体积光锥 + SpotLight）、印泥、钢笔、桌角三盏油灯、背景书柜剪影与浮尘。
+- **卡片**：一张 3.3×2.2 的纸，CanvasTexture 现场绘制页眉、标题、正文、栏线与「待归档」淡印；纸面前缘贴桌、后缘微微翘起（`CARD_TILT`），避免下半张沉进桌面。
+- **抽屉**：四只木托盘，索引卡朝镜头；悬停时托盘前移 0.13、索引卡发光。
+- **交互**：Raycaster 命中卡片后可拖拽（射线与 y=0.1 平面求交），经过托盘高亮，松手即归档；轻点托盘同样归档（`onFile(kind)` 交给 archive.js）。
+- **动画**：印章 0.1s 落下 → 纸上出现朱砂印 → 0.18s 抬起；归对时卡片缩到 0.65 飞向抽屉后淡出，归错时绕 Y 轴抖动。所有动画走一个轻量 job 队列，`cardToken` 防止旧动画改到新卡片。
+- **灯油**：`setOil(n)` 控制三盏灯的 emissive、火苗可见性与聚光强度，归错一盏就暗下去。
+- **性能**：像素比上限 1.75、阴影贴图 1024、ACES 色调映射；关闭夜班时 `dispose()` 释放几何体、贴图与 WebGL 上下文。
+- **竖屏**：`_layoutTrays()` 在窄屏把抽屉缩到 0.6 倍并收拢到中间，避免两侧被裁掉。
+- **回退**：`archive.js` 动态 import，构造失败或 WebGL 不可用时自动改用 DOM 卡牌。
+- **场景纸页**：`scenes.js` 在宽屏用 `Desk3D({ambient:true})` 铺一张同样的桌子当背景，纸页用 CSS `perspective` 轻微倾斜并跟随鼠标（书架与阅读器不叠，省一个 WebGL 上下文）。
+
 #### 3D 书架（`static/js/game/shelf3d.js`）
 
 书架场景默认是 Three.js 实时渲染的 3D 木书柜，不是贴图：
@@ -310,9 +347,14 @@ python manage.py runserver
 npm install --no-save jsdom puppeteer-core   # 仅测试用，不入库
 node test_scenes.js      # 场景与剧情交互（jsdom，48 项）
 node test_shelf3d.js     # 3D 书架端到端（真实 Chrome + WebGL，13 项）
+node test_desk3d.js      # 3D 夜班桌面端到端（真实 Chrome + WebGL，23 项）
 ```
 
 `test_shelf3d.js` 需要本机 Chrome，路径写在文件顶部；它验证渲染、悬停命中、点击阅读、拖拽旋转与资源释放。
+
+立绘与音效没有自动化用例，改动后用无头 Chrome 截图核对；重点看立绘底部是否被对话框自然裁切、旁白压暗是否过重、章节卡文字是否压到背景亮部。
+
+立绘与音效没有自动化用例，改动后用无头 Chrome 截图核对；重点看立绘底部是否被对话框自然裁切、旁白压暗是否过重、章节卡文字是否压到背景亮部。
 
 ### 1. 树洞小屋 (`/home/`)
 

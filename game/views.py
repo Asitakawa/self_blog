@@ -42,6 +42,10 @@ def story_api(request):
                     name = d.character.avatar.name
                     # 允许后台直接引用静态图（/static/...），否则按上传文件走 media
                     avatar_url = name if name.startswith('/') else d.character.avatar.url
+                if d.mood == 'smile' and d.character.sprite_smile:
+                    avatar_url = d.character.sprite_smile
+                elif d.mood == 'worried' and d.character.sprite_worried:
+                    avatar_url = d.character.sprite_worried
                 item['character'] = {
                     'name': d.character.name,
                     'color': d.character.name_color,
@@ -80,6 +84,43 @@ def story_api(request):
     ]
 
     return JsonResponse({'chapters': chapters, 'latest_posts': latest_posts})
+
+
+@require_GET
+def archive_api(request):
+    """夜班归档：把站点的真实内容切成一张张待归档的卡片。"""
+    cards = []
+
+    def add(kind, title, text, source, date=''):
+        text = (text or '').strip()
+        title = (title or '').strip()
+        if not title:
+            return
+        cards.append({
+            'id': f'{kind}-{len(cards)}',
+            'kind': kind,
+            'title': title,
+            'text': text or title,
+            'source': source,
+            'date': date,
+        })
+
+    for e in Education.objects.all():
+        add('study', e.school, e.description or f'{e.major} · {e.degree}，{_span(e.start_date, e.end_date)}。', '履历')
+    for c in CampusActivity.objects.all():
+        add('study', c.organization, c.description, '校园')
+    for i in Internship.objects.all():
+        add('work', i.company, i.responsibilities, '履历', i.start_date.strftime('%Y.%m'))
+    for p in Project.objects.all():
+        add('work', p.name, p.description, '项目', p.start_date.strftime('%Y.%m'))
+    for p in BlogPost.objects.filter(is_published=True).select_related('category'):
+        add('writing', p.title, p.excerpt, '博客', p.created_at.strftime('%Y.%m.%d'))
+    for e in ExhibitionDiary.objects.filter(is_active=True):
+        add('life', e.title, f'票根上印着「{e.title}」，边角被翻得发毛。', '展览', e.created_at.strftime('%Y.%m'))
+    for h in Hobby.objects.all():
+        add('life', h.name, h.description or f'周末常做的事：{h.name}。', '日常')
+
+    return JsonResponse({'cards': cards})
 
 
 @require_GET
