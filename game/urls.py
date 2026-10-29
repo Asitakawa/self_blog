@@ -7,7 +7,6 @@ app_name = 'game'
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='game/play.html'), name='play'),
-    path('play/', TemplateView.as_view(template_name='game/play.html'), name='play_alt'),
     path('api/story/', views.story_api, name='story_api'),
     path('api/content/', views.content_api, name='content_api'),
     path('api/archive/', views.archive_api, name='archive_api'),

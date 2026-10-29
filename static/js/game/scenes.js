@@ -33,15 +33,12 @@
   ];
 
   var root = document.getElementById('vn-scenes');
-  var sceneStage = document.getElementById('scene-stage');
   var lightbox = document.getElementById('vn-lightbox');
   var ending = document.getElementById('vn-ending');
   var data = null;
   var loading = null;
   var current = null;
   var lastScene = 'blogs';
-  var sceneDesk = null;
-  var sceneDeskTried = false;
 
   var $ = function (id) { return document.getElementById(id); };
 
@@ -114,77 +111,8 @@
 
   /* ---------------- 场景开关 ---------------- */
 
-  var shelf3d = null;
-
-  function disposeShelf() {
-    if (shelf3d) {
-      try { shelf3d.dispose(); } catch (e) { /* 忽略 GPU 释放异常 */ }
-      shelf3d = null;
-    }
-  }
-
-  /* 场景背后那张真实的桌子：只在宽屏上开，手机留着纸页本身 */
-  function ensureSceneDesk() {
-    if (sceneDesk || sceneDeskTried) return Promise.resolve(sceneDesk);
-    sceneDeskTried = true;
-    if (!sceneStage || !window.WebGLRenderingContext) return Promise.resolve(null);
-    if (!window.matchMedia || !window.matchMedia('(min-width: 900px)').matches) return Promise.resolve(null);
-    var url = app.dataset.desk3d;
-    if (!url) return Promise.resolve(null);
-    return import(url).then(function (mod) {
-      try {
-        sceneDesk = new mod.Desk3D(sceneStage, { ambient: true });
-        root.classList.add('scenes-3d');
-        return sceneDesk;
-      } catch (e) {
-        sceneDeskTried = false;
-        return null;
-      }
-    }).catch(function () {
-      sceneDeskTried = false;
-      return null;
-    });
-  }
-
-  function dropSceneDesk() {
-    if (sceneDesk) {
-      try { sceneDesk.dispose(); } catch (e) { /* 忽略 GPU 释放异常 */ }
-      sceneDesk = null;
-    }
-    if (sceneStage) sceneStage.innerHTML = '';
-    root.classList.remove('scenes-3d');
-    sceneDeskTried = false;
-  }
-
-  /* 纸页跟着鼠标微微一偏，像摆在桌上被看着 */
-  function bindSheetTilt() {
-    if (root.dataset.tiltBound) return;
-    root.dataset.tiltBound = '1';
-    root.addEventListener('pointermove', function (e) {
-      if (!root.classList.contains('scenes-3d')) return;
-      var sheet = root.querySelector('.vn-scene.active');
-      if (!sheet) return;
-      var rect = root.getBoundingClientRect();
-      var dx = (e.clientX - rect.left) / rect.width - 0.5;
-      var dy = (e.clientY - rect.top) / rect.height - 0.5;
-      sheet.style.setProperty('--tilt-y', (dx * 3).toFixed(2) + 'deg');
-      sheet.style.setProperty('--tilt-x', (2 - dy * 1.8).toFixed(2) + 'deg');
-    });
-    root.addEventListener('pointerleave', function () {
-      var sheet = root.querySelector('.vn-scene.active');
-      if (!sheet) return;
-      sheet.style.setProperty('--tilt-y', '0deg');
-      sheet.style.setProperty('--tilt-x', '2deg');
-    });
-  }
-
   function open(kind) {
     if (!kind) kind = 'resume';
-    if (kind !== 'blogs') disposeShelf();
-    bindSheetTilt();
-    // 书架与阅读器本身占用画面，不再压一张桌面，省一次 WebGL 上下文
-    if (kind === 'blogs' || kind === 'reader') dropSceneDesk();
-    else ensureSceneDesk();
     ensureData().then(function () {
       current = kind;
       root.classList.remove('vn-hidden');
@@ -214,8 +142,6 @@
   }
 
   function close() {
-    disposeShelf();
-    dropSceneDesk();
     root.classList.add('vn-hidden');
     document.body.classList.remove('scene-open');
     current = null;
@@ -350,24 +276,9 @@
 
   /* ---------------- 场景二：书架 / 阅读器 ---------------- */
 
-  function hasWebGL() {
-    try {
-      var c = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl')));
-    } catch (e) { return false; }
-  }
-
-  function shelfMode() {
-    return readLS(LS.shelf, '3d') === 'list' ? 'list' : '3d';
-  }
-
-  function shelfBar(mode, total, can3d) {
+  function shelfBar(total) {
     return '<div class="vn-shelf-bar">' +
       '<span class="vn-shelf-count">' + total + ' 本书在架上</span>' +
-      (can3d
-        ? '<button class="vn-shelf-toggle" id="vn-shelf-toggle">' +
-          (mode === '3d' ? '切换列表视图' : '切换 3D 书架') + '</button>'
-        : '<span class="vn-shelf-badge">列表视图</span>') +
       '</div>';
   }
 
@@ -384,39 +295,15 @@
     }).join('') + '</div>';
   }
 
-  function renderBookList(body, posts, fallbackNote) {
+  function renderBookList(body, posts) {
     body.dataset.shelfMode = 'list';
-    body.innerHTML = shelfBar('list', posts.length, hasWebGL()) +
-      (fallbackNote ? '<p class="vn-shelf-note">3D 书架加载失败，已切换为列表视图。</p>' : '') +
-      bookGridHtml(posts);
+    body.innerHTML = shelfBar(posts.length) + bookGridHtml(posts);
     plantFragment('blogs', body);
-  }
-
-  function renderShelf3D(body, posts) {
-    body.dataset.shelfMode = '3d';
-    body.innerHTML = shelfBar('3d', posts.length, true) +
-      '<div class="vn-shelf3d" id="vn-shelf3d"><div class="vn-shelf-loading">正在把书架立起来…</div></div>' +
-      '<p class="vn-shelf-hint">拖动旋转 · 滚轮缩放 · 点击书脊翻开' +
-      (posts.length > 40 ? ' · 架上只摆最近 40 本' : '') + '</p>';
-    plantFragment('blogs', body);
-
-    var stage = $('vn-shelf3d');
-    if (!stage) return;
-    import(app.dataset.shelf3d).then(function (mod) {
-      if (!stage || current !== 'blogs' || !document.body.contains(stage)) return;
-      stage.innerHTML = '';
-      shelf3d = new mod.Shelf3D(stage, posts, { onOpen: openReader });
-      stage.classList.add('ready');
-    }).catch(function (err) {
-      body.dataset.shelfError = (err && err.message) || String(err);
-      if (current === 'blogs') renderBookList(body, posts, true);
-    });
   }
 
   function renderBlogs() {
     var posts = data.posts || [];
     var body = $('scene-blogs-body');
-    disposeShelf();
     body.dataset.shelfMode = '';
 
     if (!posts.length) {
@@ -425,11 +312,7 @@
       return;
     }
 
-    if (shelfMode() === '3d' && hasWebGL()) {
-      renderShelf3D(body, posts);
-    } else {
-      renderBookList(body, posts, shelfMode() === '3d' && !hasWebGL());
-    }
+    renderBookList(body, posts);
   }
 
   function renderReader() {
@@ -718,11 +601,6 @@
   /* ---------------- 事件绑定 ---------------- */
 
   document.addEventListener('click', function (e) {
-    if (e.target.closest('#vn-shelf-toggle')) {
-      writeLS(LS.shelf, shelfMode() === '3d' ? 'list' : '3d');
-      renderBlogs();
-      return;
-    }
     // 关闭类先判定：场景容器本身也带 data-scene，不能让它把关闭点击吃掉
     if (e.target.closest('[data-scene-close]')) { close(); return; }
     if (e.target.closest('[data-reader-back]')) { open('blogs'); return; }
@@ -791,7 +669,6 @@
     open: open,
     close: close,
     openPost: openReader,
-    shelfInstance: function () { return shelf3d; },
     progress: function () {
       var total = (data && data.fragments) ? data.fragments.length : 0;
       return { owned: fragmentCodes().length, total: total };

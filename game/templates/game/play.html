@@ -16,8 +16,6 @@
      data-guestbook-api="{% url 'game:guestbook_api' %}"
      data-guestbook-post="{% url 'game:guestbook_post' %}"
      data-archive-api="{% url 'game:archive_api' %}"
-     data-desk3d="{% static 'js/game/desk3d.js' %}"
-     data-shelf3d="{% static 'js/game/shelf3d.js' %}"
      data-home="{% url 'home:index' %}">
 
   <!-- 背景双层交叉淡化 -->
@@ -79,8 +77,8 @@
         <p class="vn-cover-latin">A WEB HOLLOW STORY</p>
         <p class="vn-cover-desc">一位程序员的记忆散落在五个房间里。<br>翻开它们，把碎片拾回来；或者，直接去读他的简历与文章。</p>
         <div class="vn-cover-actions">
-          <button class="vn-btn vn-btn-primary" data-act="archive">开始夜班</button>
-          <button class="vn-btn vn-btn-ghost" data-act="start">剧情模式</button>
+          <button class="vn-btn vn-btn-primary" data-act="start">进入树洞</button>
+          <button class="vn-btn vn-btn-ghost" data-act="archive">夜班归档</button>
         </div>
         <p class="vn-cover-quiet">
           <button data-act="continue" id="vn-btn-continue" hidden>继续游戏</button>
@@ -151,7 +149,6 @@
 
   <!-- ============ 游戏内场景 ============ -->
   <div id="vn-scenes" class="vn-hidden">
-    <div id="scene-stage" aria-hidden="true"></div>
 
     <section class="vn-scene" data-scene="resume">
       <header class="vn-scene-head">
@@ -272,7 +269,6 @@
   <!-- ============ 夜班归档 ============ -->
   <div id="vn-archive" class="vn-hidden" role="dialog" aria-label="夜班归档">
     <div class="ar-scene" data-bg="{% static 'images/game/cg_desk.webp' %}">
-      <div id="ar-stage" aria-hidden="true"></div>
       <header class="ar-top">
         <div class="ar-top-left">
           <span class="ar-night" id="ar-night">第 01 夜</span>
@@ -308,28 +304,6 @@
   <div id="vn-loading"><span class="vn-loader"></span>正在加载剧情…</div>
 </div>
 
-<script>
-/* 空闲时预热 3D 引擎，进夜班/书架时就不用现下 1.3MB；移动端与省流模式跳过 */
-(function () {
-  var warmed = false;
-  var slow = navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || ''));
-  function warm() {
-    if (warmed || slow || window.innerWidth < 900) return;
-    warmed = true;
-    var link = document.createElement('link');
-    link.rel = 'modulepreload';
-    link.href = "{% static 'js/vendor/three.module.js' %}";
-    document.head.appendChild(link);
-  }
-  /* 只有真的打算进 3D 时才开始下引擎，别让路过的人也吃 1.2MB */
-  document.addEventListener('pointerenter', function (e) {
-    if (e.target.closest && e.target.closest('[data-act="archive"],[data-act="start"],[data-scene="blogs"]')) warm();
-  }, true);
-  document.addEventListener('focusin', function (e) {
-    if (e.target.closest && e.target.closest('[data-act="archive"],[data-act="start"],[data-scene="blogs"]')) warm();
-  });
-})();
-</script>
 <script src="{% static 'js/game/audio.js' %}"></script>
 <script src="{% static 'js/game/engine.js' %}"></script>
 <script src="{% static 'js/game/scenes.js' %}"></script>

@@ -20,8 +20,9 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('about/', include('about.urls')),
     path('resume/', include('resume.urls')),
-    path('home/', include('home.urls')),
-    path('', include('game.urls')),
+    # 《树洞奇缘》是彩蛋，不占根路径，入口只在右下角浮球
+    path('play/', include('game.urls')),
+    path('', include('home.urls')),
 ]
 
 if settings.DEBUG:

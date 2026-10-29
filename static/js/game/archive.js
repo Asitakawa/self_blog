@@ -24,10 +24,7 @@
   var drawersEl = $('ar-drawers');
   var resultEl = $('ar-result');
   var stampEl = $('ar-stamp');
-  var stage = $('ar-stage');
 
-  var desk = null;
-  var deskTried = false;
   var cache = null;
   var state = {
     cards: [],
@@ -111,47 +108,6 @@
       .catch(function () { return []; });
   }
 
-  /* ---------------- 3D 桌面 ---------------- */
-
-  function ensureDesk() {
-    if (deskTried) return Promise.resolve(desk);
-    deskTried = true;
-
-    var url = app && app.dataset.desk3d;
-    if (!url || !stage || !window.WebGLRenderingContext) return Promise.resolve(null);
-
-    return import(url).then(function (mod) {
-      if (!state.open) return null;
-      try {
-        desk = new mod.Desk3D(stage, {
-          drawers: KINDS.map(function (k, i) {
-            return { key: k.key, label: k.label, note: k.note, no: '0' + (i + 1) };
-          }),
-          onFile: function (kind) { file(kind); },
-        });
-        root.classList.add('ar-3d');
-        return desk;
-      } catch (e) {
-        desk = null;
-        deskTried = false;
-        return null;
-      }
-    }).catch(function () {
-      deskTried = false;
-      return null;
-    });
-  }
-
-  function dropDesk() {
-    if (desk) {
-      desk.dispose();
-      desk = null;
-    }
-    deskTried = false;
-    if (stage) stage.innerHTML = '';
-    root.classList.remove('ar-3d');
-  }
-
   function countsMap() {
     var map = {};
     state.deck.slice(0, state.index).forEach(function (c) {
@@ -182,7 +138,6 @@
       var el = drawersEl.querySelector('[data-count="' + k.key + '"]');
       if (el) el.textContent = n;
     });
-    if (desk) desk.setCounts(countsMap());
   }
 
   function renderOil() {
@@ -194,7 +149,6 @@
     }
     el.innerHTML = html;
     el.setAttribute('aria-label', '灯油 ' + state.oil + ' / ' + state.maxOil);
-    if (desk) desk.setOil(state.oil);
   }
 
   function renderHeader() {
@@ -224,7 +178,6 @@
     bindDrag(top);
     renderHeader();
     updateCounts();
-    if (desk) desk.setCard(card);
   }
 
   /* ---------------- 交互 ---------------- */
@@ -301,20 +254,13 @@
     if (!state.open || state.busy || state.index >= state.deck.length) return;
     var card = state.deck[state.index];
     var top = stack.querySelector('.ar-card--top');
-    if (!top && !desk) return;
+    if (!top) return;
 
     var ok = kind === card.kind;
 
     if (ok) {
       state.busy = true;
       state.correct++;
-      if (desk) {
-        desk.react(true, kind);
-      } else {
-        showStamp('归档', false);
-        if (window.GameAudio) window.GameAudio.sfx('stamp');
-        top.classList.add('filed');
-      }
       setTimeout(function () {
         state.index++;
         state.busy = false;
@@ -325,13 +271,6 @@
       state.wrong++;
       state.oil--;
       renderOil();
-      if (desk) {
-        desk.react(false, kind);
-      } else {
-        showStamp('退回', true);
-        if (window.GameAudio) window.GameAudio.sfx('wrong');
-        top.classList.add('reject');
-      }
       setTimeout(function () {
         if (top) top.classList.remove('reject');
         state.busy = false;
@@ -343,11 +282,9 @@
   /* ---------------- 开局与结算 ---------------- */
 
   function startNight(night) {
-    Promise.all([loadCards(), ensureDesk()]).then(function (res) {
-      var cards = res[0];
+    loadCards().then(function (cards) {
       if (!cards.length) {
         stack.innerHTML = '<div class="ar-card ar-card--top"><h3>今晚没有档案</h3><p>后台还没有可归档的内容，先去写点什么吧。</p></div>';
-        if (desk) desk.setCard(null);
         return;
       }
       state.cards = cards;
@@ -465,7 +402,6 @@
     root.classList.add('vn-hidden');
     document.body.classList.remove('archive-open');
     resultEl.classList.add('vn-hidden');
-    dropDesk();
   }
 
   /* ---------------- 事件 ---------------- */
@@ -501,7 +437,6 @@
     file: file,
     state: state,
     kinds: KINDS,
-    deskInstance: function () { return desk; },
   };
 
   updateRecord();

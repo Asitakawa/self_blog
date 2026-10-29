@@ -883,8 +883,7 @@ body.scene-open #vn-title { opacity: 0; visibility: hidden; }
   align-items: center;
   justify-content: center;
   padding: 3vh 3vw;
-  background: rgba(237, 244, 253, .72);
-  backdrop-filter: blur(8px);
+  background: linear-gradient(158deg, #f2f7ff 0%, #e4eefc 52%, #eef4fe 100%);
   cursor: default;
 }
 
@@ -898,7 +897,8 @@ body.scene-open #vn-title { opacity: 0; visibility: hidden; }
   display: none;
   flex-direction: column;
   width: min(1080px, 100%);
-  height: min(88vh, 900px);
+  height: auto;
+  max-height: min(88vh, 900px);
   background: var(--paper);
   color: var(--paper-ink);
   border: 1px solid var(--line);
@@ -1204,89 +1204,6 @@ body.scene-open #vn-title { opacity: 0; visibility: hidden; }
   letter-spacing: .12em;
   color: var(--paper-dim);
 }
-.vn-shelf-toggle {
-  padding: 6px 12px;
-  font-family: var(--sans);
-  font-size: 10.5px;
-  letter-spacing: .1em;
-  color: var(--paper-dim);
-  background: none;
-  border: 1px solid var(--paper-rule);
-  cursor: pointer;
-  transition: color .16s, border-color .16s;
-}
-.vn-shelf-toggle:hover { color: var(--seal); border-color: var(--seal); }
-.vn-shelf-badge { font-size: 10.5px; letter-spacing: .1em; }
-
-.vn-shelf-note {
-  margin-bottom: 14px;
-  padding: 10px 0;
-  font-size: 11.5px;
-  color: var(--seal-deep);
-  border-top: 1px solid rgba(140, 42, 30, .3);
-  border-bottom: 1px solid rgba(140, 42, 30, .3);
-}
-
-.vn-shelf3d {
-  position: relative;
-  width: 100%;
-  height: min(58vh, 520px);
-  min-height: 330px;
-  overflow: hidden;
-  background: #0a0806;
-  border: 1px solid var(--paper-rule);
-  cursor: grab;
-  touch-action: none;
-  box-shadow: inset 0 0 70px rgba(0, 0, 0, .8);
-}
-.vn-shelf3d.dragging { cursor: grabbing; }
-.vn-shelf3d canvas { display: block; }
-
-.vn-shelf-loading {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: var(--serif);
-  font-size: 13px;
-  letter-spacing: .16em;
-  color: #94a3b8;
-}
-
-.vn-shelf-hint {
-  margin-top: 10px;
-  font-size: 10px;
-  letter-spacing: .1em;
-  color: var(--paper-dim);
-}
-
-.vn-shelf-tip {
-  position: absolute;
-  z-index: 5;
-  transform: translate(-50%, -130%);
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 7px 10px;
-  white-space: nowrap;
-  pointer-events: none;
-  background: rgba(255, 255, 255, .98);
-  border: 1px solid #c7d7f2;
-  border-left: 2px solid var(--seal);
-  border-radius: 8px;
-  box-shadow: 0 12px 30px rgba(30, 64, 175, .16);
-  opacity: 0;
-  transition: opacity .16s;
-}
-.vn-shelf-tip.on { opacity: 1; }
-.vn-shelf-tip b {
-  font-family: var(--serif);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #f2e9d7;
-}
-.vn-shelf-tip span { font-size: 10px; letter-spacing: .08em; color: var(--text-dim); }
-
 /* 列表视图：书目 */
 .vn-book-grid {
   display: flex;
@@ -1802,7 +1719,6 @@ body.scene-open #vn-toast {
   .vn-tl-top { flex-direction: column; gap: 2px; }
   .vn-photo-grid { grid-template-columns: 1fr 1fr; gap: 22px 14px; }
   .vn-ach-grid { grid-template-columns: 1fr; }
-  .vn-shelf3d { height: 46vh; min-height: 280px; }
   #vn-hud { top: auto; bottom: 12px; left: 16px; font-size: 9.5px; }
   .vn-board-compose { flex-direction: column; align-items: stretch; }
   .vn-board-compose .vn-btn { width: 100%; }
@@ -1854,8 +1770,8 @@ body.scene-open #vn-toast {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(237, 244, 253, .92) 0%, rgba(237, 244, 253, .2) 42%, rgba(226, 236, 250, .92) 100%),
-    radial-gradient(60% 50% at 50% 40%, rgba(255, 255, 255, .35), transparent 70%);
+    linear-gradient(180deg, rgba(8, 13, 24, .70) 0%, rgba(8, 13, 24, .12) 42%, rgba(8, 13, 24, .84) 100%),
+    radial-gradient(60% 50% at 50% 38%, rgba(255, 214, 148, .06), transparent 72%);
 }
 
 .ar-top {
@@ -1865,26 +1781,26 @@ body.scene-open #vn-toast {
   align-items: center;
   gap: 18px;
   padding: 16px clamp(18px, 4vw, 40px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid rgba(255, 255, 255, .14);
 }
 .ar-top-left { display: flex; align-items: baseline; gap: 14px; }
 .ar-night {
   font-family: var(--serif);
   font-size: 18px;
   letter-spacing: .12em;
-  color: var(--blue-deep);
+  color: #eaf2ff;
   padding-left: 12px;
   border-left: 3px solid var(--seal);
 }
-.ar-count { font-size: 11px; letter-spacing: .12em; color: #64748b; }
+.ar-count { font-size: 11px; letter-spacing: .12em; color: rgba(214, 230, 255, .68); }
 
 .ar-oil { display: flex; align-items: center; gap: 6px; margin-left: auto; }
 .ar-oil i {
   display: block;
   width: 9px;
   height: 18px;
-  border: 1px solid #c7d7f2;
-  background: #fff;
+  border: 1px solid rgba(255, 255, 255, .3);
+  background: rgba(255, 255, 255, .12);
 }
 .ar-oil i.on {
   background: #e0a94f;
@@ -1898,9 +1814,9 @@ body.scene-open #vn-toast {
   display: grid;
   place-items: center;
   font-size: 20px;
-  color: #64748b;
-  background: #fff;
-  border: 1px solid var(--line);
+  color: #dbe7ff;
+  background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .22);
   cursor: pointer;
 }
 .ar-close:hover { color: var(--seal); border-color: var(--seal); }
@@ -2005,7 +1921,7 @@ body.scene-open #vn-toast {
   padding: 0 clamp(18px, 4vw, 40px) 10px;
   font-size: 10.5px;
   letter-spacing: .08em;
-  color: #64748b;
+  color: rgba(214, 230, 255, .72);
   text-align: center;
 }
 
@@ -2208,93 +2124,3 @@ body.scene-open #vn-toast {
 .ar-hint { color: #64748b; }
 .ar-result-inner .ar-result-actions .vn-btn.vn-btn-primary { color: #fff4e0; }
 .ar-result-inner .ar-result-actions .vn-btn.vn-btn-primary:hover { color: #fff; }
-
-/* ============================================================
-   夜班桌面 · 3D 舞台
-   ============================================================ */
-
-#ar-stage {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity .55s var(--ease);
-  pointer-events: auto;
-}
-#vn-archive.ar-3d #ar-stage { opacity: 1; }
-
-#vn-archive.ar-3d .ar-scene {
-  background-image: none !important;
-  background-color: #070604;
-}
-#vn-archive.ar-3d .ar-scene::before {
-  display: none;
-}
-#vn-archive.ar-3d .ar-top {
-  background: linear-gradient(180deg, rgba(255, 255, 255, .9), rgba(255, 255, 255, .3));
-  border-bottom-color: var(--line);
-}
-#vn-archive.ar-3d .ar-hint {
-  padding-bottom: 16px;
-}
-#vn-archive.ar-3d .ar-stack,
-#vn-archive.ar-3d .ar-drawers,
-#vn-archive.ar-3d .ar-stamp,
-#vn-archive.ar-3d .ar-lamp {
-  display: none;
-}
-#vn-archive.ar-3d .ar-oil {
-  opacity: .5; /* 3D 桌上有真的灯盏，这里的点点只留给读屏和回退 */
-}
-
-/* 桌面暗角，把视线收到中间 */
-#vn-archive.ar-3d::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  background:
-    radial-gradient(120% 90% at 50% 46%, transparent 42%, rgba(4, 3, 2, .55) 100%);
-}
-#vn-archive.ar-3d #ar-result { z-index: 9; }
-
-/* 3D 模式下桌面留白层不再拦截指针 */
-#vn-archive.ar-3d .ar-desk,
-#vn-archive.ar-3d .ar-hint { pointer-events: none; }
-
-/* ============================================================
-   场景的 3D 桌面：纸页摆在真实的桌子上
-   ============================================================ */
-
-#scene-stage {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .5s var(--ease);
-}
-#vn-scenes.scenes-3d { background: rgba(4, 3, 2, .38); }
-#vn-scenes.scenes-3d #scene-stage { opacity: 1; }
-
-#vn-scenes.scenes-3d .vn-scene {
-  width: min(960px, 89%);
-  height: min(80vh, 810px);
-  z-index: 2;
-  transform-style: preserve-3d;
-  will-change: transform;
-}
-#vn-scenes.scenes-3d .vn-scene.active {
-  animation: vn-sheet-3d .58s var(--ease);
-  transform: perspective(1600px) rotateX(var(--tilt-x, 2deg)) rotateY(var(--tilt-y, 0deg));
-  box-shadow:
-    0 64px 120px rgba(0, 0, 0, .74),
-    0 18px 40px rgba(0, 0, 0, .5);
-}
-@keyframes vn-sheet-3d {
-  from {
-    transform: perspective(1750px) rotateX(7deg) rotateY(var(--tilt-y, 0deg)) translateY(52px);
-    opacity: 0;
-  }
-}

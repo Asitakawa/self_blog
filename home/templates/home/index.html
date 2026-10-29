@@ -29,7 +29,7 @@
             {% else %}
             <div class="av"><i class="bi bi-person-fill"></i></div>
             {% endif %}
-            {% for badge in badges %}
+            {% for badge in badges|slice:":2" %}
             <span class="f">{% if badge.icon %}{{ badge.icon }} {% endif %}{{ badge.text }}</span>
             {% endfor %}
         </div>
