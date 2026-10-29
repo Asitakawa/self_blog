@@ -32,8 +32,8 @@
     </div>
 
     <!-- Posts -->
+    {% if page_obj %}
     <div class="posts-grid">
-        {% if page_obj %}
             {% for post in page_obj %}
             <article class="post-card">
                 <div class="post-img">
@@ -60,14 +60,19 @@
                 </div>
             </article>
             {% endfor %}
-        {% else %}
-            <div style="grid-column:1/-1;text-align:center;padding:60px 20px">
-                <i class="bi bi-journal-text" style="font-size:2.5rem;color:var(--ink-muted);display:block;margin-bottom:12px"></i>
-                <p style="font-size:.95rem;color:var(--ink-soft)">还没有文章，敬请期待～</p>
-                <p style="font-size:.78rem;color:var(--ink-muted);margin-top:6px">正在构思中，很快就会和大家见面！</p>
-            </div>
-        {% endif %}
     </div>
+    {% else %}
+    <div class="empty-note">
+        <p class="empty-note-t">这里还没有文章。</p>
+        <p class="empty-note-d">不着急。写清楚一篇，比凑十篇有用。</p>
+        <div class="empty-note-links">
+            <a href="{% url 'home:index' %}">回首页</a>
+            <a href="{% url 'about' %}">关于我</a>
+            <a href="{% url 'resume' %}">简历</a>
+            {% if request.user.is_staff %}<a href="{% url 'admin:blog_blogpost_add' %}">写第一篇 →</a>{% endif %}
+        </div>
+    </div>
+    {% endif %}
 
     <!-- Pagination -->
     {% if page_obj.paginator.num_pages > 1 %}

@@ -70,6 +70,20 @@
             {% endfor %}
         </div>
     </section>
+    {% else %}
+    <section style="margin-bottom:50px">
+        <div class="sh"><span class="n">✦</span><h2>博客文章</h2></div>
+        <div class="empty-note">
+            <p class="empty-note-t">这里还没有文章。</p>
+            <p class="empty-note-d">不打算为了填满而写。想清楚了再放上来，写一篇是一篇。在那之前，先看看别的地方。</p>
+            <div class="empty-note-links">
+                <a href="{% url 'about' %}">关于我</a>
+                <a href="{% url 'resume' %}">简历</a>
+                <a href="{% url 'home:exhibitions' %}">日常分享</a>
+                {% if request.user.is_staff %}<a href="{% url 'admin:blog_blogpost_add' %}">写第一篇 →</a>{% endif %}
+            </div>
+        </div>
+    </section>
     {% endif %}
 
     <!-- SOCIAL -->

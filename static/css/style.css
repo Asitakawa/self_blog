@@ -24,7 +24,7 @@ body{
 .bg-system .bg-layer.active{opacity:1}
 .bg-veil{
     position:fixed;top:0;left:0;width:100%;height:100%;
-    background:linear-gradient(180deg,rgba(255,255,255,.93) 0%,rgba(255,255,255,.86) 45%,rgba(241,245,249,.9) 100%);
+    background:linear-gradient(180deg,rgba(255,255,255,.96) 0%,rgba(255,255,255,.93) 45%,rgba(241,245,249,.95) 100%);
     z-index:0;pointer-events:none
 }
 main{position:relative;z-index:1;padding-top:28px;animation:fadeInUp .45s ease-out}
@@ -101,6 +101,21 @@ ul,ol{list-style:none}
 .sh .n{font-size:.7rem;font-weight:800;color:var(--b-dark);letter-spacing:2px;min-width:28px}
 .sh h2{font-size:1.35rem;font-weight:800;color:var(--ink)}
 .sh .tg{margin-left:auto;font-size:.6rem;font-weight:600;padding:4px 12px;border-radius:6px;background:var(--b3);color:var(--b-deep)}
+
+/* 空态：不报错、不卖萌，给一条继续走的路 */
+.empty-note{
+    padding:26px 0 28px;
+    border-top:1px solid #e2e8f0;
+    border-bottom:1px solid #e2e8f0
+}
+.empty-note-t{font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:6px}
+.empty-note-d{font-size:.88rem;color:var(--ink-soft);line-height:1.75;margin-bottom:16px;max-width:460px}
+.empty-note-links{display:flex;gap:20px;flex-wrap:wrap}
+.empty-note-links a{
+    font-size:.82rem;font-weight:600;color:var(--b-deep);
+    border-bottom:1px solid var(--b2);padding-bottom:2px;transition:border-color .2s
+}
+.empty-note-links a:hover{border-color:var(--b-dark)}
 
 .posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,420px));gap:24px;margin-bottom:60px;justify-content:center}
 .post-card{background:var(--surface);border-radius:16px;overflow:hidden;border:2px solid #e2e8f0;transition:all .25s}

@@ -307,6 +307,7 @@
     body.dataset.shelfMode = '';
 
     if (!posts.length) {
+      body.dataset.shelfMode = 'empty';
       body.innerHTML = empty('书架上还空着，等主人写下第一篇。');
       plantFragment('blogs', body);
       return;
